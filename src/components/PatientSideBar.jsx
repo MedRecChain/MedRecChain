@@ -14,6 +14,7 @@ import detectEthereumProvider from '@metamask/detect-provider'
 import { useEffect, useState } from "react";
 
 export default function SideBar(props) {
+  
   const [wEb3, setwEb3] = useState({
     provider: null,
     web3: null,

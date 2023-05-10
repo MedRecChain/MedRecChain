@@ -9,8 +9,6 @@ import { useLocation } from 'react-router-dom';
 import Web3 from "web3";
 import detectEthereumProvider from '@metamask/detect-provider'
 
-// import * as IPFS from 'ipfs-core';
-// import { create } from 'ipfs-http-client';
 
 
 
@@ -28,6 +26,7 @@ export default function PatientRecordsForDoctor() {
   })
 
   const providerChanged = (provider) => { provider.on("chainChange", _ => window.location.reload()); }
+  const accountsChanged= (provider)=>{provider.on("accountsChanged", _=> window.location.replace("/"));}
 
 
   //get WEB3
@@ -36,6 +35,7 @@ export default function PatientRecordsForDoctor() {
       const provider = await detectEthereumProvider();
       if (provider) {
         providerChanged(provider);
+        accountsChanged(provider)
         setwEb3({
           provider,
           web3: new Web3(provider)
@@ -93,30 +93,15 @@ export default function PatientRecordsForDoctor() {
 
   getallRecorddates(Patient);
 
-  const gotofile = (cid) => {
-    window.open(`http://127.0.0.1:9090/ipfs/${cid}?filename=${cid}`, '_blank');
+  const gotofile = (doc,pat,cid) => {
+    window.location.replace(`/PreviewRecord?Doctor=${doc}&Patient=${pat}&CID=${cid}`);
   }
 
 
 
-
-  const buttonStyle = {
-    backgroundColor: "white",
-    color: "gray",
-    fontSize: "16px",
-    border: "none",
-    padding: "3px 5px ",
-
-
-  };
   const color = {
     backgroundColor: "white",
     color: " #61dafb",
-    // fontSize: "16px",
-    // border: "none",
-    // padding: "3px 5px ",
-
-
   };
 
 
@@ -144,23 +129,118 @@ export default function PatientRecordsForDoctor() {
   };
 
 
+  const [Patientdate, setPatientdate] = useState([]);
+  const getPatientinfo = async () => {
+    const date = await Contract.methods.get_patient_by_address(Patient).call({ from: acount });
+    setPatientdate(date);
+  }
+
+  getPatientinfo();
+
+
   //////////////////
   return (
     <>
       <DoctorSideBar tap1="Doctor Profile" tap2="Make Request" tap3="Log Out" />
 
       <main id="main" className="main">
-
-        <div className="container">
-
-          <div className="mt-4  d-flex justify-content-end me-5">
+      <div className="mt-4  d-flex justify-content-end me-5">
             <div style={{ maxWidth: '400px' }}>
               <Link to={`/addRecord?Doctor=${acount}&Patient=${Patient}`} className=" btn fw-bold rounded-4 mx-5 card text-center shadow my-2 py-3 text-muted bg-info">
                 + Add New Record
               </Link>
             </div>
           </div>
-          <nav className="mb-5  ">
+
+      <div className="mt-3 container  me-3 ">
+              <div className="card">
+                <div className="container p-4">
+                  <h3 className="card-title">Patient Identification Information</h3>
+                  <form  className="container">
+                    <div className="row">
+                      <div className="col-xl-6">
+                        <div className="card-body  text-muted opacity-75 ">
+                          <div className="form-outline mb-4">
+                            <label className="" htmlFor="name">
+                              Name:   {Patientdate.name} 
+                            </label>
+                            
+                          </div>
+                          <div className="form-outline mb-4 ">
+                            <label className="" htmlFor="email">
+                             Email:{Patientdate.email}
+                            </label>
+                            
+                          </div>
+                          <div className="form-outline mb-4 ">
+                            <label className="" htmlFor="nationalAddress">
+                               Address: {Patientdate.National_Addr}
+                            </label>
+                            
+                          </div>
+                          <div className="form-outline mb-4 ">
+                            <label className="" htmlFor="age">
+                               Age:  {Patientdate.age}
+                            </label>
+                            
+                          </div>
+                          <div className="form-outline mb-4 ">
+                            <label className="" htmlFor="phone">
+                              Phone:  {Patientdate.phone}
+                            </label>
+                           
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-xl-6">
+                        <div className="card-body  text-muted opacity-75 ">
+                          <div className="form-outline mb-4  ">
+                            <label className="" htmlFor="patientPublicKey">
+                              Public Key:  {Patientdate.PatientAddress}
+                            </label>
+                           
+                          </div>
+                         
+                          <div className="form-outline mb-4 ">
+                            <label className="" htmlFor="nationalId">
+                             National ID:  {Patientdate.National_id}
+                            </label>
+                            
+                          </div>
+                          <div className="form-outline mb-4">
+                            <label className="" htmlFor="bloodType">
+                              Blood Type: {Patientdate.Blood_Type}
+                            </label>
+                           
+                          </div>
+                          <div className="form-outline mb-4">
+                            <label className="" htmlFor="bloodType">
+                            Marital Status: {Patientdate.marital_status}
+                            </label>
+                           
+                          </div>
+                          <div className="mb-4">
+                            <div className="form-outline d-flex mt-4 text-muted ">
+                              <label
+                                className="form-label me-4"
+                                htmlFor="Gender"
+                              >
+                                Gender:  {Patientdate.gender}
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+<br/><br/>
+
+     <div className="container">
+         <nav className="mb-5  ">
             <Nav
               className="fw-semibold  text-info justify-content-center"
               variant="pills"
@@ -224,7 +304,7 @@ export default function PatientRecordsForDoctor() {
                               {showButton && (
                                 <Link >
                                   <Button className="card-button"
-                                    onClick={() => gotofile(date.hex_ipfs)}>
+                                    onClick={() => gotofile(date.doctor_addr,date.patient_addr,date.hex_ipfs)}>
                                     <i className="bi fs-1 pe-2 ps-2  fs-5 ms-3 rounded-5 shadow-5 bi-grid">
                                       <BsEyeFill />
                                     </i>
@@ -235,42 +315,6 @@ export default function PatientRecordsForDoctor() {
                             </div>
                           </div>
                         </div>
-
-                        {/* <div className=" col-xxl-4 col-md-4">
-                          <div className="card info-card customers-card">
-                            <div className="position-relative">
-                              <h5 className="card-title fs-6 text-center border-bottom rounded-top bg-secondary  bg-opacity-25">
-                                Record Category : {date.category}
-
-                              </h5>
-                              <div className="text-secondary card-body border-bottom d-flex overflow-hidden p-3">
-                                Record Name / Description: {date.rec_name} <br />
-                                From Doctor (PK) : {date.doctor_addr}
-                              </div>
-
-                              <div className="row">
-                                <div className="col-4">
-                                  <button
-                                    style={buttonStyle}
-                                    onClick={() => gotofile(date.hex_ipfs)}
-                                  ><i className="bi fs-4  pe-2 ps-2 border fs-5 ms-3 mt-1 rounded-5 text-muted shadow-5 bi-grid">
-                                      <BsEyeFill />
-                                    </i>
-                                  </button>
-                                </div>
-                                <div className="col-8">
-                                  <div className="card-date text-secondary position-relative text-opacity-50 bottom-0 end-0  ">
-                                    <span className="position-absolute pe-3 end-0">
-                                      {""}
-                                      {date.Created_at}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div> */}
-
                       </>
                     )
                   }

@@ -1,28 +1,98 @@
 import React, { useState } from "react";
-import record from "../assets/img/slider/img3.jpg";
 import MyFooter from "../components/MyFooter";
-import { Link } from "react-router-dom";
+
+import { useLocation } from 'react-router-dom';
+import Web3 from "web3";
+import detectEthereumProvider from '@metamask/detect-provider'
+import { useEffect } from "react";
 
 export default function PreviewRecord() {
-  const [record, setRecord] = useState({
-    category: "X-ray",
-    recordName: "Heart Disease",
-    date: "04/1/2023",
-    patientPublickey: "0x0976178rc348nckqqqqqyue",
-    doctorPublickey: "0x0976neb78rc348nckqqqqqyue",
-    
-  });
 
-  const [file, setFile] = useState(null);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const doc = searchParams.get('Doctor');
+  const pat = searchParams.get('Patient');
+  const cid = searchParams.get('CID');
 
-  const handleChange = (e) => {
-    setRecord({ ...record, [e.target.name]: e.target.value });
-  };
+  const [wEb3, setwEb3] = useState({
+    provider: null,
+    web3: null,
+  })
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(record);
-  };
+  const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); }
+  const accountsChanged= (provider)=>{provider.on("accountsChanged", _=> window.location.replace("/"));}
+
+
+  //get WEB3
+  useEffect(() => {
+    const loadProvider = async () => {
+      const provider = await detectEthereumProvider();
+      if (provider) {
+        providerChanged(provider);
+        accountsChanged(provider);
+        setwEb3({
+          provider,
+          web3: new Web3(provider)
+        })
+      }
+    }
+    loadProvider();
+  }, []);
+
+  const [Contract, setContract] = useState(null);
+
+  ///// get Contract
+  useEffect(() => {
+
+    const loadcontract = async () => {
+      const contractfile = await fetch('/contracts/MedRecChain.json');
+      const convert = await contractfile.json();
+      const networkid = await wEb3.web3.eth.net.getId();
+      const networkDate = convert.networks[networkid];
+      if (networkDate) {
+
+        const abi = convert.abi;
+        const address = convert.networks[networkid].address;
+        const contract = await new wEb3.web3.eth.Contract(abi, address);
+
+        setContract(contract);
+
+      } else {
+        window.alert("only ganache");
+        window.location.reload();
+        console.log(networkid);
+      }
+
+    }
+
+    loadcontract();
+
+  }, [wEb3]);
+
+
+  /////////////
+
+
+  const [RecordDate, setRecordDate] = useState({});
+
+  const getallRecorddates = async (pat) => {
+    try {
+      const date = await Contract.methods.See_Record_for_Doctor(pat).call({ from: doc });
+     
+      for(var i =0 ; i<date.length ; i++){
+       if(date[i].hex_ipfs == cid){
+          setRecordDate(date[i]);
+          break;
+        }
+
+      }
+      
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+  getallRecorddates(pat);
 
   return (
     <>
@@ -35,20 +105,13 @@ export default function PreviewRecord() {
                   <div className="row">
                     <div className="col-7">
                       <h1 className="card-title">
-                        Record Information ( Category )
+                        Record Information 
                       </h1>
                     </div>
-                    {/* <div className="col-4">
-                      <Link
-                        to="/addRecord"
-                        className="rounded-5 mx-5 card text-center shadow my-2 py-3 text-muted bg-info"
-                      ><b>
-                          + Add New Record</b>
-                      </Link>
-                    </div> */}
+                   
                   </div>
 
-                  <form onSubmit={handleSubmit} className="container">
+                 
                     <div className="row">
                       <div className="col-xl-6">
                         <div className="card-body text-muted opacity-75">
@@ -61,8 +124,8 @@ export default function PreviewRecord() {
                               type="text"
                               id="category"
                               className="form-control form-control-lg"
-                              value={record.category}
-                              onChange={handleChange}
+                              value={RecordDate.category}
+                              disabled
                             />
                           </div>
                           <div className="form-outline mb-4">
@@ -74,8 +137,8 @@ export default function PreviewRecord() {
                               type="text"
                               id="recordName"
                               className="form-control form-control-lg"
-                              value={record.recordName}
-                              onChange={handleChange}
+                              value={RecordDate.rec_name}
+                              disabled
                             />
                           </div>
                           <div className="form-outline mb-4">
@@ -87,8 +150,8 @@ export default function PreviewRecord() {
                               type="date"
                               id="date"
                               className="form-control form-control-lg"
-                              value={record.date}
-                              onChange={handleChange}
+                              value={RecordDate.Created_at}
+                              disabled
                             />
                           </div>
                           <div className="form-outline mb-4">
@@ -100,8 +163,8 @@ export default function PreviewRecord() {
                               type="text"
                               id="patientPublicKey"
                               className="form-control form-control-lg"
-                              value={record.patientPublicKey}
-                              onChange={handleChange}
+                              value={RecordDate.patient_addr}
+                              disabled
                             />
                           </div>
                           <div className="form-outline mb-4">
@@ -113,8 +176,8 @@ export default function PreviewRecord() {
                               type="text"
                               id="doctorPublicKey"
                               className="form-control form-control-lg"
-                              value={record.doctorPublicKey}
-                              onChange={handleChange}
+                              value={RecordDate.doctor_addr}
+                              disabled
                             />
                           </div>
                         </div>
@@ -130,19 +193,22 @@ export default function PreviewRecord() {
                               <div
                                 className=" card"
                                 id=" file"
-                                style={{
-                                  height: "350px",
-                                  width: "300px",
-                                }}
+                                
                               >
-                                <img src={record} alt="recordData" />
+                                <embed src={`http://127.0.0.1:9090/ipfs/${cid}?filename=${cid}` 
+                                } 
+                                 style={{
+                                  height: "350px",
+                                  width: "100%",
+                                }}
+                                />
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </form>
+                  
                 </div>
               </div>
             </div>

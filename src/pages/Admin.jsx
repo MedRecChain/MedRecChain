@@ -21,7 +21,8 @@ export default function Admin() {
     web3: null,
   })
 
-  const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); }
+  const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); };
+  const accountsChanged= (provider)=>{provider.on("accountsChanged", _=> window.location.replace("/"));};
 
 
   //get WEB3
@@ -30,6 +31,7 @@ export default function Admin() {
       const provider = await detectEthereumProvider();
       if (provider) {
         providerChanged(provider);
+        accountsChanged(provider);
         setwEb3({
           provider,
           web3: new Web3(provider)
@@ -79,11 +81,14 @@ export default function Admin() {
 
   const [Doctordate, setDoctordate] = useState([]);
   const getallDoctors = async () => {
-    const date = await Contract.methods.get_all_Doctors().call({ from: acount });
+    const date = await Contract.methods.get_all_Doctors().call({ 
+      from: acount
+     });
     setDoctordate(date);
   }
 
   getallDoctors();
+  
 
   ///get Number of all records at system.
 

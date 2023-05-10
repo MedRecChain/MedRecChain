@@ -21,6 +21,7 @@ export default function AddDoctor() {
   })
 
   const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); }
+  const accountsChanged= (provider)=>{provider.on("accountsChanged", _=> window.location.replace("/"));}
 
   //get WEB3
   useEffect(() => {
@@ -28,6 +29,7 @@ export default function AddDoctor() {
       const provider = await detectEthereumProvider();
       if (provider) {
         providerChanged(provider);
+        accountsChanged(provider);
         setwEb3({
           provider,
           web3: new Web3(provider)
@@ -55,9 +57,6 @@ export default function AddDoctor() {
 
         setContract(contract);
 
-
-
-        // console.log(contract.methods);
 
 
       } else {
@@ -121,9 +120,11 @@ export default function AddDoctor() {
 
         if (success) {
           alert("Doctor Added Successfully.");
+          setIsLoading(false);
         }
         else {
           alert("Doctor  Not Added !!.");
+          setIsLoading(false);
         }
 
       }
@@ -153,15 +154,18 @@ export default function AddDoctor() {
         );
         if (success) {
           alert("Doctor Removed Successfully.");
+          setIsLoading(false);
         }
         else {
           alert("Hospital  Not Removed !!.");
+          setIsLoading(false);
         }
       }
       remove(removedoc);
     }
     catch (e) {
-      alert("Hospital  Not Removed !!.");
+      alert("Hospital Not Removed !!.");
+      setIsLoading(false);
     }
 
   };

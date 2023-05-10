@@ -1,8 +1,9 @@
 import React from "react";
-import { Nav } from "react-bootstrap";
+import { Nav,Button } from "react-bootstrap";
 import PatientSideBar from "../components/PatientSideBar";
 import MyFooter from "../components/MyFooter";
 import { BsEyeFill } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 
 import { useLocation } from 'react-router-dom';
@@ -15,12 +16,14 @@ export default function PatientRecords() {
   const searchParams = new URLSearchParams(location.search);
   const acount = searchParams.get('account');
 
+
   const [wEb3, setwEb3] = useState({
     provider: null,
     web3: null,
   })
 
-  const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); }
+  const providerChanged = (provider) => { provider.on("chainChange", _ => window.location.reload()); }
+  const accountsChanged= (provider)=>{provider.on("accountsChanged", _=> window.location.replace("/"));}
 
 
   //get WEB3
@@ -29,6 +32,7 @@ export default function PatientRecords() {
       const provider = await detectEthereumProvider();
       if (provider) {
         providerChanged(provider);
+        accountsChanged(provider)
         setwEb3({
           provider,
           web3: new Web3(provider)
@@ -74,32 +78,30 @@ export default function PatientRecords() {
   //See_Record_for_Patient
 
   const [RecordDate, setRecordDate] = useState([]);
-  const getallRecordsdates = async () => {
+  const getallRecorddates = async (pat) => {
     try {
-      const date = await Contract.methods.See_Record_for_Patient().call({ from: acount });
+      const date = await Contract.methods. See_Record_for_Patient().call({ from: acount });
       setRecordDate(date);
     }
     catch (e) {
     }
   }
-  getallRecordsdates();
 
-  //connect to local ipfs network (created bt js.ipfs) and retrieve data from it ,by it's path.
-  const gotofile = (cid) => {
-    window.open(`http://127.0.0.1:9090/ipfs/${cid}?filename=${cid}`, '_blank');
+
+  getallRecorddates();
+
+  const gotofile = (doc,pat,cid) => {
+    window.location.replace(`/PreviewRecord?Doctor=${doc}&Patient=${pat}&CID=${cid}`);
   }
 
-  const buttonStyle = {
+
+
+  const color = {
     backgroundColor: "white",
-    color: "gray",
-    fontSize: "16px",
-    border: "none",
-    padding: "3px 5px ",
-
-
+    color: " #61dafb",
+   
   };
 
-  ////////////////
 
   //FILTER CATRGORY
   const [activeCategory, setActiveCategory] = useState("all");
@@ -114,6 +116,16 @@ export default function PatientRecords() {
       : RecordDate.filter((item) => item.category === activeCategory);
 
 
+  const [showButton, setShowButton] = useState(false);
+
+  const handleMouseOver = () => {
+    setShowButton(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowButton(false);
+  };
+
   //////////////////
   return (
     <>
@@ -121,16 +133,16 @@ export default function PatientRecords() {
         tap1="Profile"
         tap2="My Records"
         tap3="Permission & Requests"
-        tap4="Doctor Notes"
         tap4="Log Out"
       />
 
       <main id="main" className="main">
         <div className="container"   >
           <nav className="my-5" >
-            <Nav
+          <Nav
               className="fw-semibold  text-info justify-content-center"
               variant="pills"
+              style={color}
               defaultActiveKey="all"
               onSelect={handleSelect}
             >
@@ -155,49 +167,56 @@ export default function PatientRecords() {
         <section className="section record dashboard">
           <div className="mt-4 mb-4 container">
             <div className="row container">
-
-              {
+            {
                 filteredCategoryItems.length === 0 ? (
-                  <h5 className=" text-center small py-3" >You Don't have Records Yet!!</h5>
+                  <h5 className=" text-center small py-3" >This patient does not yet have medical records!!</h5>
+
                 ) : (
                   filteredCategoryItems.map((date) => {
 
-                    return (<>
-                      <div className=" col-xxl-4 col-md-4">
-                        <div className="card info-card customers-card">
-                          <div className="position-relative">
-                            <h5 className="card-title fs-6 text-center border-bottom rounded-top bg-secondary  bg-opacity-25">
-                              Record Category : {date.category}
+                    return (
+                      <>
+                        <div className=" recordCard col-xxl-4 col-md-4">
+                          <div className="card info-card customers-card" onMouseOver={handleMouseOver} onMouseLeave={handleMouseLeave}>
+                            <div className="position-relative">
+                              <h5 className="card-title fs-6 text-center border-bottom rounded-top bg-secondary  bg-opacity-25">
+                                Category: {date.category}
 
-                            </h5>
-                            <div className="text-secondary card-body border-bottom d-flex overflow-hidden p-3">
-                              Record Name / Description: {date.rec_name} <br />
-                              From Doctor (PK) : {date.doctor_addr}
-                            </div>
-
-                            <div className="row">
-                              <div className="col-4">
-                                <button
-                                  style={buttonStyle}
-                                  onClick={() => gotofile(date.hex_ipfs)}
-                                ><i className="bi fs-4  pe-2 ps-2 border fs-5 ms-3 mt-1 rounded-5 text-muted shadow-5 bi-grid">
-                                    <BsEyeFill />
-                                  </i>
-                                </button>
+                              </h5>
+                              <div className="text-secondary card-body border-bottom d-flex overflow-hidden p-3">
+                                Record Name/Description: {date.rec_name}
+                                <br />
+                                From Dr(PK): {date.doctor_addr}
                               </div>
-                              <div className="col-8">
+
+
+                              <div className="pb-5">
                                 <div className="card-date text-secondary position-relative text-opacity-50 bottom-0 end-0  ">
                                   <span className="position-absolute pe-3 end-0">
-                                    {""}
                                     {date.Created_at}
                                   </span>
                                 </div>
                               </div>
+
+                              {showButton && (
+                                <Link >
+                                  <Button className="card-button"
+                                    onClick={() => gotofile(date.doctor_addr,date.patient_addr,date.hex_ipfs)}>
+                                    <i className="bi fs-1 pe-2 ps-2  fs-5 ms-3 rounded-5 shadow-5 bi-grid">
+                                      <BsEyeFill />
+                                    </i>
+                                  </Button>
+                                </Link>
+                              )}
+
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </>)
+
+                        
+
+                      </>
+                    )
                   }
                   )
                 )

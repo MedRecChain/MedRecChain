@@ -24,6 +24,7 @@ export default function PatientProfile() {
   })
 
   const providerChanged = (provider) => { provider.on("ChainChanged", _ => window.location.reload()); }
+  const accountsChanged= (provider)=>{provider.on("accountsChanged", _=> window.location.replace("/"));}
 
 
   //get WEB3
@@ -32,6 +33,7 @@ export default function PatientProfile() {
       const provider = await detectEthereumProvider();
       if (provider) {
         providerChanged(provider);
+        accountsChanged(provider);
         setwEb3({
           provider,
           web3: new Web3(provider)
@@ -214,6 +216,17 @@ export default function PatientProfile() {
                       </div>
                       <div className="col-xl-9">
                         {Patientdate.marital_status}
+                      </div>
+                      <hr />
+                    </div>
+                    <div className="form-outline row mb-2">
+                      <div className="col-xl-3">
+                        <label className="text-dark fs-5" htmlFor="form3Example1cg ">
+                          Gender:
+                        </label>
+                      </div>
+                      <div className="col-xl-9">
+                        {Patientdate.gender}
                       </div>
                       <hr />
                     </div>

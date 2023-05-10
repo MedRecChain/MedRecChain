@@ -22,7 +22,8 @@ export default function DoctorProfile() {
     web3: null,
   })
 
-  const providerChanged = (provider) => { provider.on("ChainChanged", _ => window.location.reload()); }
+  const providerChanged = (provider) => { provider.on("ChainChanged", _ => window.location.reload()); };
+  const accountsChanged= (provider)=>{provider.on("accountsChanged", _=> window.location.replace("/"));};
 
 
   //get WEB3
@@ -31,6 +32,7 @@ export default function DoctorProfile() {
       const provider = await detectEthereumProvider();
       if (provider) {
         providerChanged(provider);
+        accountsChanged(provider);
         setwEb3({
           provider,
           web3: new Web3(provider)

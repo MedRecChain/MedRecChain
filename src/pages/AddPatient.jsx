@@ -19,7 +19,8 @@ export default function AddPatient() {
     web3: null,
   })
 
-  const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); }
+  const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); };
+  const accountsChanged= (provider)=>{provider.on("accountsChanged", _=> window.location.replace("/"));};
 
 
   //get WEB3
@@ -28,6 +29,7 @@ export default function AddPatient() {
       const provider = await detectEthereumProvider();
       if (provider) {
         providerChanged(provider);
+        accountsChanged(provider);
         setwEb3({
           provider,
           web3: new Web3(provider)
@@ -82,7 +84,7 @@ export default function AddPatient() {
     phone: "",
     bloodType: "",
     maritalStatus: "",
-    // gender: "",
+    gender: "",
   });
 
   const handleChange = (e) => {
@@ -95,7 +97,7 @@ export default function AddPatient() {
       e.preventDefault();
       /// Connect To AddPatient Function At Contract
       const addpatient = async (pat) => {
-        const success = await Contract.methods.addPatient(pat.patientName, pat.email, pat.nationalAddress, pat.nationalId, pat.age, pat.patientPublicKey, pat.phone, pat.bloodType, pat.maritalStatus).send(
+        const success = await Contract.methods.addPatient(pat.patientName, pat.email, pat.nationalAddress, pat.nationalId, pat.age, pat.patientPublicKey, pat.phone, pat.bloodType, pat.maritalStatus,pat.gender).send(
           {
             from: acount
           },
@@ -105,16 +107,18 @@ export default function AddPatient() {
         );
         if (success) {
           alert("Patient Added Successfully.");
+          setIsLoading(false);
         }
         else {
           alert("Patient Not Added !!.");
+          setIsLoading(false);
         }
 
       }
       addpatient(patient);
     }
     catch (e) {
-
+      setIsLoading(false);
     };
   };
 
@@ -230,7 +234,7 @@ export default function AddPatient() {
                                     minlength="42"
                                     maxlength="42"
                                     className=" form-control form-control-lg"
-                                    value={patient.PatientPublicKey}
+                                    value={patient.patientPublicKey}
                                     onChange={handleChange}
                                   />
                                 </div>
@@ -279,6 +283,49 @@ export default function AddPatient() {
                                     <option value="married">Married</option>
                                     <option value="divorced">Divorced</option>
                                   </select>
+                                </div>
+
+                                <div className="">
+                                  <div className="form-outline d-flex mt-4 text-muted ">
+                                    <label
+                                      className="form-label me-4"
+                                      htmlFor="gender"
+                                    >
+                                      Gender
+                                    </label>
+                                  </div>
+                                  <div className="form-check form-check-inline">
+                                    <input
+                                      className="form-check-input"
+                                      type="radio"
+                                      name="gender"
+                                      id="male"
+                                      value="male"
+                                      onChange={handleChange}
+                                    />
+                                    <label
+                                      className="me-5 form-check-label"
+                                      htmlFor="male"
+                                    >
+                                      Male
+                                    </label>
+                                  </div>
+                                  <div className="form-check form-check-inline">
+                                    <input
+                                      className="form-check-input"
+                                      type="radio"
+                                      name="gender"
+                                      id="female"
+                                      value="female"
+                                      onChange={handleChange}
+                                    />
+                                    <label
+                                      className="form-check-label"
+                                      htmlFor="female"
+                                    >
+                                      Female
+                                    </label>
+                                  </div>
                                 </div>
 
 

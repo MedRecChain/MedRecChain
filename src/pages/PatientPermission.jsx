@@ -18,7 +18,8 @@ export default function PatientPermission() {
     web3: null,
   })
 
-  const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); }
+  const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); };
+  const accountsChanged= (provider)=>{provider.on("accountsChanged", _=> window.location.replace("/"));}
 
 
   //get WEB3
@@ -27,6 +28,7 @@ export default function PatientPermission() {
       const provider = await detectEthereumProvider();
       if (provider) {
         providerChanged(provider);
+        accountsChanged(provider);
         setwEb3({
           provider,
           web3: new Web3(provider)
@@ -91,12 +93,14 @@ export default function PatientPermission() {
           }
         );
         alert("Request sended Successfully.");
+        setIsLoading(false);
 
       }
       sendrequestAccess(Doctor);
     }
     catch (e) {
       alert("Request Not sended !!.");
+      setIsLoading(false);
     }
   };
 
@@ -122,7 +126,16 @@ export default function PatientPermission() {
 
   const buttonStyle = {
     backgroundColor: "white",
-    color: "gray",
+    color: "green",
+    fontSize: "16px",
+    border: "none",
+    padding: "0px 40px ",
+
+
+  };
+  const buttonrevoke = {
+    backgroundColor: "white",
+    color: "red",
     fontSize: "16px",
     border: "none",
     padding: "0px 40px ",
@@ -161,7 +174,7 @@ export default function PatientPermission() {
     }
     catch (e) {
       console.log(e);
-
+      setIsLoading(false);
     }
   };
 
@@ -194,7 +207,7 @@ export default function PatientPermission() {
     }
     catch (e) {
       console.log(e);
-
+      setIsLoading(false);
     }
   };
 
@@ -328,7 +341,7 @@ export default function PatientPermission() {
                                 <button
                                   disabled={isLoading}
                                   onClick={() => handleRevoke(date.from_doctor_addr)}
-                                  style={buttonStyle}>
+                                  style={buttonrevoke}>
                                   <BsFillTrash3Fill />
                                 </button>
 

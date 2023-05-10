@@ -22,7 +22,8 @@ export default function PatientPermission() {
     web3: null,
   })
 
-  const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); }
+  const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); };
+  const accountsChanged= (provider)=>{provider.on("accountsChanged", _=> window.location.replace("/"));}
 
 
   //get WEB3
@@ -31,6 +32,7 @@ export default function PatientPermission() {
       const provider = await detectEthereumProvider();
       if (provider) {
         providerChanged(provider);
+        accountsChanged(provider);
         setwEb3({
           provider,
           web3: new Web3(provider)
@@ -98,9 +100,11 @@ export default function PatientPermission() {
         if (success) {
 
           alert("Request sended Successfully.");
+          setIsLoading(false);
         }
         else {
           alert("Request Not sended !!.");
+          setIsLoading(false);
         }
 
       }
@@ -108,6 +112,7 @@ export default function PatientPermission() {
     }
     catch (e) {
       alert("Request Not sended !!.");
+      setIsLoading(false);
     }
   };
 
@@ -115,19 +120,22 @@ export default function PatientPermission() {
   const [Requestdate, setRequestdate] = useState([]);
 
   //Get all Request from doctor
-  const getallRequestdates = async () => {
+ 
+    const getallRequestdates = async () => {
     const date = await Contract.methods.get_all_requests().call({ from: acount });
     setRequestdate(date);
 
   }
   getallRequestdates();
 
+
   // store the status of request.
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
 
   const handleClick = async (doc, pat) => {
-    const date = await Contract.methods.checkRequestExists(doc, pat).call({
+ 
+    const date = await Contract.methods.check_approve_Access(doc, pat).call({
       from: acount
     });
     setIsButtonDisabled(date);
@@ -147,16 +155,18 @@ export default function PatientPermission() {
     return date.toLocaleString();
   }
 
+  
 
   const buttonStyle = {
     backgroundColor: "white",
-    color: "gray",
+    color: "green",
     fontSize: "16px",
     border: "none",
     padding: "0px 25px ",
 
 
   };
+
 
   return (
     <>
@@ -240,8 +250,9 @@ export default function PatientPermission() {
                     </thead>
                     <tbody>
                       {Requestdate.map((date) => {
-
+                        
                         if (date.from_doctor_addr == acount) {
+                         
                           return (
                             <tr>
                               <td scope="row">{date.to_patients_addr}</td>
@@ -252,11 +263,14 @@ export default function PatientPermission() {
                               </td>
 
                               <td>
+
                                 <button
                                   disabled={isButtonDisabled}
                                   onClick={() => handleClick(acount, date.to_patients_addr)}
 
-                                  style={buttonStyle}>
+                                  style={buttonStyle}
+                                 
+                                 >
                                   <BsEyeFill />
                                 </button>
 

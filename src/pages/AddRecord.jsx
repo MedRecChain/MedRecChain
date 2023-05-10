@@ -29,7 +29,8 @@ export default function AddRecord() {
     web3: null,
   })
 
-  const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); }
+  const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); };
+  const accountsChanged= (provider)=>{provider.on("accountsChanged", _=> window.location.replace("/"));};
 
 
   //get WEB3
@@ -38,6 +39,7 @@ export default function AddRecord() {
       const provider = await detectEthereumProvider();
       if (provider) {
         providerChanged(provider);
+        accountsChanged(provider);
         setwEb3({
           provider,
           web3: new Web3(provider)
@@ -129,9 +131,11 @@ export default function AddRecord() {
         );
         if (success) {
           alert("Record Added Successfully.");
+          setIsLoading(false);
         }
         else {
           alert("Record Not Added !!.");
+          setIsLoading(false);
         }
 
 
@@ -139,7 +143,7 @@ export default function AddRecord() {
       }
       catch (e) {
         console.log(e);
-        // window.location.reload(true);
+        setIsLoading(false);
       }
 
 
@@ -239,7 +243,7 @@ export default function AddRecord() {
                         <div className="fs-6 text-muted ms-4 mt-3 container">
                           <div className="forms ">
                             <label className="" htmlFor="doctorPublicKey">
-                              Record Data
+                              Add Record Data
                             </label>
 
                             <div
