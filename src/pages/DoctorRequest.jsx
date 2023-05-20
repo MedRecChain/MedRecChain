@@ -89,7 +89,8 @@ export default function PatientPermission() {
       setIsLoading(true);
       e.preventDefault();
       const sendrequestAccess = async (pat) => {
-        const success = await Contract.methods.send_request_Access(pat.PatientPublickey).send(
+        
+        const success = await Contract.methods.send_request_Access(pat.PatientPublickey,acount).send(
           {
             from: acount
           },
@@ -154,12 +155,32 @@ export default function PatientPermission() {
     const date = new Date(timestamp * 1000);
     return date.toLocaleString();
   }
+const [checkk,setcheck]= useState(false);
+
+  const check_approve = async (doc, pat) => {
+    const check = await Contract.methods
+      .check_approve_Access(doc, pat)
+      .call({ from: acount });
+
+    // return check;
+    setcheck(check);
+   
+  };
 
   
 
   const buttonStyle = {
     backgroundColor: "white",
     color: "green",
+    fontSize: "16px",
+    border: "none",
+    padding: "0px 25px ",
+
+
+  };
+  const buttonreject = {
+    backgroundColor: "white",
+    color: "red",
     fontSize: "16px",
     border: "none",
     padding: "0px 25px ",
@@ -241,6 +262,7 @@ export default function PatientPermission() {
                   <table className="table table-borderless datatable">
                     <thead>
                       <tr>
+                        <th scope="col">Patient Name</th>
                         <th scope="col">Patient Public Key</th>
                         <th scope="col">Doctor Public Key</th>
                         <th scope="col">Date</th>
@@ -249,17 +271,20 @@ export default function PatientPermission() {
                       </tr>
                     </thead>
                     <tbody>
-                      {Requestdate.map((date) => {
+                      {Requestdate.map( (date) =>  {
+                       
+
+                        if (date.from_doctor_addr == acount && check_approve(date.from_doctor_addr, date.to_patients_addr) ) {
                         
-                        if (date.from_doctor_addr == acount) {
-                         
                           return (
-                            <tr>
+                            <tr key={date.id}>
+                              <td scope="row">{date.patient_name}</td>
                               <td scope="row">{date.to_patients_addr}</td>
                               <td>{date.from_doctor_addr}</td>
 
                               <td>
                                 {convertTimestamp(date.date)}
+                               
                               </td>
 
                               <td>
@@ -269,6 +294,35 @@ export default function PatientPermission() {
                                   onClick={() => handleClick(acount, date.to_patients_addr)}
 
                                   style={buttonStyle}
+                                 
+                                 >
+                                  <BsEyeFill />
+                                </button>
+
+
+                              </td>
+                            </tr>
+                          )
+                        }
+                        else{
+                          return (
+                            <tr key={date.id}>
+                              <td scope="row">{date.patient_name}</td>
+                              <td scope="row">{date.to_patients_addr}</td>
+                              <td>{date.from_doctor_addr}</td>
+
+                              <td>
+                                {convertTimestamp(date.date)}
+                               
+                              </td>
+
+                              <td>
+
+                                <button
+                                  disabled={isButtonDisabled}
+                                  onClick={() => handleClick(acount, date.to_patients_addr)}
+
+                                  style={  buttonreject}
                                  
                                  >
                                   <BsEyeFill />

@@ -7,9 +7,9 @@ import Web3 from "web3";
 import detectEthereumProvider from '@metamask/detect-provider'
 import { useEffect } from "react";
 import { useLocation } from 'react-router-dom';
+import { CChart } from '@coreui/react-chartjs';
 
 export default function HospitalProfile() {
-
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -69,8 +69,96 @@ export default function HospitalProfile() {
 
   }, [wEb3]);
 
-  ///get hospital profile.
+  //get acount
+  const [account, setAccount] = useState();
+  useEffect(()=>{
+  
+    const getAccount = async()=>{
+
+    const accounts = await wEb3.web3.eth.getAccounts();
+    setAccount(accounts);
+    
+     
+  }
+    getAccount();
+
+    });
+
+  
   const [Hospitaldate, setHospitaldate] = useState([]);
+
+
+  const [Patientdate, setPatientdate] = useState(0);
+  const [DoctorMedical_specialty, setDoctorMedical_specialty] = useState([]);
+  const [Counts , setspecialtyCounts] = useState([]);
+  const [Doctordat, setDoctordat] = useState(0);
+
+  const uniqueMedicalSpecialties = new Set();
+  const specialtyCounts = [];
+ 
+ 
+
+ // Get doctor number at this hospital
+  const getallDoctors = async () => {
+    var total= 0;
+    try
+    {
+    const date = await Contract.methods.get_all_Doctors().call({ from: acount });
+    for(var i = 0 ; i < date.length ; i++ ){
+      if (date[i] && date[i].hospital_addr == account[0]){
+        total=total+1;
+        if (date[i].Medical_specialty) {
+          uniqueMedicalSpecialties.add(date[i].Medical_specialty);
+          const specialty = date[i].Medical_specialty;
+          if (!specialtyCounts[specialty]) {
+            specialtyCounts[specialty] = 0;
+          }
+          specialtyCounts[specialty]++;
+
+        }
+       } 
+      }
+       const doctorMedicalSpecialties = [...uniqueMedicalSpecialties];
+       setDoctorMedical_specialty(doctorMedicalSpecialties);
+       setspecialtyCounts(specialtyCounts);
+       setDoctordat(total);}
+     catch(e){
+      console.log(e);
+     }
+    }
+   getallDoctors();
+
+   // Get patient number at this hospital
+  
+     
+    const getallPatients =async () => {
+    var Tot= 0;
+    try
+   {const date = await Contract.methods.get_all_Patients().call({ from: acount });
+    for( var a = 0 ; a < date.length; a++ ){
+      if (date[a] && date[a].hospital_addr === account[0]){
+        Tot=Tot+1; 
+      }
+      setPatientdate(Tot);
+    }
+      }
+      catch(e){
+        console.log(e)
+      }
+  }
+
+    getallPatients();
+
+  
+
+  
+
+
+  
+  
+
+
+  ///get hospital profile.
   const getallhospitals = async () => {
     const date = await Contract.methods.get_hospita_by_address(acount).call({ from: acount });
 
@@ -78,6 +166,8 @@ export default function HospitalProfile() {
   }
 
   getallhospitals();
+
+
 
   ////////////////
 
@@ -88,7 +178,7 @@ export default function HospitalProfile() {
         <section className="section forms container mt-4">
           <div className="row p-5">
             <div className="forms">
-              <div className="card w-75 mx-auto align-center h-100">
+              <div className="card w-100 mx-auto align-center h-100">
                 <div className="container  p-4">
                   <div className=" p-1">
                     <img
@@ -109,7 +199,7 @@ export default function HospitalProfile() {
                           </label>
                         </div>
                         <div className="col-xl-9">
-                          {Hospitaldate.name}
+                          {Hospitaldate.name} 
                         </div>
                         <hr />
                       </div>
@@ -134,6 +224,7 @@ export default function HospitalProfile() {
                         </div>
                         <div className="col-xl-9">
                           {Hospitaldate.phone}
+                          
                         </div>
                         <hr />
                       </div>
@@ -155,6 +246,54 @@ export default function HospitalProfile() {
               </div>
             </div>
           </div>
+        </section>
+        <section className="py-5 px-5 bg-info-light position-relative overflow-hidden my-5 mx-5 mt-5  ">
+        <div className="row container ">
+        <div className=" container col-5 ">
+       
+          <CChart
+            type="bar"
+            data={{
+              labels: ['Patients', 'Doctors'],
+              datasets: [
+                {
+                  label:"Number of Employes",
+                  backgroundColor: ['#5096ad','#075369' ],
+                  data: [Patientdate ,Doctordat],
+                  barPercentage: 5,
+                  barThickness: 50,
+                  maxBarThickness:50,
+                  minBarLength: 2,
+                },
+              ],
+            }}
+        />
+        
+        </div>
+        <div className=" container col-7  ">
+        
+        
+            <CChart 
+                type="radar"
+                data={{
+                  labels: DoctorMedical_specialty,
+                  datasets: [
+                    {
+                      label: 'Doctor Medical Specialty',
+                      backgroundColor: '#dff2f5',
+                      borderColor: '#91b1b5',
+                      pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                      pointBorderColor: '#91b1b5',
+                      pointHighlightFill: '#91b1b5',
+                      pointHighlightStroke: 'rgba(220, 220, 220, 1)',
+                      data:Object.values(Counts),
+                    }
+                  ],
+                }}
+              />
+       
+        </div>
+        </div>
         </section>
       </main>
       <div className="side-footer"><MyFooter /></div>

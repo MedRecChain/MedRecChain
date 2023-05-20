@@ -7,6 +7,7 @@ import Web3 from "web3";
 import detectEthereumProvider from '@metamask/detect-provider'
 import { useEffect } from "react";
 import { useLocation } from 'react-router-dom';
+import { CChart } from '@coreui/react-chartjs';
 
 
 export default function DoctorProfile() {
@@ -79,6 +80,38 @@ export default function DoctorProfile() {
   getdoctorinfo();
 
 
+
+  //Get all Request from doctor
+  const [Requestdate, setRequestdate] = useState([]);
+  const [aprove , setaprove] = useState(0);
+  const [pending , setpending] = useState(0);
+  var a=0
+  var p=0;
+
+ 
+    const getallRequestdates = async () => {
+    const date = await Contract.methods.get_all_requests().call({ from: acount });
+    setRequestdate(date);
+    for(var i=0;i<date.length;i++){
+      const check = await Contract.methods.check_approve_Access(date[i].from_doctor_addr, date[i].to_patients_addr).call({
+        from: acount
+      });
+      if(check){
+        a=a+1;
+      }
+      else{
+        p=p+1;
+      }
+
+    }
+    setaprove(a);
+    setpending(p);
+
+  }
+  
+  getallRequestdates();
+
+
   ////////////////////////
 
 
@@ -89,8 +122,8 @@ export default function DoctorProfile() {
 
         <section className="section forms container mt-4">
           <div className="row p-5">
-            <div className="forms">
-              <div className="card w-75 mx-auto align-center h-100">
+            <div className="forms row ">
+              <div className="card w-50 h-100">
                 <div className="container  p-4">
                   <div className=" p-1">
                     <img
@@ -119,11 +152,11 @@ export default function DoctorProfile() {
                       <div className="form-outline row mb-2">
                         <div className="col-xl-3">
                           <label className="text-dark fs-5" htmlFor="form3Example1cg">
-                            Hospital Name:
+                            Hospital address:
                           </label>
                         </div>
                         <div className="col-xl-9">
-                          {Docdate.hospital_name}
+                          {Docdate.hospital_addr}
                         </div>
                         <hr />
                       </div>
@@ -216,6 +249,23 @@ export default function DoctorProfile() {
                   </div>
                 </div>
               </div>
+              <div className=" w-50 h-100 p-5">
+              <CChart
+                type="polarArea"
+                data={{
+                  labels: ['All Requests', 'Approved Request', 'Pennding Request'],
+                  datasets: [
+                    {
+                      data: [Requestdate.length, aprove, pending],
+                    
+                      backgroundColor: ['#FF6384', '#4BC0C0', '#FFCE56'],
+                    },
+                  ],
+                }}
+              />
+
+              </div>
+              
             </div>
           </div>
         </section>

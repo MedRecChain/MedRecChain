@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@coreui/react": "^4.8.0",
+    "@coreui/react-chartjs": "^2.1.3",
     "@iconify/react": "^4.1.0",
     "@metamask/detect-provider": "^2.0.0",
     "@metamask/onboarding": "^1.0.1",

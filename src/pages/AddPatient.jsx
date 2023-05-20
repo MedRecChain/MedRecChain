@@ -356,6 +356,7 @@ export default function AddPatient() {
                           <tr>
                             <th scope="col">Patient Name</th>
                             <th scope="col">Public Key</th>
+                            <th scope="col">Hospital Address</th>
                             <th scope="col">Phone</th>
                             <th scope="col">Age</th>
                             <th scope="col">Marital Status</th>
@@ -367,6 +368,7 @@ export default function AddPatient() {
                               <tr>
                                 <th scope="row">{date.name}</th>
                                 <td>{date.PatientAddress}</td>
+                                <td>{date.hospital_addr}</td>
                                 <td>{date.phone}</td>
                                 <td>{date.age}</td>
                                 <td>{date.marital_status}</td>

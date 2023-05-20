@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 import Web3 from "web3";
 import detectEthereumProvider from '@metamask/detect-provider'
 import { useEffect, useState } from "react";
+import { CChart } from '@coreui/react-chartjs';
 
 
 export default function Admin() {
@@ -101,6 +102,17 @@ export default function Admin() {
   getallrecord();
 
 
+  // get all patients numder
+  const [Patientdate, setPatientdate] = useState([]);
+
+  ///Date At TABLE for Patients.
+  const getallPatients = async () => {
+    const date = await Contract.methods.get_all_Patients().call({ from: acount });
+    setPatientdate(date);
+  }
+  getallPatients();
+
+
   return (
     <>
       <main id="main" className="main">
@@ -165,6 +177,45 @@ export default function Admin() {
               </div>
             </div>
           </div>
+        </section>
+        <section className="py-5 px-5 bg-info-light position-relative overflow-hidden my-5 mx-5 mt-5  ">
+        <div className="row container">
+        <div className=" container col-8 ">
+        <CChart
+            type="bar"
+            data={{
+              labels: ['Patients', 'Patient Records'],
+              datasets: [
+                {
+                  label: 'The number of medical records compared to the number of patients',
+                  backgroundColor: '#a6e7f5',
+                  data: [Patientdate.length, Recorddate],
+                  barPercentage: 5,
+                  barThickness: 50,
+                  maxBarThickness:50,
+                  minBarLength: 2,
+                },
+              ],
+            }}
+            labels="months"
+          />
+        </div>
+        <div className=" container col-4  ">
+        <CChart
+          type="doughnut"
+          data={{
+            labels: ['Hospitals', 'Doctors', 'Patients'],
+            datasets: [
+              {
+                backgroundColor: ['#5096ad' , '#7aaebf' ,'#6c8a94'],
+               // data: [Recorddate],
+               data: [ Hospitaldate.length , Doctordate.length, Patientdate.length],
+              },
+            ],
+          }}
+        />
+        </div>
+        </div>
         </section>
       </main>
       <div className="side-footer"><MyFooter /></div>

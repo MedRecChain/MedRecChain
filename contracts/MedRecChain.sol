@@ -32,7 +32,7 @@ contract MedRecChain is AccessControl {
     }
 
     mapping(address=>Hospital) Hospitals;
-    address[] private Hospitals_keys;
+    address[] public Hospitals_keys;
     
 
     struct patient
@@ -49,6 +49,7 @@ contract MedRecChain is AccessControl {
         string Blood_Type;
         string marital_status;
         string gender;
+        address hospital_addr;
         
         record[] Records;
         
@@ -61,7 +62,7 @@ contract MedRecChain is AccessControl {
 
         uint256 id;
         string name;
-        string hospital_name;
+        address hospital_addr;
         uint256 phone;
         string email;
         uint256 age;
@@ -97,24 +98,12 @@ contract MedRecChain is AccessControl {
     uint256 Request_index;
      
 
-    //EVENTS
-    event HospitalAdded(address indexed Hospital_Address); //by admin
-    event HospitalRemoved(address indexed Hospital_Address); //by admin
-    event DoctorAdded(address indexed Doctor_Address); //by hospital
-    event DoctorRemoved(address indexed Doctor_Address);  //by hospital
-    event DoctorUpdata(address indexed Doctor_Address);  //by hospital
-    event PatientAdded(address indexed Patient_Address);  //by hospital
-    event PatientUpdated(address indexed Patient_Address); //by patient
-    event AccessGranted(address indexed Doctor_Address, address indexed Patient_Address); //by patient 
-    event AccessRejected(address indexed Doctor_Address, address indexed Patient_Address); //by patient
-    event RequestAccess(address indexed requester, address indexed patient); //by doctor or (patient) 
-
+    
     constructor() {
          _setupRole(ADMIN_ROLE,Admin);
     }
 
     // function to know who logg in
-
      function logg() public view returns(uint  role){
         if(hasRole(ADMIN_ROLE, msg.sender))
         {return 1;}
@@ -170,7 +159,6 @@ contract MedRecChain is AccessControl {
         Hospital_index= Hospital_index+1;
         Hospitals[_address]=Hospital(Hospital_index, _name, _address, _place, _phone); 
         Hospitals_keys.push(_address);
-        emit HospitalAdded(_address);
         return true;
     }
 
@@ -193,7 +181,6 @@ contract MedRecChain is AccessControl {
         _revokeRole(HOSPITAL_ROLE,_address);
         delete Hospitals[_address];
         removeitem_hos(_address);
-        emit HospitalRemoved(_address);
         return true;
     }
 
@@ -207,16 +194,16 @@ contract MedRecChain is AccessControl {
 
   ///////////////
 
-    function addDoctor(string memory _name, string memory _hospital_name, uint256  _phone, string memory _email, uint256  _age, string memory _place, string memory _Medical_specialty, address  _docAddress) public onlyAdmin returns(bool success){
+    function addDoctor(string memory _name, address _hospital_addr, uint256  _phone, string memory _email, uint256  _age, string memory _place, string memory _Medical_specialty, address  _docAddress) public onlyAdmin returns(bool success){
         require(!hasRole(DOCTOR_ROLE, _docAddress), "This account already a doctor");
         require(!hasRole(ADMIN_ROLE, _docAddress), "This Account is Admin!! ");
         require(!hasRole(HOSPITAL_ROLE, _docAddress), "This Account is Hospital!! ");
         require(!hasRole(PATIENT_ROLE, _docAddress), "This Account is Patient!! ");
+        require(hasRole(HOSPITAL_ROLE, _hospital_addr), "This hospital is really exisit!! ");
         _setupRole(DOCTOR_ROLE, _docAddress);
         Doctor_index= Doctor_index+1;
-        doctors[_docAddress]=doctor(Doctor_index, _name, _hospital_name, _phone,  _email,  _age,  _place,  _Medical_specialty, _docAddress); 
+        doctors[_docAddress]=doctor(Doctor_index, _name, _hospital_addr, _phone,  _email,  _age,  _place,  _Medical_specialty, _docAddress); 
         doctors_keys.push(_docAddress);
-        emit DoctorAdded(_docAddress);
         return true;
     }
 
@@ -240,11 +227,10 @@ contract MedRecChain is AccessControl {
         delete doctors[_docAddress];
         _revokeRole(DOCTOR_ROLE,_docAddress);
         removeitem_doc(_docAddress);
-        emit DoctorRemoved(_docAddress);
         return true;
     }
 
-    function get_all_Doctors() public view  onlyAdmin returns(doctor[] memory){
+    function get_all_Doctors() public view  returns(doctor[] memory){
         doctor[] memory doc = new doctor[](doctors_keys.length);
         for (uint256 i = 0; i < doctors_keys.length; i++) {
             doc[i] = doctors[doctors_keys[i]];
@@ -252,7 +238,7 @@ contract MedRecChain is AccessControl {
         return doc;
     }
 
-    function get_record_number() public view onlyAdmin returns(uint256 i){
+    function get_record_number() public view  returns(uint256 i){
         uint256 total;
         for (uint256 a = 0; a < patients_keys.length; a++) {
         total += patients[patients_keys[a]].Records.length;
@@ -268,8 +254,7 @@ contract MedRecChain is AccessControl {
     //3.see all patients
    
 
-   function get_hospita_by_address(address _addr) view public onlyHospital returns(Hospital memory) {
-    require( _addr == msg.sender, "Not The Same Signed Account!!");   
+   function get_hospita_by_address(address _addr) view public returns(Hospital memory) {
     return (Hospitals[_addr]);
     }
 
@@ -295,14 +280,13 @@ contract MedRecChain is AccessControl {
         patients[_PatientAddress].Blood_Type=_Blood_Type;
         patients[_PatientAddress].marital_status=_marital_status;
         patients[_PatientAddress].gender=_gender;
-
+        patients[_PatientAddress].hospital_addr=msg.sender;
 
         patients_keys.push(_PatientAddress);
-        emit PatientAdded(_PatientAddress);
         return true;
     }
 
-    function get_all_Patients() public view onlyHospital returns(patient[] memory){
+    function get_all_Patients() public view returns(patient[] memory){
         patient[] memory pat = new patient[](patients_keys.length);
         for (uint256 i = 0; i < patients_keys.length; i++) {
             pat[i] = patients[patients_keys[i]];
@@ -321,8 +305,7 @@ contract MedRecChain is AccessControl {
     // 5.show requests by id & show their status
 
 
-    function get_doctor_by_address(address _addr) view public onlydoctors returns(doctor memory) {
-    require( _addr == msg.sender, "Not The Same Signed Account!!");  
+    function get_doctor_by_address(address _addr) view public  returns(doctor memory) {
     return (doctors[_addr]);
     }
 
@@ -334,6 +317,8 @@ contract MedRecChain is AccessControl {
         address from_doctor_addr;
         address to_patients_addr;
         uint256 date;
+        string patient_name;
+        string doctor_name;
     }
       
     request[] public requests;
@@ -345,16 +330,17 @@ contract MedRecChain is AccessControl {
                 }
         }
     return false;
-}
+    }
 
 
 
-    function send_request_Access(address _patient) public onlydoctors returns(bool success) {
+    function send_request_Access(address _patient,address _doctor) public returns(bool success) {
         require(hasRole(PATIENT_ROLE, _patient), "The person you are requesting access to is not a Patient");
-        require(!checkRequestExists(msg.sender,_patient),"already send a request");
+        require(!checkRequestExists(_doctor,_patient),"already send a request");
         Request_index=Request_index+1;
-        requests.push(request(Request_index,msg.sender,_patient,block.timestamp));
-        emit RequestAccess(msg.sender, _patient);
+        patient memory pati = get_patient_by_address(_patient);
+        doctor memory doc = get_doctor_by_address(_doctor);
+        requests.push(request(Request_index,_doctor,_patient,block.timestamp,pati.name,doc.name));
         return true;
     }
 
@@ -386,7 +372,7 @@ contract MedRecChain is AccessControl {
     
 
 
-    function See_Record_for_Doctor(address _patientAddr) onlydoctors view public returns(record[] memory){
+    function See_Record_for_Doctor(address _patientAddr)  view public returns(record[] memory){
        require(isAuth[_patientAddr][msg.sender],"No permission to get Records");
         require(hasRole(PATIENT_ROLE, _patientAddr),"This patients is not exisit");
         require(patients[_patientAddr].Records.length>0,"patient record doesn't exist");
@@ -409,24 +395,22 @@ contract MedRecChain is AccessControl {
 
 
 
-
     function get_patient_by_address(address _addr) view public  returns(patient memory) {
     return (patients[_addr]);
     }
 
 
 
-     function See_Record_for_Patient() onlypatient view public returns(record[] memory){
+     function See_Record_for_Patient()  view public returns(record[] memory){
         require(patients[msg.sender].Records.length > 0,"patient record doesn't exist");
         return (patients[msg.sender].Records);
 
     }
 
-    function approveAccess(address _doctor) onlypatient  public {
+    function approveAccess(address _doctor) onlypatient  public {   
         require(hasRole(DOCTOR_ROLE, _doctor), "this acount is not a doctor ");
         require((isAuth[msg.sender][_doctor]) == false, "This Request alraedy been Approved!! ");
         isAuth[msg.sender][_doctor] = true;
-        emit AccessGranted(_doctor, msg.sender);
     }
 
     function check_approve_Access(address _doctor, address _patient) view onlydoctors public returns(bool ) {
@@ -434,11 +418,27 @@ contract MedRecChain is AccessControl {
         }
 
 
+   function DeleteRequest(address doc, address pat ) public  {
+    require(requests.length > 0, "No keys in array");
+        for (uint i = 0; i < requests.length; i++) {
+            if( (keccak256(abi.encodePacked(requests[i].from_doctor_addr)) == keccak256(abi.encodePacked(doc))) && (keccak256(abi.encodePacked(requests[i].to_patients_addr)) == keccak256(abi.encodePacked(pat)))) {
+                delete requests[i];
+                uint lastIndex =requests.length-1;
+                request memory lastId = requests[lastIndex];
+                requests[i]=lastId;
+                requests.pop();
+                break;
+            }
+        }
+    }
+
+
+
     function rejectAccess(address _doctor) onlypatient public {
         require(hasRole(DOCTOR_ROLE, _doctor), "Doctor does not have the doctor role");
-        require((isAuth[msg.sender][_doctor]) == true, "This Request alraedy been Reject!! ");
+     //   require((isAuth[msg.sender][_doctor]) == true, "This Request alraedy been Reject!! ");
         isAuth[msg.sender][_doctor] = false;
-        emit AccessRejected(_doctor, msg.sender);
+        DeleteRequest(_doctor,msg.sender);
     }
 
    

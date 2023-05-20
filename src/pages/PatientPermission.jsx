@@ -84,6 +84,16 @@ export default function PatientPermission() {
       setIsLoading(true);
       e.preventDefault();
       const sendrequestAccess = async (doc) => {
+
+        await Contract.methods.send_request_Access(acount,doc.DoctorPublickey).send(
+          {
+            from:acount
+          },
+          function (error) {
+            if (error) { setIsLoading(false); }
+          }
+        );
+
         await Contract.methods.approveAccess(doc.DoctorPublickey).send(
           {
             from: acount
@@ -149,6 +159,7 @@ export default function PatientPermission() {
   const handleClick = async (doc) => {
     try {
       setIsLoading(true);
+      
       const a = await Contract.methods.approveAccess(doc).send(
         {
           from: acount
@@ -298,7 +309,7 @@ export default function PatientPermission() {
             </div>
           </div>
 
-          <div className="mt-4 mb-4 container">
+          <div className="mt-4 mb-4 container ">
             <div className="forms">
               <div className="card overflow-auto">
                 <div className="card-body">
@@ -306,8 +317,7 @@ export default function PatientPermission() {
                   <table className="table table-borderless datatable">
                     <thead>
                       <tr>
-                        <th scope="col">Your Public Key</th>
-                        {/* <th scope="col">Sender Type</th> */}
+                        <th scope="col">Doctor Name</th>
                         <th scope="col">Doctor Public Key</th>
                         <th scope="col">Date</th>
                         <th scope="col">Approve Request</th>
@@ -320,8 +330,9 @@ export default function PatientPermission() {
                         if (date.to_patients_addr == acount) {
                           return (
                             <tr>
-                              <td scope="row">{date.to_patients_addr}</td>
+                              <td>{date.doctor_name}</td>
                               <td>{date.from_doctor_addr}</td>
+                              
 
                               <td>
                                 {convertTimestamp(date.date)}

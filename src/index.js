@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.css";
+// import 'coreui/coreui/dist/css/coreui.min.css'
 
 import "../src/assets/css/style.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";

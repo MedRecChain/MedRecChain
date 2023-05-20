@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import MyFooter from "../components/MyFooter";
-
+import { BsBackspaceFill } from "react-icons/bs";
 import { useLocation } from 'react-router-dom';
 import Web3 from "web3";
 import detectEthereumProvider from '@metamask/detect-provider'

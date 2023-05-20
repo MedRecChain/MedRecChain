@@ -79,7 +79,7 @@ export default function AddDoctor() {
 
   const [doctor, setDoctor] = useState({
     doctorName: "",
-    hospitalName: "",
+    hospitaladdres: "",
     doctorPhone: "",
     doctorEmail: "",
     age: "",
@@ -109,7 +109,7 @@ export default function AddDoctor() {
       setIsLoading(true);
       e.preventDefault();
       const addDoctor = async (doc) => {
-        const success = await Contract.methods.addDoctor(doc.doctorName, doc.hospitalName, doc.doctorPhone, doc.doctorEmail, doc.age, doc.doctorAddress, doc.medicalSpecialty, doc.doctorPk).send(
+        const success = await Contract.methods.addDoctor(doc.doctorName, doc.hospitaladdres, doc.doctorPhone, doc.doctorEmail, doc.age, doc.doctorAddress, doc.medicalSpecialty, doc.doctorPk).send(
           {
             from: acount
           },
@@ -180,6 +180,17 @@ export default function AddDoctor() {
 
   getallDoctors();
 
+  const [Hospitaldate, setHospitaldate] = useState([]);
+
+  ///Date At TABLE for Hospital.
+  const getallhospitals = async () => {
+    const date = await Contract.methods.get_all_hospitals().call({ from: acount });
+    setHospitaldate(date);
+  }
+
+  getallhospitals();
+ 
+
 
 
   return (
@@ -218,17 +229,27 @@ export default function AddDoctor() {
 
                       <div className="form-outline mb-2">
                         <label className="" htmlFor="form3Example1cg">
-                          Hospital Name
+                          Hospital address
                         </label>
-                        <input
-                          name="hospitalName"
-                          type="text"
-                          id="form3Example1cg"
-                          required="required"
-                          className=" form-control form-control-lg"
-                          value={doctor.hospitalName}
-                          onChange={handleChange}
-                        />
+                        <select
+                            name="hospitaladdres"
+                            className="d-block w-100 opacity-50 form-control-lg"
+                            id="maritalStatus"
+                            required="required"
+                            value={doctor.hospitaladdres}
+                            onChange={handleChange}
+                          >
+                            <option value=""></option>
+                            {Hospitaldate.map((date) => {
+
+                                return (
+                                  <option value={date.addr}>{date.addr}</option>
+                                )
+
+                            })
+                            }
+                         
+                          </select>
                       </div>
 
                       <div className="form-outline mb-2">
@@ -374,7 +395,7 @@ export default function AddDoctor() {
                         <thead>
                           <tr>
                             <th scope="col">Doctor Name</th>
-                            <th scope="col">Hospital Name</th>
+                            <th scope="col">Hospital Address </th>
                             <th scope="col">Medical Specialty</th>
                             <th scope="col">Public Key</th>
                           </tr>
@@ -385,7 +406,7 @@ export default function AddDoctor() {
                             return (
                               <tr>
                                 <th scope="row">{date.name}</th>
-                                <td>{date.hospital_name}</td>
+                                <td>{date.hospital_addr}</td>
                                 <td>{date.Medical_specialty}</td>
                                 <td>{date.docAddress}</td>
                               </tr>

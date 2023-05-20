@@ -8,6 +8,7 @@ import Web3 from "web3";
 import detectEthereumProvider from '@metamask/detect-provider'
 import { useEffect } from "react";
 import { useLocation } from 'react-router-dom';
+import { CChart } from '@coreui/react-chartjs';
 
 export default function PatientProfile() {
 
@@ -81,17 +82,38 @@ export default function PatientProfile() {
 
   // get Record num for patient
   const [RecordDate, setRecordDate] = useState([]);
+  const [Counts , setspecialtyCounts] = useState([]);
+  const specialtyCounts = [];
 
   const getallRecordsdates = async () => {
     try {
       const date = await Contract.methods.See_Record_for_Patient().call({ from: acount });
       setRecordDate(date);
+      for(var i = 0 ; i < date.length ; i++ ){
+      const specialty = date[i].category;
+      if (!specialtyCounts[specialty]) {
+        specialtyCounts[specialty] = 0;
+      }
+      specialtyCounts[specialty]++;
+      setspecialtyCounts(specialtyCounts);
+    }
     }
     catch (e) {
     }
   }
   getallRecordsdates();
+
   /////////////////
+
+
+//Filtter
+
+
+
+
+  
+
+      ////////////
 
   return (
     <>
@@ -235,6 +257,27 @@ export default function PatientProfile() {
               </div>
             </div>
           </div>
+        </section>
+        <section className="section profile container mt-4 col-8">
+          <CChart
+          type="bar"
+          data={{
+            
+            labels: Object.keys(Counts),
+            datasets: [
+              {
+                label: 'Report for your Medical Record',
+                backgroundColor: ['#00ACB1','#87E4DB','#99AFC7','#CAF0C1','#F2DED7'],
+                data:Object.values(Counts),
+                barPercentage: 5,
+                barThickness: 50,
+                maxBarThickness:50,
+                minBarLength: 2,
+              },
+            ],
+          }}
+          labels="months"
+        />
         </section>
       </main>
       <div className="side-footer"><MyFooter /></div>
