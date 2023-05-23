@@ -14,7 +14,7 @@ contract MedRecChain is AccessControl {
 
     
     // Admin refers to government, It hard coded by us.
-    address public Admin = 0xC577E31A2A01564b662C57B115C86Af62f7E528A;
+    address public Admin = 0xBF525D3225961c1bdA0aeE59f0cAb8a049D6Fb93;
     
     // [_patient][_doctor] = bool
     mapping (address=>mapping (address =>bool)) isAuth;
@@ -366,7 +366,7 @@ contract MedRecChain is AccessControl {
         require(isAuth[_patientAddr][msg.sender],"No permission to add Records");
         require(_doctor_addr == msg.sender, "No permission to this Doctor" );
         Record_index=Record_index+1;
-        patients[_patientAddr].Records.push(record(Record_index, _category, _patient_name, _rec_name, _Created_at, _patientAddr, _doctor_addr, _hex_ipfs, __notes));
+        patients[_patientAddr].Records.push(record(Record_index, _category, _patient_name, _rec_name, _Created_at, _patientAddr, _doctor_addr, _hex_ipfs, _notes));
         return true;
     }
 
