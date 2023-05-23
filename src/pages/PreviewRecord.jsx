@@ -75,9 +75,10 @@ export default function PreviewRecord() {
 
   const [RecordDate, setRecordDate] = useState({});
 
-  const getallRecorddates = async (pat) => {
+  const getallRecorddates = async () => {
     try {
-      const date = await Contract.methods.See_Record_for_Doctor(pat).call({ from: doc });
+      const date = await Contract.methods.See_Record_for_Patient().call({ from: pat });
+     console.log(date);
      
       for(var i =0 ; i<date.length ; i++){
        if(date[i].hex_ipfs == cid){
@@ -92,7 +93,7 @@ export default function PreviewRecord() {
       console.log(e);
     }
   }
-  getallRecorddates(pat);
+  getallRecorddates();
 
   return (
     <>

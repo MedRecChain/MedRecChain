@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.0;
 
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
@@ -87,6 +87,7 @@ contract MedRecChain is AccessControl {
         address patient_addr;
         address doctor_addr;
         string hex_ipfs;  // file, image date
+        string notes;
     }
 
  
@@ -360,12 +361,12 @@ contract MedRecChain is AccessControl {
     }
 
         
-    function addRecord( string memory _category, string  memory _patient_name, string memory _rec_name, string  memory _Created_at, address _patientAddr, address _doctor_addr, string memory _hex_ipfs) onlydoctors public returns(bool){
+    function addRecord( string memory _category, string  memory _patient_name, string memory _rec_name, string  memory _Created_at, address _patientAddr, address _doctor_addr, string memory _hex_ipfs, string memory _notes) onlydoctors public returns(bool){
         require(hasRole(PATIENT_ROLE, _patientAddr),"This patients is not exisit");
         require(isAuth[_patientAddr][msg.sender],"No permission to add Records");
         require(_doctor_addr == msg.sender, "No permission to this Doctor" );
         Record_index=Record_index+1;
-        patients[_patientAddr].Records.push(record(Record_index, _category, _patient_name, _rec_name, _Created_at, _patientAddr, _doctor_addr, _hex_ipfs));
+        patients[_patientAddr].Records.push(record(Record_index, _category, _patient_name, _rec_name, _Created_at, _patientAddr, _doctor_addr, _hex_ipfs, __notes));
         return true;
     }
 
