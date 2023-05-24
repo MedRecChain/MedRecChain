@@ -5,33 +5,31 @@ import MyFooter from "../components/MyFooter";
 import { FaCamera } from "react-icons/fa";
 import { Button } from "react-bootstrap";
 
-import { create } from 'ipfs-http-client';
-import { useLocation } from 'react-router-dom';
+import { create } from "ipfs-http-client";
+import { useLocation } from "react-router-dom";
 import Web3 from "web3";
-import detectEthereumProvider from '@metamask/detect-provider'
+import detectEthereumProvider from "@metamask/detect-provider";
 import { useEffect } from "react";
-
-
-
-
 
 export default function AddRecord() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const Patient = searchParams.get('Patient');
-  const acount = searchParams.get('Doctor');
-
+  const Patient = searchParams.get("Patient");
+  const acount = searchParams.get("Doctor");
 
   const [Contract, setContract] = useState(null);
 
   const [wEb3, setwEb3] = useState({
     provider: null,
     web3: null,
-  })
+  });
 
-  const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); };
-  const accountsChanged= (provider)=>{provider.on("accountsChanged", _=> window.location.replace("/"));};
-
+  const providerChanged = (provider) => {
+    provider.on("chainChanged", (_) => window.location.reload());
+  };
+  const accountsChanged = (provider) => {
+    provider.on("accountsChanged", (_) => window.location.replace("/"));
+  };
 
   //get WEB3
   useEffect(() => {
@@ -42,49 +40,37 @@ export default function AddRecord() {
         accountsChanged(provider);
         setwEb3({
           provider,
-          web3: new Web3(provider)
-        })
+          web3: new Web3(provider),
+        });
       }
-    }
+    };
     loadProvider();
   }, []);
 
   ///// get Contract
   useEffect(() => {
-
     const loadcontract = async () => {
-      const contractfile = await fetch('/contracts/MedRecChain.json');
+      const contractfile = await fetch("/contracts/MedRecChain.json");
       const convert = await contractfile.json();
       const networkid = await wEb3.web3.eth.net.getId();
       const networkDate = convert.networks[networkid];
       if (networkDate) {
-
         const abi = convert.abi;
         const address = convert.networks[networkid].address;
         const contract = await new wEb3.web3.eth.Contract(abi, address);
 
         setContract(contract);
 
-
-
         // console.log(contract.methods);
-
-
       } else {
         window.alert("only ganache");
         window.location.reload();
         console.log(networkid);
       }
-
-    }
+    };
 
     loadcontract();
-
   }, [wEb3]);
-
-
-
-
 
   /////////////////
 
@@ -94,6 +80,7 @@ export default function AddRecord() {
     patientName: "",
     recordName: "",
     date: "",
+    notes: "",
     category: "",
   });
 
@@ -111,9 +98,8 @@ export default function AddRecord() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (file == null) {
-      alert("Please add Record Data.")
-    }
-    else {
+      alert("Please add Record Data.");
+    } else {
       try {
         setIsLoading(true);
         // connect to local ipfs node
@@ -121,34 +107,40 @@ export default function AddRecord() {
         //add the file at ipfs. then it retrieve it's data (it Contains CID, path, .....)
         const date = await node.add(file);
 
-        const success = await Contract.methods.addRecord(record.category, record.patientName, record.recordName, record.date, Patient, acount, date.path).send(
-          {
-            from: acount
-          },
-          function (error) {
-            if (error) { setIsLoading(false); }
-          }
-        );
+        const success = await Contract.methods
+          .addRecord(
+            record.category,
+            record.patientName,
+            record.recordName,
+            record.date,
+            Patient,
+            acount,
+            date.path,
+            record.notes
+          )
+          .send(
+            {
+              from: acount,
+            },
+            function (error) {
+              if (error) {
+                setIsLoading(false);
+              }
+            }
+          );
         if (success) {
           alert("Record Added Successfully.");
           setIsLoading(false);
-        }
-        else {
+        } else {
           alert("Record Not Added !!.");
           setIsLoading(false);
         }
-
-
-
-      }
-      catch (e) {
+      } catch (e) {
         console.log(e);
         setIsLoading(false);
       }
-
-
-    };
-  }
+    }
+  };
 
   return (
     <>
@@ -179,7 +171,9 @@ export default function AddRecord() {
                             <option value="Medical Test">Medical Test</option>
                             <option value="X-Ray">X-Ray</option>
                             <option value="Drugs">Drugs</option>
-                            <option value="Dr. Consultation">Dr. Consultation</option>
+                            <option value="Dr. Consultation">
+                              Dr. Consultation
+                            </option>
                           </select>
                         </div>
                         <div className="form-outline mb-4">
@@ -197,6 +191,25 @@ export default function AddRecord() {
                           />
                         </div>
                         <div className="form-outline mb-4">
+                          <label className="" htmlFor="notes">
+                            Notes for Patient
+                          </label>
+                          <textarea
+                            name="notes"
+                            id="notes"
+                            required="required"
+                            className="form-control form-control-lg"
+                            style={{
+                              width: "100%",
+                              height: "200px", 
+                              overflow: "auto", 
+                            }}
+                            value={record.notes}
+                            onChange={handleChange}
+                          />
+                        </div>
+
+                        <div className="form-outline mb-4">
                           <label className="" htmlFor="date">
                             Date
                           </label>
@@ -210,6 +223,7 @@ export default function AddRecord() {
                             onChange={handleChange}
                           />
                         </div>
+
                         <div className="form-outline mb-4">
                           <label className="" htmlFor="patientPublicKey">
                             Patient Public Key
@@ -223,6 +237,7 @@ export default function AddRecord() {
                             disabled
                           />
                         </div>
+
                         <div className="form-outline mb-4">
                           <label className="" htmlFor="doctorPublicKey">
                             Doctor Public Key
@@ -267,7 +282,6 @@ export default function AddRecord() {
                                 </i>
                               </label>
                             </div>
-
                           </div>
                           <Button
                             disabled={isLoading}

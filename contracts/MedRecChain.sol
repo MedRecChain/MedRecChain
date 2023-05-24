@@ -14,7 +14,7 @@ contract MedRecChain is AccessControl {
 
     
     // Admin refers to government, It hard coded by us.
-    address public Admin = 0xBF525D3225961c1bdA0aeE59f0cAb8a049D6Fb93;
+    address public Admin = 0x4e15105D84a095B7F3b5C8f0514A0DF150e13F9e;
     
     // [_patient][_doctor] = bool
     mapping (address=>mapping (address =>bool)) isAuth;
@@ -79,7 +79,6 @@ contract MedRecChain is AccessControl {
     struct record {
 
         uint Medical_id;
-
         string category;
         string patient_name;
         string rec_name;
@@ -95,6 +94,7 @@ contract MedRecChain is AccessControl {
     uint256 Hospital_index;
     uint256 Doctor_index;
     uint256 Patient_index;
+
     uint256 Record_index;
     uint256 Request_index;
      
@@ -261,8 +261,6 @@ contract MedRecChain is AccessControl {
 
     
        
-
-
     function addPatient(string memory _name, string memory _email, string memory _National_Addr, uint256  _National_id, uint256  _age, address _PatientAddress, uint256 _phone, string memory _Blood_Type, string memory _marital_status, string memory _gender) public onlyHospital returns(bool success){
         require(!hasRole(PATIENT_ROLE, _PatientAddress), "This account already a patient");
         require(!hasRole(ADMIN_ROLE, _PatientAddress), "This Account is Admin!! ");
@@ -298,7 +296,6 @@ contract MedRecChain is AccessControl {
 //////////////////////////////////////////////
 
     // Tasks done by Doctor (sign in)
-
     // 1. send request to patient
     // 2. see record (has be accepted)
     // 3. add record (has be accepted)
@@ -373,13 +370,13 @@ contract MedRecChain is AccessControl {
     
 
 
-    function See_Record_for_Doctor(address _patientAddr)  view public returns(record[] memory){
-       require(isAuth[_patientAddr][msg.sender],"No permission to get Records");
-        require(hasRole(PATIENT_ROLE, _patientAddr),"This patients is not exisit");
-        require(patients[_patientAddr].Records.length>0,"patient record doesn't exist");
-        return (patients[_patientAddr].Records);
+    // function See_Record_for_Doctor(address _patientAddr)  view public returns(record[] memory){
+    //    require(isAuth[_patientAddr][msg.sender],"No permission to get Records");
+    //     require(hasRole(PATIENT_ROLE, _patientAddr),"This patients is not exisit");
+    //     require(patients[_patientAddr].Records.length>0,"patient record doesn't exist");
+    //     return (patients[_patientAddr].Records);
 
-    }
+    // }
 
 
 

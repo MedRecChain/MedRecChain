@@ -6,6 +6,7 @@ import Web3 from "web3";
 import detectEthereumProvider from '@metamask/detect-provider'
 import { useEffect } from "react";
 
+
 export default function PreviewRecord() {
 
   const location = useLocation();
@@ -142,6 +143,25 @@ export default function PreviewRecord() {
                               disabled
                             />
                           </div>
+                          <div className="form-outline mb-4">
+                          <label className="" htmlFor="notes">
+                            Notes for Patient
+                          </label>
+                          <textarea
+                            name="notes"
+                            id="notes"
+                            required="required"
+                            className="form-control form-control-lg"
+                            style={{
+                              width: "100%",
+                              height: "200px", 
+                              overflow: "auto", 
+                            }}
+                            value={RecordDate.notes}
+                            disabled
+                          />
+                        </div>
+
                           <div className="form-outline mb-4">
                             <label className="" htmlFor="date">
                               Date

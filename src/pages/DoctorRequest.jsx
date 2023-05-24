@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState ,useRef} from "react";
 import { Button } from "react-bootstrap";
 import MyFooter from "../components/MyFooter";
 import DoctorSideBar from "../components/DoctorSideBar";
 import { BsEyeFill } from "react-icons/bs";
-
+import QrScanner from "qr-scanner";
 
 import { useLocation } from 'react-router-dom';
 import Web3 from "web3";
@@ -11,7 +11,22 @@ import detectEthereumProvider from '@metamask/detect-provider'
 import { useEffect } from "react";
 
 export default function PatientPermission() {
+// for QR scanner
+const [fileQr, setFileQr] = useState(null);
+const [dataQr, setDateQr] = useState(null);
+const fileRef = React.useRef();
 
+const handleClickQR = () => {
+  fileRef.current.click();
+};
+
+const handleChangeQR = async (e) => {
+  const fileQr = e.target.files[0];
+  setFileQr(fileQr);
+  const result = await QrScanner.scanImage(fileQr);
+  setDateQr(result);
+};
+////
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -253,7 +268,35 @@ const [checkk,setcheck]= useState(false);
               </div>
             </div>
           </div>
+          <div className="col-md-4 mx-auto">
+            <h2 className="text-center mb-4">Read QR Etherum Account </h2>
+            <div className="card border-0">
+              <div className="card-body  d-flex flex-column align-items-center justify-content-center">
+                <button
+                  type="button"
+                  onClick={handleClickQR}
+                  className="btn btn-success"
+                >
+                  Scan QR Code
+                </button>
 
+                <input
+                  type="file"
+                  ref={fileRef}
+                  onChange={handleChangeQR}
+                  accept=".png, .jpg , .jpeg"
+                  className="d-none"
+                />
+
+                <div className="mt-4 d-flex  flex-column align-items-center justify-content-center">
+                  {dataQr && <p className="small mt-5" style={{ fontSize: "18px" }}>{dataQr}</p>}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="form-outline d-flex mt-4 text-muted "></div>
+          <div className="form-outline d-flex mt-4 text-muted "></div>
+          <div className="form-outline d-flex mt-4 text-muted "></div>
           <div className="mt-4 mb-4 container">
             <div className="forms">
               <div className="card overflow-auto">
