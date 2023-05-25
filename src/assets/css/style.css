@@ -51,12 +51,16 @@ body {
  .perm{
   max-width: 1170px;
  }
+ a, Link{
+  color:var(--bs-dark)
+ }
 
 a:hover,
 Link:hover {
   -webkit-transition: all 0.3s ease-out 0s;
-  transition: all 0.3s ease-out 0s;
-  color: var(--bs-info);
+  transition: all 0.2s ease-out 0s;
+  color: var(--bs-dark);
+  transform: scale(1.02);
 }
 
 .btn:hover,
@@ -64,6 +68,20 @@ Button:hover,
 .btn:hover {
   transform: scale(1.03);
 }
+
+table{
+  margin: 30px;
+}
+
+tbody tr:hover{
+  transition: all 0.2s ease-out 0s;
+  transform: scale(1.005);
+  padding: 10px;
+  background-color: #eee;
+  border-radius: 5px;
+  /* border: #777 1px solid ; */
+}
+
 
 /* ========================= */
 
@@ -151,6 +169,11 @@ p {
   color: var(--bs-light);
   box-shadow: #aaa 2px 5px 7px;
   padding: 0;
+}
+
+.admin i:hover{
+  text-decoration: none;
+  color: var(--bs-gray-dark) !important;
 }
 
 /*---------------------------------------------------
@@ -246,7 +269,7 @@ p {
 
 .why-us {
   padding: 60px 0;
-  margin-top: -200px;
+  margin-top: -230px;
   overflow: hidden;
 }
 

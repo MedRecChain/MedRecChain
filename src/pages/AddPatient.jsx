@@ -3,25 +3,27 @@ import { Button } from "react-bootstrap";
 import HospitalSideBar from "../components/HospitalSideBar";
 import MyFooter from "../components/MyFooter";
 
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import Web3 from "web3";
-import detectEthereumProvider from '@metamask/detect-provider'
+import detectEthereumProvider from "@metamask/detect-provider";
 import { useEffect } from "react";
 
 export default function AddPatient() {
-
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const acount = searchParams.get('account');
+  const acount = searchParams.get("account");
 
   const [wEb3, setwEb3] = useState({
     provider: null,
     web3: null,
-  })
+  });
 
-  const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); };
-  const accountsChanged= (provider)=>{provider.on("accountsChanged", _=> window.location.replace("/"));};
-
+  const providerChanged = (provider) => {
+    provider.on("chainChanged", (_) => window.location.reload());
+  };
+  const accountsChanged = (provider) => {
+    provider.on("accountsChanged", (_) => window.location.replace("/"));
+  };
 
   //get WEB3
   useEffect(() => {
@@ -32,10 +34,10 @@ export default function AddPatient() {
         accountsChanged(provider);
         setwEb3({
           provider,
-          web3: new Web3(provider)
-        })
+          web3: new Web3(provider),
+        });
       }
-    }
+    };
     loadProvider();
   }, []);
 
@@ -43,32 +45,26 @@ export default function AddPatient() {
 
   ///// get Contract
   useEffect(() => {
-
     const loadcontract = async () => {
-      const contractfile = await fetch('/contracts/MedRecChain.json');
+      const contractfile = await fetch("/contracts/MedRecChain.json");
       const convert = await contractfile.json();
       const networkid = await wEb3.web3.eth.net.getId();
       const networkDate = convert.networks[networkid];
       if (networkDate) {
-
         const abi = convert.abi;
         const address = convert.networks[networkid].address;
         const contract = await new wEb3.web3.eth.Contract(abi, address);
 
         setContract(contract);
-
       } else {
         window.alert("only ganache");
         window.location.reload();
         console.log(networkid);
       }
-
-    }
+    };
 
     loadcontract();
-
   }, [wEb3]);
-
 
   ///////////
 
@@ -97,46 +93,62 @@ export default function AddPatient() {
       e.preventDefault();
       /// Connect To AddPatient Function At Contract
       const addpatient = async (pat) => {
-        const success = await Contract.methods.addPatient(pat.patientName, pat.email, pat.nationalAddress, pat.nationalId, pat.age, pat.patientPublicKey, pat.phone, pat.bloodType, pat.maritalStatus,pat.gender).send(
-          {
-            from: acount
-          },
-          function (error) {
-            if (error) { setIsLoading(false); }
-          }
-        );
+        const success = await Contract.methods
+          .addPatient(
+            pat.patientName,
+            pat.email,
+            pat.nationalAddress,
+            pat.nationalId,
+            pat.age,
+            pat.patientPublicKey,
+            pat.phone,
+            pat.bloodType,
+            pat.maritalStatus,
+            pat.gender
+          )
+          .send(
+            {
+              from: acount,
+            },
+            function (error) {
+              if (error) {
+                setIsLoading(false);
+              }
+            }
+          );
         if (success) {
           alert("Patient Added Successfully.");
           setIsLoading(false);
-        }
-        else {
+        } else {
           alert("Patient Not Added !!.");
           setIsLoading(false);
         }
-
-      }
+      };
       addpatient(patient);
-    }
-    catch (e) {
+    } catch (e) {
       setIsLoading(false);
-    };
+    }
   };
-
-
 
   const [Patientdate, setPatientdate] = useState([]);
 
   ///Date At TABLE for Patients.
   const getallPatients = async () => {
-    const date = await Contract.methods.get_all_Patients().call({ from: acount });
+    const date = await Contract.methods
+      .get_all_Patients()
+      .call({ from: acount });
     setPatientdate(date);
-  }
+  };
 
   getallPatients();
 
   return (
     <>
-      <HospitalSideBar tap1="Hospital Profile" tap2="Add Patient" tap3="Log Out" />
+      <HospitalSideBar
+        tap1="Hospital Profile"
+        tap2="Add Patient"
+        tap3="Log Out"
+      />
       <main id="main" className="main">
         <div className="container">
           <section className="section dashboard">
@@ -252,20 +264,31 @@ export default function AddPatient() {
                                     onChange={handleChange}
                                   />
                                 </div>
-                                <div className="form-outline mb-2 ">
+                                
+                                <div className="form-outline mb-2 text-muted ">
                                   <label className="" htmlFor="bloodType">
-                                    Blood Type
+                                  bloodType
                                   </label>
-                                  <input
+                                  <select
                                     name="bloodType"
-                                    type="text"
+                                    className="d-block w-100 opacity-50 form-control-lg"
                                     id="bloodType"
                                     required="required"
-                                    className=" form-control form-control-lg"
                                     value={patient.bloodType}
                                     onChange={handleChange}
-                                  />
+                                  >
+                                  <option value=""></option>
+                                  <option value="+A">+A</option>
+                                  <option value="-A">-A</option>
+                                  <option value="+B">+B</option>
+                                  <option value="-B">-B</option>
+                                  <option value="+O">+O</option>
+                                  <option value="-O">-O</option>
+                                  <option value="+AB">+AB</option>
+                                  <option value="-AB">-AB</option>
+                                  </select>
                                 </div>
+                                
                                 <div className="form-outline mb-2 text-muted ">
                                   <label className="" htmlFor="maritalStatus">
                                     Marital Status
@@ -328,9 +351,7 @@ export default function AddPatient() {
                                   </div>
                                 </div>
 
-
                                 <Button
-
                                   disabled={isLoading}
                                   type="submit"
                                   className="btn btn-info mt-4 d-block  mx-auto"
@@ -373,9 +394,8 @@ export default function AddPatient() {
                                 <td>{date.age}</td>
                                 <td>{date.marital_status}</td>
                               </tr>
-                            )
-                          })
-                          }
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>
@@ -386,7 +406,9 @@ export default function AddPatient() {
           </section>
         </div>
       </main>
-      <div className="side-footer"><MyFooter /></div>
+      <div className="side-footer">
+        <MyFooter />
+      </div>
     </>
   );
 }

@@ -3,25 +3,27 @@ import { Button } from "react-bootstrap";
 import AdminSideBar from "../components/AdminSideBar";
 import MyFooter from "../components/MyFooter";
 
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import Web3 from "web3";
-import detectEthereumProvider from '@metamask/detect-provider'
+import detectEthereumProvider from "@metamask/detect-provider";
 import { useEffect } from "react";
 
 export default function AddHospital() {
-
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const acount = searchParams.get('account');
+  const acount = searchParams.get("account");
 
   const [wEb3, setwEb3] = useState({
     provider: null,
     web3: null,
-  })
+  });
 
-  const providerChanged = (provider) => { provider.on("chainChanged", _ => window.location.reload()); };
-  const accountsChanged= (provider)=>{provider.on("accountsChanged", _=> window.location.replace("/"));};
-
+  const providerChanged = (provider) => {
+    provider.on("chainChanged", (_) => window.location.reload());
+  };
+  const accountsChanged = (provider) => {
+    provider.on("accountsChanged", (_) => window.location.replace("/"));
+  };
 
   //get WEB3
   useEffect(() => {
@@ -32,10 +34,10 @@ export default function AddHospital() {
         accountsChanged(provider);
         setwEb3({
           provider,
-          web3: new Web3(provider)
-        })
+          web3: new Web3(provider),
+        });
       }
-    }
+    };
     loadProvider();
   }, []);
 
@@ -43,33 +45,26 @@ export default function AddHospital() {
 
   ///// get Contract
   useEffect(() => {
-
     const loadcontract = async () => {
-      const contractfile = await fetch('/contracts/MedRecChain.json');
+      const contractfile = await fetch("/contracts/MedRecChain.json");
       const convert = await contractfile.json();
       const networkid = await wEb3.web3.eth.net.getId();
       const networkDate = convert.networks[networkid];
       if (networkDate) {
-
         const abi = convert.abi;
         const address = convert.networks[networkid].address;
         const contract = await new wEb3.web3.eth.Contract(abi, address);
 
         setContract(contract);
-
       } else {
         window.alert("only ganache");
         window.location.reload();
         console.log(networkid);
       }
-
-    }
+    };
 
     loadcontract();
-
   }, [wEb3]);
-
-
 
   /////////////////////////////////////////////////////////////
   const [isLoading, setIsLoading] = useState(false);
@@ -82,9 +77,7 @@ export default function AddHospital() {
   });
 
   const [removedhospital, setremovedhospital] = useState({
-
     hospitalpublickey: "",
-
   });
 
   const handleChange = (e) => {
@@ -93,7 +86,6 @@ export default function AddHospital() {
 
   const handleChangefoRemove = (e) => {
     setremovedhospital({ ...removedhospital, [e.target.name]: e.target.value });
-
   };
 
   const handleSubmit = (e) => {
@@ -102,32 +94,36 @@ export default function AddHospital() {
       e.preventDefault();
       /// Connect To AddHospital Function At Contract
       const addhospital = async (hos) => {
-        const success = await Contract.methods.addhospital(hos.hospitalName, hos.hospitalPublickey, hos.hospitalAddress, hos.hospitalPhone).send(
-          {
-            from: acount
-          },
-          function (error) {
-            if (error) {
-             console.log(error)
-              setIsLoading(false); }
-          }
-        );
+        const success = await Contract.methods
+          .addhospital(
+            hos.hospitalName,
+            hos.hospitalPublickey,
+            hos.hospitalAddress,
+            hos.hospitalPhone
+          )
+          .send(
+            {
+              from: acount,
+            },
+            function (error) {
+              if (error) {
+                console.log(error);
+                setIsLoading(false);
+              }
+            }
+          );
         if (success) {
-          
           alert("Hospital Added Successfully.");
           setIsLoading(false);
-        }
-        else {
+        } else {
           alert("Hospital  Not Added !!.");
           setIsLoading(false);
         }
-      }
+      };
       addhospital(hospital);
-    }
-    catch (e) {
+    } catch (e) {
       alert(" Invalid Inputs! Try again.");
     }
-
   };
 
   const removeHospital = (e) => {
@@ -136,43 +132,44 @@ export default function AddHospital() {
       e.preventDefault();
       /// Connect To RemoveHospital Function At Contract
       const removehospital = async (hos) => {
-        const success = await Contract.methods.removehospital(hos.hospitalpublickey).send(
-          {
-            from: acount
-          },
-          function (error) {
-            if (error) { 
-              console.log(error);
-              setIsLoading(false); }
-          }
-        );
+        const success = await Contract.methods
+          .removehospital(hos.hospitalpublickey)
+          .send(
+            {
+              from: acount,
+            },
+            function (error) {
+              if (error) {
+                console.log(error);
+                setIsLoading(false);
+              }
+            }
+          );
         if (success) {
           alert("Hospital removed Successfully.");
           setIsLoading(false);
-        }
-        else {
+        } else {
           alert("Hospital  Not Removed !!.");
           setIsLoading(false);
         }
-      }
+      };
       removehospital(removedhospital);
-    }
-    catch (e) {
+    } catch (e) {
       alert("Hospital  Not Removed !!.");
     }
-
   };
 
   const [Hospitaldate, setHospitaldate] = useState([]);
 
   ///Date At TABLE for Hospital.
   const getallhospitals = async () => {
-    const date = await Contract.methods.get_all_hospitals().call({ from: acount });
+    const date = await Contract.methods
+      .get_all_hospitals()
+      .call({ from: acount });
     setHospitaldate(date);
-  }
+  };
 
   getallhospitals();
- 
 
   return (
     <>
@@ -219,12 +216,10 @@ export default function AddHospital() {
                           required="required"
                           minlength="42"
                           maxlength="42"
-
                           className=" form-control form-control-lg"
                           value={hospital.hospitalPublickey}
                           onChange={handleChange}
                         />
-
                       </div>
 
                       <div className="form-outline mb-2">
@@ -255,7 +250,6 @@ export default function AddHospital() {
                           value={hospital.hospitalPhone}
                           onChange={handleChange}
                         />
-
                       </div>
 
                       <Button
@@ -267,7 +261,6 @@ export default function AddHospital() {
                       </Button>
                     </div>
                   </form>
-
                 </div>
               </div>
             </div>
@@ -295,7 +288,6 @@ export default function AddHospital() {
                           value={removedhospital.hospitalpublickey}
                           onChange={handleChangefoRemove}
                         />
-
                       </div>
                       <br />
                       <br />
@@ -310,50 +302,16 @@ export default function AddHospital() {
                       </Button>
                     </div>
                   </form>
-
                 </div>
               </div>
             </div>
           </div>
-
-          <div className="mt-4 mb-4">
-            <div className="forms">
-              <div className="card overflow-auto">
-                <div className="card-body">
-                  <h1 className="card-title">Registered Hospitals</h1>
-                  <table className="table table-borderless datatable">
-                    <thead>
-                      <tr>
-                        <th scope="col">Hospital Name</th>
-                        <th scope="col">Public Key</th>
-                        <th scope="col">Address</th>
-                        <th scope="col">Phone</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-
-                      {Hospitaldate.map((date) => {
-
-                        return (
-                          <tr>
-                            <th scope="row">{date.name}</th>
-                            <td>{date.addr}</td>
-                            <td>{date.place}</td>
-                            <td>{date.phone}</td>
-                          </tr>
-                        )
-
-                      })
-                      }
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
+          
         </section>
       </main>
-      <div className="side-footer"><MyFooter /></div>
+      <div className="side-footer">
+        <MyFooter />
+      </div>
     </>
   );
 }

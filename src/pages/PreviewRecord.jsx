@@ -154,7 +154,7 @@ export default function PreviewRecord() {
                             className="form-control form-control-lg"
                             style={{
                               width: "100%",
-                              height: "200px", 
+                              height: "100px", 
                               overflow: "auto", 
                             }}
                             value={RecordDate.notes}

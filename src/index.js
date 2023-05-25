@@ -26,6 +26,9 @@ import DoctorRequest from "./pages/DoctorRequest";
 import PreviewRecord from "./pages/PreviewRecord";
 import AddRecord from "./pages/AddRecord";
 import PatientRecordsForDoctor from "./pages/PatientRecordsForDoctor";
+import RegisteredHospitals from "./pages/RegisteredHospitals";
+import RegisteredPatients from "./pages/RegisteredPatients";
+import RegisteredDoctors from "./pages/RegisteredDoctors";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +44,24 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: <Admin />,
+    errorElement: <ErrorPage />,
+  },
+
+  {
+    path: "/registeredHospitals",
+    element: <RegisteredHospitals />,
+    errorElement: <ErrorPage />,
+  },
+
+  {
+    path: "/registeredDoctors",
+    element: <RegisteredDoctors />,
+    errorElement: <ErrorPage />,
+  },
+
+  {
+    path: "/registeredPatients",
+    element: <RegisteredPatients />,
     errorElement: <ErrorPage />,
   },
 

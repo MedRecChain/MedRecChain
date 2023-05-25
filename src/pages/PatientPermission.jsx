@@ -2,7 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button } from "react-bootstrap";
 import MyFooter from "../components/MyFooter";
 import PatientSideBar from "../components/PatientSideBar";
-import { BsCheckCircleFill, BsFillTrash3Fill } from "react-icons/bs";
+import {
+  BsCheckCircleFill,
+  BsFillTrash3Fill,
+  BsClipboard2CheckFill,
+  BsQrCode,
+} from "react-icons/bs";
 import { useLocation } from "react-router-dom";
 import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
@@ -24,6 +29,14 @@ export default function PatientPermission() {
     const result = await QrScanner.scanImage(fileQr);
     setDateQr(result);
   };
+
+  // copy pk to clipboard
+
+  const handleCopyClick = () => {
+    navigator.clipboard.writeText(dataQr.slice(-42));
+    setDateQr("Copied !");
+  };
+
   ////
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -147,18 +160,18 @@ export default function PatientPermission() {
   }
 
   const buttonStyle = {
-    backgroundColor: "white",
+    backgroundColor: "transparent",
     color: "green",
     fontSize: "16px",
     border: "none",
-    padding: "0px 40px ",
+    padding: "5px 40px ",
   };
   const buttonrevoke = {
-    backgroundColor: "white",
+    backgroundColor: "transparent",
     color: "red",
     fontSize: "16px",
     border: "none",
-    padding: "0px 40px ",
+    padding: "5px 40px ",
   };
   /////////////
 
@@ -236,10 +249,10 @@ export default function PatientPermission() {
           <div className="mt-4 mb-4 container">
             <div className="forms">
               <div className="card requests">
-                <div className="card-body">
+                <div className="card-body mx-5 px-5 ">
                   <h1 className="card-title">Give Permission</h1>
 
-                  <form onSubmit={handleSubmit} className="container">
+                  <form onSubmit={handleSubmit} className="container justify-content-start ">
                     <div className="">
                       <div className="card-body ms-5 ">
                         <div className="form-outline text-muted ">
@@ -259,35 +272,78 @@ export default function PatientPermission() {
                           />
                         </div>
 
-                        <div className="form-outline mt-4 text-muted ">
-                          <label
-                            className="form-label"
-                            htmlFor="form3Example1cg"
-                          >
-                            Doctor Public Key
-                          </label>
-                          <input
-                            name="DoctorPublickey"
-                            type="text"
-                            id="form3Example1cg"
-                            required="required"
-                            minlength="42"
-                            maxlength="42"
-                            className=" form-control form-control-lg"
-                            value={Doctor.DoctorPublickey}
-                            onChange={handleChange}
-                          />
-                        </div>
+                        <div className="form-outline mt-4 text-muted row">
+                          <div className="col-xl-10">
+                            <label
+                              className="form-label"
+                              htmlFor="form3Example1cg"
+                            >
+                              Doctor Public Key
+                            </label>
+                            <input
+                              name="DoctorPublickey"
+                              type="text"
+                              id="form3Example1cg"
+                              required="required"
+                              minlength="42"
+                              maxlength="42"
+                              className=" form-control form-control-lg"
+                              value={Doctor.DoctorPublickey}
+                              onChange={handleChange}
+                            />
+                          </div>
+                          <div className="col-xl-2">
+                            <label
+                              className="form-label"
+                              htmlFor="form3Example1cg"
+                            >
+                              Scan QR code
+                            </label>
+                            <div className="col-xl-6 d-flex justify-content-center">
+                              <button
+                                type="button"
+                                onClick={handleClickQR}
+                                className=" "
+                              >
+                                <i className="fs-3 px-3 bi bi-grid">
+                                  <BsQrCode />
+                                </i>
+                              </button>
 
-                        <div className="form-outline d-flex mt-4 text-muted "></div>
-
-                        <div className="row">
-                          <div className="col-7">
-                            <div className="">
-                              <div className="form-outline d-flex mt-4 text-muted "></div>
+                              <input
+                                type="file"
+                                ref={fileRef}
+                                onChange={handleChangeQR}
+                                accept=".png, .jpg , .jpeg"
+                                className="d-none"
+                              />
                             </div>
                           </div>
-                          <div className="col-5">
+                        </div>
+
+                        <div className=" mt-1 d-flex justify-content-center align-items-center">
+                          {dataQr && (
+                            <div className=" mt-1 d-flex justify-content-end align-items-center">
+                              <p className="text-success d-flex justify-content-start">
+                                {dataQr.slice(-42)}
+                              </p>
+                              <span
+                                className="fs-3 mx-3"
+                                onClick={handleCopyClick}
+                                onChange={handleChangeQR}
+                                style={{ cursor: "pointer" }}
+                              >
+                                <i className="bi bi-grid">
+                                  <BsClipboard2CheckFill />
+                                </i>
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="row my-5">
+                          <div className="col-4"></div>
+                          <div className="col-8">
                             <Button
                               disabled={isLoading}
                               type="submit"
@@ -305,37 +361,7 @@ export default function PatientPermission() {
             </div>
           </div>
 
-          <div className="col-md-4 mx-auto">
-            <h2 className="text-center mb-4">Read QR Etherum Account </h2>
-            <div className="card border-0">
-              <div className="card-body  d-flex flex-column align-items-center justify-content-center">
-                <button
-                  type="button"
-                  onClick={handleClickQR}
-                  className="btn btn-success"
-                >
-                  Scan QR Code
-                </button>
-
-                <input
-                  type="file"
-                  ref={fileRef}
-                  onChange={handleChangeQR}
-                  accept=".png, .jpg , .jpeg"
-                  className="d-none"
-                />
-
-                <div className="mt-4 d-flex  flex-column align-items-center justify-content-center">
-                  {dataQr && <p className="small mt-5" style={{ fontSize: "18px" }}>{dataQr}</p>}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="form-outline d-flex mt-4 text-muted "></div>
-          <div className="form-outline d-flex mt-4 text-muted "></div>
-          <div className="form-outline d-flex mt-4 text-muted "></div>
-
-          <div className="mt-4 mb-4 container ">
+          <div className="mt-5 mb-4 container ">
             <div className="forms">
               <div className="card overflow-auto">
                 <div className="card-body">
