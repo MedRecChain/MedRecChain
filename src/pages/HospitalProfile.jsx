@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import hospitalProfile from "../assets/img/slider/hospital.jpg";
+import hospitalProfile from "../assets/img/slider/hospital.png";
 import MyFooter from "../components/MyFooter";
 import HospitalSideBar from "../components/HospitalSideBar";
 

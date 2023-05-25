@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import profile from "../assets/img/slider/profile.png";
+import profile from "../assets/img/slider/patient.png";
 import { FaNotesMedical } from "react-icons/fa";
 import PatientSideBar from "../components/PatientSideBar";
 import MyFooter from "../components/MyFooter";
