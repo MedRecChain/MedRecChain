@@ -78,7 +78,7 @@ export default function PatientRecords() {
   //See_Record_for_Patient
 
   const [RecordDate, setRecordDate] = useState([]);
-  const getallRecorddates = async (pat) => {
+  const getallRecorddates = async () => {
     try {
       const date = await Contract.methods. See_Record_for_Patient().call({ from: acount });
       setRecordDate(date);

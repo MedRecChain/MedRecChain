@@ -14,6 +14,8 @@ export default function PatientRecordsForDoctor() {
   const searchParams = new URLSearchParams(location.search);
   const acount = searchParams.get("Doctor");
   const Patient = searchParams.get("Patient");
+  const cid = searchParams.get('CID');
+
 
   const [wEb3, setwEb3] = useState({
     provider: null,
@@ -70,25 +72,25 @@ export default function PatientRecordsForDoctor() {
 
   /////////////////
 
+
   //See_Record_for_Patient
 
   const [RecordDate, setRecordDate] = useState([]);
-  const getallRecorddates = async (pat) => {
+  const getallRecorddates = async () => {
     try {
-      const date = await Contract.methods
-        .See_Record_for_Doctor(pat)
-        .call({ from: acount });
+      const date = await Contract.methods.See_Record_for_Patient().call({ from: Patient });
       setRecordDate(date);
-    } catch (e) {}
-  };
+    }
+    catch (e) {
+    }
+  }
 
-  getallRecorddates(Patient);
 
-  const gotofile = (doc, pat, cid) => {
-    window.location.replace(
-      `/PreviewRecord?Doctor=${doc}&Patient=${pat}&CID=${cid}`
-    );
-  };
+  getallRecorddates();
+
+  const gotofile = (acount,Patient,cid) => {
+    window.location.replace(`/PreviewRecord?Doctor=${acount}&Patient=${Patient}&CID=${cid}`);
+  }
 
   const color = {
     backgroundColor: "white",
