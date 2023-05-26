@@ -158,124 +158,125 @@ export default function HospitalProfile() {
           tap2="Add Patient"
           tap3="Log Out"
         />
-        <section className="section forms container mt-4">
-          <div className="row p-5">
-            <div className="forms">
-              <div className="card w-100 mx-auto align-center h-100">
-                <div className="container  p-4">
-                  <div className=" p-1">
-                    <img
-                      src={hospitalProfile}
-                      alt="Profile"
-                      height={100}
-                      width={100}
-                      className="rounded-circle border border-3 mx-auto d-block p-2"
-                    />
-                  </div>
-                  <div className="mx-auto p-3 align-center">
-                    <h3 className="card-title text-center mb-5">
-                      Hospital Information
-                    </h3>
+        <section className="section forms container mt-4 p-5">
+          <div className="card w-100 mx-auto align-center h-100">
+            <div className="container  p-4">
+              <div className=" p-1">
+                <img
+                  src={hospitalProfile}
+                  alt="Profile"
+                  height={100}
+                  width={100}
+                  className="rounded-circle border border-3 mx-auto d-block p-2"
+                />
+              </div>
+              <div className="mx-auto p-3 align-center">
+                <h3 className="card-title text-center mb-5">
+                  Hospital Information
+                </h3>
 
-                    <div className="card-body  text-muted opacity-75 ">
-                      <div className="form-outline row mb-2">
-                        <div className="col-xl-3">
-                          <label
-                            className="text-dark fs-5"
-                            htmlFor="form3Example1cg "
-                          >
-                            Hospital Name:
-                          </label>
-                        </div>
-                        <div className="col-xl-9">{Hospitaldate.name}</div>
-                        <hr />
-                      </div>
-
-                      <div className="form-outline row mb-2">
-                        <div className="col-xl-3">
-                          <label
-                            className="text-dark fs-5"
-                            htmlFor="form3Example1cg"
-                          >
-                            Hospital Address:
-                          </label>
-                        </div>
-                        <div className="col-xl-9">{Hospitaldate.place}</div>
-                        <hr />
-                      </div>
-
-                      <div className="form-outline row mb-2">
-                        <div className="col-xl-3">
-                          <label
-                            className="text-dark fs-5"
-                            htmlFor="form3Example1cg"
-                          >
-                            Hospital Phone:
-                          </label>
-                        </div>
-                        <div className="col-xl-9">{Hospitaldate.phone}</div>
-                        <hr />
-                      </div>
-
-                      <div className="form-outline row mb-2">
-                        <div className="col-xl-3">
-                          <label
-                            className="text-dark fs-5"
-                            htmlFor="form3Example1cg"
-                          >
-                            Hospital Public Key:
-                          </label>
-                        </div>
-                        <div className="col-xl-9">{Hospitaldate.addr}</div>
-                      
-                      </div>
+                <div className="card-body  text-muted opacity-75 ">
+                  <div className="form-outline row mb-2">
+                    <div className="col-xl-3">
+                      <label
+                        className="text-dark fs-5"
+                        htmlFor="form3Example1cg "
+                      >
+                        Hospital Name:
+                      </label>
                     </div>
+                    <div className="col-xl-9">{Hospitaldate.name}</div>
+                    <hr />
+                  </div>
+
+                  <div className="form-outline row mb-2">
+                    <div className="col-xl-3">
+                      <label
+                        className="text-dark fs-5"
+                        htmlFor="form3Example1cg"
+                      >
+                        Hospital Address:
+                      </label>
+                    </div>
+                    <div className="col-xl-9">{Hospitaldate.place}</div>
+                    <hr />
+                  </div>
+
+                  <div className="form-outline row mb-2">
+                    <div className="col-xl-3">
+                      <label
+                        className="text-dark fs-5"
+                        htmlFor="form3Example1cg"
+                      >
+                        Hospital Phone:
+                      </label>
+                    </div>
+                    <div className="col-xl-9">{Hospitaldate.phone}</div>
+                    <hr />
+                  </div>
+
+                  <div className="form-outline row mb-2">
+                    <div className="col-xl-3">
+                      <label
+                        className="text-dark fs-5"
+                        htmlFor="form3Example1cg"
+                      >
+                        Hospital Public Key:
+                      </label>
+                    </div>
+                    <div className="col-xl-9">{Hospitaldate.addr}</div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </section>
-        <section className="py-5 px-5 bg-info-light position-relative overflow-hidden my-5 mx-5 mt-5  ">
-          <div className="row container ">
-            <div className=" container col-5 ">
-              <CChart
-                type="bar"
-                data={{
-                  labels: ["Patients", "Doctors"],
-                  datasets: [
-                    {
-                      label: "Number of Employes",
-                      backgroundColor: ["#5096ad", "#075369"],
-                      data: [Patientdate, Doctordat],
-                      barPercentage: 5,
-                      barThickness: 50,
-                      maxBarThickness: 50,
-                      minBarLength: 2,
-                    },
-                  ],
-                }}
-              />
+          <div className="row">
+            <div className="col-xl-8">
+              <div className="card mx-auto align-center p-4">
+                <CChart
+                  type="bar"
+                  data={{
+                    labels: ["Patients", "Doctors"],
+                    datasets: [
+                      {
+                        label: "Number of Employes",
+                        backgroundColor: ["#5096ad", "#075369"],
+                        data: [Patientdate, Doctordat],
+                        barPercentage: 5,
+                        barThickness: 50,
+                        maxBarThickness: 50,
+                        minBarLength: 2,
+                      },
+                    ],
+                  }}
+                />
+              </div>
             </div>
-            <div className=" container col-7  ">
-              <CChart
-                type="radar"
-                data={{
-                  labels: DoctorMedical_specialty,
-                  datasets: [
-                    {
-                      label: "Doctor Medical Specialty",
-                      backgroundColor: "#dff2f5",
-                      borderColor: "#91b1b5",
-                      pointBackgroundColor: "rgba(220, 220, 220, 1)",
-                      pointBorderColor: "#91b1b5",
-                      pointHighlightFill: "#91b1b5",
-                      pointHighlightStroke: "rgba(220, 220, 220, 1)",
-                      data: Object.values(Counts),
-                    },
-                  ],
-                }}
-              />
+
+            <div className="col-xl-4">
+              <div className="card mx-auto align-center">
+                <div className="container p-5">
+                  <CChart
+                  className="mb-4"
+                    type="radar"
+                    data={{
+                      labels: DoctorMedical_specialty,
+                      datasets: [
+                        {
+                          label: "Doctor Medical Specialty",
+                          backgroundColor: "#dff2f5",
+                          borderColor: "#91b1b5",
+                          pointBackgroundColor: "rgba(220, 220, 220, 1)",
+                          pointBorderColor: "#91b1b5",
+                          pointHighlightFill: "#91b1b5",
+                          pointHighlightStroke: "rgba(220, 220, 220, 1)",
+                          data: Object.values(Counts),
+                        },
+                      ],
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </section>

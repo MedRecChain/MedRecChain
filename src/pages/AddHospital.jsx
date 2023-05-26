@@ -306,7 +306,6 @@ export default function AddHospital() {
               </div>
             </div>
           </div>
-          
         </section>
       </main>
       <div className="side-footer">

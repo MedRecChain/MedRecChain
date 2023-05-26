@@ -134,7 +134,7 @@ export default function PatientPermission() {
             }
           }
         );
-        alert("Request sended Successfully.");
+        alert("Request sended and approved Successfully.");
         setIsLoading(false);
       };
       sendrequestAccess(Doctor);
@@ -238,7 +238,7 @@ export default function PatientPermission() {
     <>
       <main id="main" className="main container perm">
         <PatientSideBar
-          tap1="Profile"
+          tap1="Patient Profile"
           tap2="My Records"
           tap3="Permission & Requests"
           tap4="Log Out"
@@ -252,7 +252,10 @@ export default function PatientPermission() {
                 <div className="card-body mx-5 px-5 ">
                   <h1 className="card-title">Give Permission</h1>
 
-                  <form onSubmit={handleSubmit} className="container justify-content-start ">
+                  <form
+                    onSubmit={handleSubmit}
+                    className="container justify-content-start "
+                  >
                     <div className="">
                       <div className="card-body ms-5 ">
                         <div className="form-outline text-muted ">

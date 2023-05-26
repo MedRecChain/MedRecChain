@@ -97,12 +97,12 @@ export default function AddDoctor() {
       setIsLoading(true);
       e.preventDefault();
       const addDoctor = async (doc) => {
-        const hospitalAddress = getHospitalAddress(doc.hospitalName); 
+        const hospitalAddress = getHospitalAddress(doc.hospitalName);
         const success = await Contract.methods
           .addDoctor(
             doc.doctorName,
             doc.hospitalName,
-            hospitalAddress, 
+            hospitalAddress,
             doc.doctorPhone,
             doc.doctorEmail,
             doc.age,
@@ -239,6 +239,36 @@ export default function AddDoctor() {
                             onChange={handleChange}
                           />
                         </div>
+                        <div className="form-outline mb-2">
+                          <label className="" htmlFor="form3Example1cg">
+                            Doctor Public key
+                          </label>
+                          <input
+                            name="doctorPk"
+                            type="text"
+                            required="required"
+                            minlength="42"
+                            maxlength="42"
+                            id="form3Example1cg"
+                            className=" form-control form-control-lg"
+                            value={doctor.doctorPk}
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div className="form-outline mb-2">
+                          <label className="" htmlFor="form3Example1cg">
+                            Medical Specialty
+                          </label>
+                          <input
+                            name="medicalSpecialty"
+                            type="text"
+                            required="required"
+                            id="form3Example1cg"
+                            className=" form-control form-control-lg"
+                            value={doctor.medicalSpecialty}
+                            onChange={handleChange}
+                          />
+                        </div>
 
                         <div className="form-outline mb-2">
                           <label className="" htmlFor="form3Example1cg">
@@ -271,10 +301,12 @@ export default function AddDoctor() {
                             className="d-block w-100 opacity-50 form-control-lg"
                             id="hospitalAddress"
                             required="required"
-                            value={getHospitalAddress(doctor.hospitalName)} 
-                            onChange={handleChange} 
+                            value={getHospitalAddress(doctor.hospitalName)}
+                            onChange={handleChange}
                           />
                         </div>
+                      </div>
+                      <div className="col-xl-6">
                         <div className="form-outline mb-2">
                           <label className="" htmlFor="form3Example1cg">
                             Doctor Phone
@@ -304,8 +336,6 @@ export default function AddDoctor() {
                             onChange={handleChange}
                           />
                         </div>
-                      </div>
-                      <div className="col-xl-6">
                         <div className="form-outline mb-2">
                           <label className="" htmlFor="form3Example1cg">
                             Doctor Address
@@ -331,36 +361,6 @@ export default function AddDoctor() {
                             id="form3Example1cg"
                             className=" form-control form-control-lg"
                             value={doctor.age}
-                            onChange={handleChange}
-                          />
-                        </div>
-                        <div className="form-outline mb-2">
-                          <label className="" htmlFor="form3Example1cg">
-                            Medical Specialty
-                          </label>
-                          <input
-                            name="medicalSpecialty"
-                            type="text"
-                            required="required"
-                            id="form3Example1cg"
-                            className=" form-control form-control-lg"
-                            value={doctor.medicalSpecialty}
-                            onChange={handleChange}
-                          />
-                        </div>
-                        <div className="form-outline mb-2">
-                          <label className="" htmlFor="form3Example1cg">
-                            Doctor Public key
-                          </label>
-                          <input
-                            name="doctorPk"
-                            type="text"
-                            required="required"
-                            minlength="42"
-                            maxlength="42"
-                            id="form3Example1cg"
-                            className=" form-control form-control-lg"
-                            value={doctor.doctorPk}
                             onChange={handleChange}
                           />
                         </div>

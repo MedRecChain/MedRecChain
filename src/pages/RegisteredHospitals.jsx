@@ -187,7 +187,7 @@ export default function RegisteredHospitals(props) {
                               <td>{date.place}</td>
                               <td>{date.phone}</td>
                               <td>{Doctordat}</td>
-                              <td>{Patientdate.length}</td>
+                              <td>{Patientdate}</td>
                             </tr>
                           );
                         })}

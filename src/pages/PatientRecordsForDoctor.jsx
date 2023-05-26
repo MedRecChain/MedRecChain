@@ -14,8 +14,7 @@ export default function PatientRecordsForDoctor() {
   const searchParams = new URLSearchParams(location.search);
   const acount = searchParams.get("Doctor");
   const Patient = searchParams.get("Patient");
-  const cid = searchParams.get('CID');
-
+  const cid = searchParams.get("CID");
 
   const [wEb3, setwEb3] = useState({
     provider: null,
@@ -72,25 +71,20 @@ export default function PatientRecordsForDoctor() {
 
   /////////////////
 
-
   //See_Record_for_Patient
 
   const [RecordDate, setRecordDate] = useState([]);
   const getallRecorddates = async () => {
     try {
-      const date = await Contract.methods.See_Record_for_Patient().call({ from: Patient });
+      const date = await Contract.methods
+        .See_Record_for_Patient()
+        .call({ from: Patient });
       setRecordDate(date);
-    }
-    catch (e) {
-    }
-  }
-
+    } catch (e) {}
+  };
 
   getallRecorddates();
-
-  const gotofile = (acount,Patient,cid) => {
-    window.location.replace(`/PreviewRecord?Doctor=${acount}&Patient=${Patient}&CID=${cid}`);
-  }
+  //////////////////////////
 
   const color = {
     backgroundColor: "white",
@@ -129,6 +123,17 @@ export default function PatientRecordsForDoctor() {
 
   getPatientinfo();
 
+  ///////// view record /////////
+
+  const gotofile = (acount, Patient, cid) => {
+    window.location.replace(
+      `/PreviewRecordForDoctor?Doctor=${acount}&Patient=${Patient}&CID=${cid}`
+    );
+  };
+
+  const GoToFile = (doctorAddr, patientAddr, hexIpfs) => {
+    gotofile(doctorAddr, patientAddr, hexIpfs);
+  };
   //////////////////
   return (
     <>
@@ -155,10 +160,7 @@ export default function PatientRecordsForDoctor() {
                   <div className="col-xl-6">
                     <div className="form-outline row mb-2">
                       <div className="col-xl-3">
-                        <label
-                          className="text-dark"
-                          htmlFor="form3Example1cg "
-                        >
+                        <label className="text-dark" htmlFor="form3Example1cg ">
                           Name:
                         </label>
                       </div>
@@ -166,10 +168,7 @@ export default function PatientRecordsForDoctor() {
                     </div>
                     <div className="form-outline row mb-2">
                       <div className="col-xl-3">
-                        <label
-                          className="text-dark"
-                          htmlFor="form3Example1cg "
-                        >
+                        <label className="text-dark" htmlFor="form3Example1cg ">
                           Email:
                         </label>
                       </div>
@@ -177,10 +176,7 @@ export default function PatientRecordsForDoctor() {
                     </div>
                     <div className="form-outline row mb-2">
                       <div className="col-xl-3">
-                        <label
-                          className="text-dark"
-                          htmlFor="form3Example1cg "
-                        >
+                        <label className="text-dark" htmlFor="form3Example1cg ">
                           patient PK:
                         </label>
                       </div>
@@ -190,10 +186,7 @@ export default function PatientRecordsForDoctor() {
                     </div>
                     <div className="form-outline row mb-2">
                       <div className="col-xl-3">
-                        <label
-                          className="text-dark"
-                          htmlFor="form3Example1cg "
-                        >
+                        <label className="text-dark" htmlFor="form3Example1cg ">
                           National ID:
                         </label>
                       </div>
@@ -201,10 +194,7 @@ export default function PatientRecordsForDoctor() {
                     </div>
                     <div className="form-outline row mb-2">
                       <div className="col-xl-3">
-                        <label
-                          className="text-dark"
-                          htmlFor="form3Example1cg "
-                        >
+                        <label className="text-dark" htmlFor="form3Example1cg ">
                           Address:
                         </label>
                       </div>
@@ -217,10 +207,7 @@ export default function PatientRecordsForDoctor() {
                   <div className="col-xl-5">
                     <div className="form-outline row mb-2">
                       <div className="col-xl-3">
-                        <label
-                          className="text-dark"
-                          htmlFor="form3Example1cg "
-                        >
+                        <label className="text-dark" htmlFor="form3Example1cg ">
                           Phone:
                         </label>
                       </div>
@@ -228,10 +215,7 @@ export default function PatientRecordsForDoctor() {
                     </div>
                     <div className="form-outline row mb-2">
                       <div className="col-xl-3">
-                        <label
-                          className="text-dark"
-                          htmlFor="form3Example1cg "
-                        >
+                        <label className="text-dark" htmlFor="form3Example1cg ">
                           Age:
                         </label>
                       </div>
@@ -239,10 +223,7 @@ export default function PatientRecordsForDoctor() {
                     </div>
                     <div className="form-outline row mb-2">
                       <div className="col-xl-3">
-                        <label
-                          className="text-dark"
-                          htmlFor="form3Example1cg "
-                        >
+                        <label className="text-dark" htmlFor="form3Example1cg ">
                           Blood Type:
                         </label>
                       </div>
@@ -250,10 +231,7 @@ export default function PatientRecordsForDoctor() {
                     </div>
                     <div className="form-outline row mb-2">
                       <div className="col-xl-3">
-                        <label
-                          className="text-dark"
-                          htmlFor="form3Example1cg "
-                        >
+                        <label className="text-dark" htmlFor="form3Example1cg ">
                           Marital Status:
                         </label>
                       </div>
@@ -263,10 +241,7 @@ export default function PatientRecordsForDoctor() {
                     </div>
                     <div className="form-outline row mb-2">
                       <div className="col-xl-3">
-                        <label
-                          className="text-dark"
-                          htmlFor="form3Example1cg "
-                        >
+                        <label className="text-dark" htmlFor="form3Example1cg ">
                           Gender:
                         </label>
                       </div>
@@ -274,90 +249,12 @@ export default function PatientRecordsForDoctor() {
                     </div>
                   </div>
                 </div>
-
-                {/* <div className="row card-body ">
-                      <div className="col-xl-6">
-                        <div className=" text-muted opacity-75 ">
-                          <div className="form-outline mb-4">
-                            <label className="" htmlFor="name">
-                              Name:   {Patientdate.name} 
-                            </label>
-                            
-                          </div>
-                          <div className="form-outline mb-4 ">
-                            <label className="" htmlFor="email">
-                             Email:{Patientdate.email}
-                            </label>
-                            
-                          </div>
-                          <div className="form-outline mb-4 ">
-                            <label className="" htmlFor="nationalAddress">
-                               Address: {Patientdate.National_Addr}
-                            </label>
-                            
-                          </div>
-                          <div className="form-outline mb-4 ">
-                            <label className="" htmlFor="age">
-                               Age:  {Patientdate.age}
-                            </label>
-                            
-                          </div>
-                          <div className="form-outline mb-4 ">
-                            <label className="" htmlFor="phone">
-                              Phone:  {Patientdate.phone}
-                            </label>
-                           
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-xl-6">
-                        <div className="card-body  text-muted opacity-75 ">
-                          <div className="form-outline mb-4  ">
-                            <label className="" htmlFor="patientPublicKey">
-                              Public Key:  {Patientdate.PatientAddress}
-                            </label>
-                           
-                          </div>
-                         
-                          <div className="form-outline mb-4 ">
-                            <label className="" htmlFor="nationalId">
-                             National ID:  {Patientdate.National_id}
-                            </label>
-                            
-                          </div>
-                          <div className="form-outline mb-4">
-                            <label className="" htmlFor="bloodType">
-                              Blood Type: {Patientdate.Blood_Type}
-                            </label>
-                           
-                          </div>
-                          <div className="form-outline mb-4">
-                            <label className="" htmlFor="bloodType">
-                            Marital Status: {Patientdate.marital_status}
-                            </label>
-                           
-                          </div>
-                          <div className="mb-4">
-                            <div className="form-outline d-flex mt-4 text-muted ">
-                              <label
-                                className="form-label me-4"
-                                htmlFor="Gender"
-                              >
-                                Gender:  {Patientdate.gender}
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div> */}
               </form>
             </div>
           </div>
         </div>
-
         <br />
         <br />
-
         <div className="container">
           <nav className="mb-5  ">
             <Nav
@@ -405,13 +302,13 @@ export default function PatientRecordsForDoctor() {
                           onMouseLeave={handleMouseLeave}
                         >
                           <div className="position-relative">
-                            <h5 className="card-title fs-6 text-center border-bottom rounded-top bg-secondary  bg-opacity-25">
-                              Category: {date.category}
+                            <h5 className="card-title fs-5 text-center border-bottom rounded-top bg-secondary  bg-opacity-25">
+                              {date.category}
                             </h5>
                             <div className="text-secondary card-body border-bottom d-flex overflow-hidden p-3">
-                              Record Name/Description: {date.rec_name}
+                              Description: {date.rec_name}
                               <br />
-                              From Dr(PK): {date.doctor_addr}
+                              From Dr(PK): <br /> {date.doctor_addr}
                             </div>
 
                             <div className="pb-5">
@@ -423,22 +320,20 @@ export default function PatientRecordsForDoctor() {
                             </div>
 
                             {showButton && (
-                              <Link>
-                                <Button
-                                  className="card-button"
-                                  onClick={() =>
-                                    gotofile(
-                                      date.doctor_addr,
-                                      date.patient_addr,
-                                      date.hex_ipfs
-                                    )
-                                  }
-                                >
-                                  <i className="bi fs-1 pe-2 ps-2  fs-5 ms-3 rounded-5 shadow-5 bi-grid">
-                                    <BsEyeFill />
-                                  </i>
-                                </Button>
-                              </Link>
+                              <Button
+                                className="card-button"
+                                onClick={() =>
+                                  GoToFile(
+                                    date.doctor_addr,
+                                    date.patient_addr,
+                                    date.hex_ipfs
+                                  )
+                                }
+                              >
+                                <i className="bi fs-1 pe-2 ps-2  fs-5 ms-3 rounded-5 shadow-5 bi-grid">
+                                  <BsEyeFill />
+                                </i>
+                              </Button>
                             )}
                           </div>
                         </div>

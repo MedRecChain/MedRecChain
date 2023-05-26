@@ -23,12 +23,13 @@ import AddPatient from "./pages/AddPatient";
 import DoctorProfile from "./pages/DoctorProfile";
 import PatientPermission from "./pages/PatientPermission";
 import DoctorRequest from "./pages/DoctorRequest";
-import PreviewRecord from "./pages/PreviewRecord";
 import AddRecord from "./pages/AddRecord";
 import PatientRecordsForDoctor from "./pages/PatientRecordsForDoctor";
 import RegisteredHospitals from "./pages/RegisteredHospitals";
 import RegisteredPatients from "./pages/RegisteredPatients";
 import RegisteredDoctors from "./pages/RegisteredDoctors";
+import PreviewRecordForPatient from "./pages/PreviewRecordForPatient";
+import PreviewRecordForDoctor from "./pages/PreviewRecordForDoctor";
 
 const router = createBrowserRouter([
   {
@@ -77,11 +78,16 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/previewRecord",
-    element: <PreviewRecord />,
+    path: "/previewRecordForDoctor",
+    element: <PreviewRecordForDoctor />,
     errorElement: <ErrorPage />,
   },
 
+  {
+    path: "/previewRecordForPatient",
+    element: <PreviewRecordForPatient />,
+    errorElement: <ErrorPage />,
+  },
   {
     path: "/patientProfile",
     element: <PatientProfile />,

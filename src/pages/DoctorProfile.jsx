@@ -134,11 +134,8 @@ export default function DoctorProfile() {
                     className="rounded-circle border border-3 mx-auto d-block p-2"
                   />
                 </div>
-                <h3 className="card-title text-center mb-5">
-                  {Docdate.name}
-                </h3>
+                <h3 className="card-title text-center mb-5">{Docdate.name}</h3>
                 <div className="card-body  text-muted opacity-75 ">
-
                   <div className="form-outline row mb-2">
                     <div className="col-xl-4">
                       <label
@@ -171,10 +168,10 @@ export default function DoctorProfile() {
                         className="text-dark fs-5"
                         htmlFor="form3Example1cg"
                       >
-                        Hospital PK:
+                        Hospital Name:
                       </label>
                     </div>
-                    <div className="col-xl-8">{Docdate.hospital_addr}</div>
+                    <div className="col-xl-8">{Docdate.hospital_name}</div>
                     <hr />
                   </div>
 
@@ -241,7 +238,6 @@ export default function DoctorProfile() {
                     </div>
                     <div className="col-xl-8">{Docdate.place}</div>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -250,7 +246,7 @@ export default function DoctorProfile() {
               <div className="card py-5">
                 <div className="card-body m-4 pb-5">
                   <CChart
-                  className="mt-4"
+                    className="mt-4"
                     type="polarArea"
                     data={{
                       labels: [
@@ -267,7 +263,8 @@ export default function DoctorProfile() {
                       ],
                     }}
                   />
-                  <br /><br />
+                  <br />
+                  <br />
                 </div>
               </div>
             </div>

@@ -82,7 +82,9 @@ const Home = () => {
                   sharing systems. However, existing solutions relying on a
                   centralized database are susceptible to traditional security
                   problems such as Denial of Service (DoS) attacks and a single
-                  point of failure. In addition,past solutions exposed users to privacy linking attacks and did not tackle performance and scalability challenges.
+                  point of failure. In addition,past solutions exposed users to
+                  privacy linking attacks and did not tackle performance and
+                  scalability challenges.
                 </p>
                 <div className="text-center">
                   <Link to="/about" className="more-btn">

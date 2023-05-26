@@ -1,23 +1,17 @@
 import React, { useState } from "react";
-import AddRecordSideBar from "../components/AddRecordSideBar";
-import recordData from "../assets/img/slider/record.png";
 import MyFooter from "../components/MyFooter";
-import { FaCamera } from "react-icons/fa";
-import { Button } from "react-bootstrap";
-
-import { create } from "ipfs-http-client";
+import { BsArrowLeft, BsBackspaceFill } from "react-icons/bs";
 import { useLocation } from "react-router-dom";
 import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { useEffect } from "react";
 
-export default function AddRecord() {
+export default function PreviewRecordForDoctor() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const Patient = searchParams.get("Patient");
-  const acount = searchParams.get("Doctor");
-
-  const [Contract, setContract] = useState(null);
+  const doc = searchParams.get("Doctor");
+  const pat = searchParams.get("Patient");
+  const cid = searchParams.get("CID");
 
   const [wEb3, setwEb3] = useState({
     provider: null,
@@ -47,6 +41,8 @@ export default function AddRecord() {
     loadProvider();
   }, []);
 
+  const [Contract, setContract] = useState(null);
+
   ///// get Contract
   useEffect(() => {
     const loadcontract = async () => {
@@ -60,8 +56,6 @@ export default function AddRecord() {
         const contract = await new wEb3.web3.eth.Contract(abi, address);
 
         setContract(contract);
-
-        // console.log(contract.methods);
       } else {
         window.alert("only ganache");
         window.location.reload();
@@ -72,122 +66,85 @@ export default function AddRecord() {
     loadcontract();
   }, [wEb3]);
 
-  /////////////////
+  /////////////
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [RecordDate, setRecordDate] = useState({});
 
-  const [record, setRecord] = useState({
-    patientName: "",
-    recordName: "",
-    date: "",
-    notes: "",
-    category: "",
-  });
+  const getallRecorddates = async () => {
+    try {
+      const date = await Contract.methods
+        .See_Record_for_Patient()
+        .call({ from: pat });
+      console.log(date);
 
-  const [file, setFile] = useState(null);
-
-  const handleChange = (e) => {
-    setRecord({ ...record, [e.target.name]: e.target.value });
-  };
-
-  const handleFileUpload = (e) => {
-    e.preventDefault();
-    setFile(e.target.files[0]);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (file == null) {
-      alert("Please add Record Data.");
-    } else {
-      try {
-        setIsLoading(true);
-        // connect to local ipfs node
-        const node = create("http://localhost:5002/api/v0");
-        //add the file at ipfs. then it retrieve it's data (it Contains CID, path, .....)
-        const date = await node.add(file);
-
-        const success = await Contract.methods
-          .addRecord(
-            record.category,
-            record.patientName,
-            record.recordName,
-            record.date,
-            Patient,
-            acount,
-            date.path,
-            record.notes
-          )
-          .send(
-            {
-              from: acount,
-            },
-            function (error) {
-              if (error) {
-                setIsLoading(false);
-              }
-            }
-          );
-        if (success) {
-          alert("Record Added Successfully.");
-          setIsLoading(false);
-        } else {
-          alert("Record Not Added !!.");
-          setIsLoading(false);
+      for (var i = 0; i < date.length; i++) {
+        if (date[i].hex_ipfs == cid) {
+          setRecordDate(date[i]);
+          break;
         }
-      } catch (e) {
-        console.log(e);
-        setIsLoading(false);
       }
+    } catch (e) {
+      console.log(e);
     }
   };
+  getallRecorddates();
+
+  // --------- Go back function --------
+  const goBack = () => {
+    // navigate(-1);
+    window.location.replace(
+      `/PatientRecordsForDoctor?Doctor=${doc}&Patient=${pat}`
+    );
+  };
+
+  ////////////////////////
 
   return (
     <>
-      <main className="section container ">
-        <div className="mt-4 mb-4 container">
-          <div className="forms">
-            <div className="card requests container">
-              <div className="card-body">
-                <h1 className="card-title">Record Information</h1>
-
-                <form onSubmit={handleSubmit} className="container">
+      <main className="main mb-5">
+        <section className="section dashboard">
+          <button className="mx-5 mb-0 mt-4 py-2 px-4 rounded" onClick={goBack}>
+            <i>
+              <BsArrowLeft /> Go Back
+            </i>
+          </button>
+          <div className="pb-2 mx-auto w-75">
+            <div className="forms">
+              <div className="card requests bg-secondary bg-opacity-10">
+                <div className="card-body ">
                   <div className="row">
-                    <div className="col-xl-7 ms-5">
+                    <div className="col-7">
+                      <h1 className="card-title">Record Information</h1>
+                    </div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-xl-6">
                       <div className="card-body text-muted opacity-75">
                         <div className="form-outline mb-4">
                           <label className="" htmlFor="category">
                             Category
                           </label>
-                          <select
+                          <input
                             name="category"
-                            className="d-block w-100 opacity-50 form-control-lg"
-                            id="maritalStatus"
-                            required="required"
-                            value={record.category}
-                            onChange={handleChange}
-                          >
-                            <option value=""></option>
-                            <option value="Medical Test">Medical Test</option>
-                            <option value="X-Ray">X-Ray</option>
-                            <option value="Drugs">Drugs</option>
-                            <option value="Dr. Consultation">
-                              Dr. Consultation
-                            </option>
-                          </select>
+                            type="text"
+                            id="category"
+                            className="form-control form-control-lg"
+                            value={RecordDate.category}
+                            disabled
+                          />
                         </div>
                         <div className="form-outline mb-4">
                           <label className="" htmlFor="recordName">
-                            Record Name / Description
+                            Record Name
                           </label>
                           <input
                             name="recordName"
                             type="text"
                             id="recordName"
-                            required="required"
                             className="form-control form-control-lg"
-                            value={record.recordName}
-                            onChange={handleChange}
+                            value={RecordDate.rec_name}
+                            disabled
                           />
                         </div>
                         <div className="form-outline mb-4">
@@ -204,8 +161,8 @@ export default function AddRecord() {
                               height: "100px",
                               overflow: "auto",
                             }}
-                            value={record.notes}
-                            onChange={handleChange}
+                            value={RecordDate.notes}
+                            disabled
                           />
                         </div>
 
@@ -217,13 +174,11 @@ export default function AddRecord() {
                             name="date"
                             type="date"
                             id="date"
-                            required="required"
                             className="form-control form-control-lg"
-                            value={record.date}
-                            onChange={handleChange}
+                            value={RecordDate.Created_at}
+                            disabled
                           />
                         </div>
-
                         <div className="form-outline mb-4">
                           <label className="" htmlFor="patientPublicKey">
                             Patient Public Key
@@ -233,11 +188,10 @@ export default function AddRecord() {
                             type="text"
                             id="patientPublicKey"
                             className="form-control form-control-lg"
-                            value={Patient}
+                            value={RecordDate.patient_addr}
                             disabled
                           />
                         </div>
-
                         <div className="form-outline mb-4">
                           <label className="" htmlFor="doctorPublicKey">
                             Doctor Public Key
@@ -247,61 +201,42 @@ export default function AddRecord() {
                             type="text"
                             id="doctorPublicKey"
                             className="form-control form-control-lg"
-                            value={acount}
+                            value={RecordDate.doctor_addr}
                             disabled
                           />
                         </div>
                       </div>
                     </div>
-                    <div className="col-xl-4">
-                      <div className="section ms-5 dashboard">
+                    <div className="col-xl-6">
+                      <div className="section dashboard">
                         <div className="fs-6 text-muted ms-4 mt-3 container">
                           <div className="forms ">
                             <label className="" htmlFor="doctorPublicKey">
-                              Add Record Data
+                              Record Data
                             </label>
 
-                            <div
-                              className=" card"
-                              id=" file"
-                              style={{
-                                height: "330px",
-                                width: "250px",
-                              }}
-                            >
-                              <img src={recordData} alt="" />
-                              <label className="fileBtn" htmlFor="upload">
-                                <input
-                                  id="upload"
-                                  type="file"
-                                  name="recordData"
-                                  onChange={handleFileUpload}
-                                />
-                                <i className="fs-3 ">
-                                  <FaCamera />
-                                </i>
-                              </label>
+                            <div className=" card" id=" file">
+                              <embed
+                                src={`http://127.0.0.1:9090/ipfs/${cid}?filename=${cid}`}
+                                style={{
+                                  height: "350px",
+                                  width: "100%",
+                                }}
+                              />
                             </div>
                           </div>
-                          <Button
-                            disabled={isLoading}
-                            type="submit"
-                            className=" btn-info m-5 pe-5 ps-5 ms-5"
-                          >
-                            Add
-                          </Button>
                         </div>
                       </div>
                     </div>
                   </div>
-                </form>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </main>
+
       <MyFooter />
-      <script src="../assets/js/main.js"></script>
     </>
   );
 }

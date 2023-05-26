@@ -164,7 +164,9 @@ export default function AddPatient() {
                             <div className="col-xl-6">
                               <div className="card-body  text-muted opacity-75 ">
                                 <div className="form-outline mb-2">
-                                  <label htmlFor="patientName">Your Name</label>
+                                  <label htmlFor="patientName">
+                                    Patient Name
+                                  </label>
                                   <input
                                     name="patientName"
                                     type="text"
@@ -175,15 +177,22 @@ export default function AddPatient() {
                                     onChange={handleChange}
                                   />
                                 </div>
-                                <div className="form-outline mb-2 ">
-                                  <label htmlFor="email">Your Email</label>
+                                <div className="form-outline mb-2  ">
+                                  <label
+                                    className=""
+                                    htmlFor="patientPublicKey"
+                                  >
+                                    Public Key
+                                  </label>
                                   <input
-                                    name="email"
-                                    type="email"
-                                    id="email"
+                                    name="patientPublicKey"
+                                    type="text"
+                                    id="patientPublicKey"
                                     required="required"
-                                    className="form-control form-control-lg"
-                                    value={patient.email}
+                                    minlength="42"
+                                    maxlength="42"
+                                    className=" form-control form-control-lg"
+                                    value={patient.patientPublicKey}
                                     onChange={handleChange}
                                   />
                                 </div>
@@ -231,22 +240,15 @@ export default function AddPatient() {
                             </div>
                             <div className="col-xl-6">
                               <div className="card-body  text-muted opacity-75 ">
-                                <div className="form-outline mb-2  ">
-                                  <label
-                                    className=""
-                                    htmlFor="patientPublicKey"
-                                  >
-                                    Public Key
-                                  </label>
+                                <div className="form-outline mb-2 ">
+                                  <label htmlFor="email">Patient Email</label>
                                   <input
-                                    name="patientPublicKey"
-                                    type="text"
-                                    id="patientPublicKey"
+                                    name="email"
+                                    type="email"
+                                    id="email"
                                     required="required"
-                                    minlength="42"
-                                    maxlength="42"
-                                    className=" form-control form-control-lg"
-                                    value={patient.patientPublicKey}
+                                    className="form-control form-control-lg"
+                                    value={patient.email}
                                     onChange={handleChange}
                                   />
                                 </div>
@@ -264,10 +266,10 @@ export default function AddPatient() {
                                     onChange={handleChange}
                                   />
                                 </div>
-                                
+
                                 <div className="form-outline mb-2 text-muted ">
                                   <label className="" htmlFor="bloodType">
-                                  bloodType
+                                    bloodType
                                   </label>
                                   <select
                                     name="bloodType"
@@ -277,18 +279,18 @@ export default function AddPatient() {
                                     value={patient.bloodType}
                                     onChange={handleChange}
                                   >
-                                  <option value=""></option>
-                                  <option value="+A">+A</option>
-                                  <option value="-A">-A</option>
-                                  <option value="+B">+B</option>
-                                  <option value="-B">-B</option>
-                                  <option value="+O">+O</option>
-                                  <option value="-O">-O</option>
-                                  <option value="+AB">+AB</option>
-                                  <option value="-AB">-AB</option>
+                                    <option value=""></option>
+                                    <option value="+A">+A</option>
+                                    <option value="-A">-A</option>
+                                    <option value="+B">+B</option>
+                                    <option value="-B">-B</option>
+                                    <option value="+O">+O</option>
+                                    <option value="-O">-O</option>
+                                    <option value="+AB">+AB</option>
+                                    <option value="-AB">-AB</option>
                                   </select>
                                 </div>
-                                
+
                                 <div className="form-outline mb-2 text-muted ">
                                   <label className="" htmlFor="maritalStatus">
                                     Marital Status
