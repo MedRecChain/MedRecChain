@@ -14,7 +14,7 @@ contract MedRecChain is AccessControl {
 
     
     // Admin refers to government, It hard coded by us.
-    address public Admin = 0xe7b5DEb3dA0e59Ea8F46d497995433629C67501f;
+    address public Admin = 0x444527ec6c2873C17790B437C4EAfebf559318Eb;
     
     // [_patient][_doctor] = bool
     mapping (address=>mapping (address =>bool)) isAuth;
@@ -62,6 +62,7 @@ contract MedRecChain is AccessControl {
 
         uint256 id;
         string name;
+        string hospital_name;
         address hospital_addr;
         uint256 phone;
         string email;
@@ -195,7 +196,7 @@ contract MedRecChain is AccessControl {
 
   ///////////////
 
-    function addDoctor(string memory _name, address _hospital_addr, uint256  _phone, string memory _email, uint256  _age, string memory _place, string memory _Medical_specialty, address  _docAddress) public onlyAdmin returns(bool success){
+    function addDoctor(string memory _name,string memory _hospital_name, address _hospital_addr, uint256  _phone, string memory _email, uint256  _age, string memory _place, string memory _Medical_specialty, address  _docAddress) public onlyAdmin returns(bool success){
         require(!hasRole(DOCTOR_ROLE, _docAddress), "This account already a doctor");
         require(!hasRole(ADMIN_ROLE, _docAddress), "This Account is Admin!! ");
         require(!hasRole(HOSPITAL_ROLE, _docAddress), "This Account is Hospital!! ");
@@ -203,7 +204,7 @@ contract MedRecChain is AccessControl {
         require(hasRole(HOSPITAL_ROLE, _hospital_addr), "This hospital is really exisit!! ");
         _setupRole(DOCTOR_ROLE, _docAddress);
         Doctor_index= Doctor_index+1;
-        doctors[_docAddress]=doctor(Doctor_index, _name, _hospital_addr, _phone,  _email,  _age,  _place,  _Medical_specialty, _docAddress); 
+        doctors[_docAddress]=doctor(Doctor_index, _name, _hospital_name, _hospital_addr, _phone,  _email,  _age,  _place,  _Medical_specialty, _docAddress); 
         doctors_keys.push(_docAddress);
         return true;
     }

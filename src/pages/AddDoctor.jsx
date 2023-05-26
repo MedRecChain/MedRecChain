@@ -71,7 +71,8 @@ export default function AddDoctor() {
 
   const [doctor, setDoctor] = useState({
     doctorName: "",
-    hospitaladdres: "",
+    hospitalName: "",
+    hospitalAddress: "",
     doctorPhone: "",
     doctorEmail: "",
     age: "",
@@ -96,10 +97,12 @@ export default function AddDoctor() {
       setIsLoading(true);
       e.preventDefault();
       const addDoctor = async (doc) => {
+        const hospitalAddress = getHospitalAddress(doc.hospitalName); 
         const success = await Contract.methods
           .addDoctor(
             doc.doctorName,
-            doc.hospitaladdres,
+            doc.hospitalName,
+            hospitalAddress, 
             doc.doctorPhone,
             doc.doctorEmail,
             doc.age,
@@ -122,7 +125,7 @@ export default function AddDoctor() {
           alert("Doctor Added Successfully.");
           setIsLoading(false);
         } else {
-          alert("Doctor  Not Added !!.");
+          alert("Doctor Not Added !!.");
           setIsLoading(false);
         }
       };
@@ -187,7 +190,21 @@ export default function AddDoctor() {
   };
 
   getallhospitals();
+  // ///////////////////////////////////////
+  const handleHospitalChange = (event) => {
+    setDoctor({
+      ...doctor,
+      hospitalName: event.target.value,
+    });
+  };
 
+  const getHospitalAddress = (hospitalName) => {
+    const selectedHospital = Hospitaldate.find(
+      (date) => date.name === hospitalName
+    );
+    return selectedHospital ? selectedHospital.addr : "N/A";
+  };
+  //////////////////////////
   return (
     <>
       <main id="main" className="main">
@@ -225,25 +242,39 @@ export default function AddDoctor() {
 
                         <div className="form-outline mb-2">
                           <label className="" htmlFor="form3Example1cg">
-                            Hospital address
+                            Hospital Name
                           </label>
                           <select
-                            name="hospitaladdres"
+                            name="hospitalName"
                             className="d-block w-100 opacity-50 form-control-lg"
-                            id="maritalStatus"
+                            id="hospitalName"
                             required="required"
-                            value={doctor.hospitaladdres}
-                            onChange={handleChange}
+                            value={doctor.hospitalName}
+                            onChange={handleHospitalChange} // Update the handleChange function to handle hospital selection
                           >
                             <option value=""></option>
                             {Hospitaldate.map((date) => {
                               return (
-                                <option value={date.addr}>{date.addr}</option>
+                                <option value={date.name}>{date.name}</option>
                               );
                             })}
                           </select>
                         </div>
 
+                        <div className="form-outline mb-2">
+                          <label className="" htmlFor="form3Example1cg">
+                            Hospital Address
+                          </label>
+                          <input
+                            type="text"
+                            name="hospitalAddress"
+                            className="d-block w-100 opacity-50 form-control-lg"
+                            id="hospitalAddress"
+                            required="required"
+                            value={getHospitalAddress(doctor.hospitalName)} 
+                            onChange={handleChange} 
+                          />
+                        </div>
                         <div className="form-outline mb-2">
                           <label className="" htmlFor="form3Example1cg">
                             Doctor Phone
