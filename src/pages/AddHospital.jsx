@@ -7,6 +7,8 @@ import { useLocation } from "react-router-dom";
 import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { useEffect } from "react";
+import { BsClipboard2CheckFill, BsQrCode } from "react-icons/bs";
+import QrScanner from "qr-scanner";
 
 export default function AddHospital() {
   const location = useLocation();
@@ -171,6 +173,31 @@ export default function AddHospital() {
 
   getallhospitals();
 
+  // for QR scanner
+  const [fileQr, setFileQr] = useState(null);
+  const [dataQr, setDateQr] = useState(null);
+  const fileRef = React.useRef();
+
+  const handleClickQR = () => {
+    fileRef.current.click();
+  };
+
+  const handleChangeQR = async (e) => {
+    const fileQr = e.target.files[0];
+    setFileQr(fileQr);
+    const result = await QrScanner.scanImage(fileQr);
+    setDateQr(result);
+  };
+
+  // copy pk to clipboard
+
+  const handleCopyClick = () => {
+    navigator.clipboard.writeText(dataQr.slice(-42));
+    setDateQr("Copied !");
+  };
+
+  ////
+
   return (
     <>
       <main id="main" className="main">
@@ -205,21 +232,70 @@ export default function AddHospital() {
                         />
                       </div>
 
-                      <div className="form-outline mb-2">
-                        <label className="" htmlFor="hospitalPublickey">
-                          Hospital Pk
-                        </label>
-                        <input
-                          name="hospitalPublickey"
-                          type="text"
-                          id="hospitalPublickey"
-                          required="required"
-                          minlength="42"
-                          maxlength="42"
-                          className=" form-control form-control-lg"
-                          value={hospital.hospitalPublickey}
-                          onChange={handleChange}
-                        />
+                      <div className="form-outline mt-4 text-muted row">
+                        <div className="col-xl-9">
+                          <label className="" htmlFor="hospitalPublickey">
+                            Hospital Pk
+                          </label>
+                          <input
+                            name="hospitalPublickey"
+                            type="text"
+                            id="hospitalPublickey"
+                            required="required"
+                            minlength="42"
+                            maxlength="42"
+                            className=" form-control form-control-lg"
+                            value={hospital.hospitalPublickey}
+                            onChange={handleChange}
+                          />
+                        </div>
+                        <div className="col-xl-3">
+                          <label
+                            className="form-label"
+                            htmlFor="form3Example1cg"
+                          >
+                            Scan QR code
+                          </label>
+                          <div className="col-xl-6 d-flex justify-content-center">
+                            <button
+                              type="button"
+                              onClick={handleClickQR}
+                              className=" "
+                            >
+                              <i className="fs-3 px-3 bi bi-grid">
+                                <BsQrCode />
+                              </i>
+                            </button>
+
+                            <input
+                              type="file"
+                              ref={fileRef}
+                              onChange={handleChangeQR}
+                              accept=".png, .jpg , .jpeg"
+                              className="d-none"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className=" mt-1 d-flex justify-content-center align-items-center">
+                        {dataQr && (
+                          <div className=" mt-1 d-flex justify-content-end align-items-center">
+                            <p className="text-success d-flex justify-content-start">
+                              {dataQr.slice(-42)}
+                            </p>
+                            <span
+                              className="fs-3 mx-3"
+                              onClick={handleCopyClick}
+                              onChange={handleChangeQR}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <i className="bi bi-grid">
+                                <BsClipboard2CheckFill />
+                              </i>
+                            </span>
+                          </div>
+                        )}
                       </div>
 
                       <div className="form-outline mb-2">
@@ -291,12 +367,11 @@ export default function AddHospital() {
                       </div>
                       <br />
                       <br />
-                      <br />
 
                       <Button
                         disabled={isLoading}
                         type="remove"
-                        className="btn-danger my-4  p-2 pe-5 ps-5 mx-auto d-block "
+                        className="btn-danger my-5  p-2 pe-5 ps-5 mx-auto d-block "
                       >
                         Remove
                       </Button>

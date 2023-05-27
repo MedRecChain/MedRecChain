@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import AdminSideBar from "../components/AdminSideBar";
 import MyFooter from "../components/MyFooter";
 import { useLocation } from "react-router-dom";
 import Web3 from "web3";
@@ -90,13 +89,7 @@ export default function RegisteredDoctors(props) {
 
   return (
     <>
-      <main id="main" className="main">
-        <AdminSideBar
-          tap1=" Hospitals"
-          tap2="Doctors"
-          tap3="Home"
-          tap4="Log Out"
-        />
+      <main>
 
         <section className="section container p-4 mt-4">
           <div className="mt-4 mb-4">
@@ -158,9 +151,7 @@ export default function RegisteredDoctors(props) {
           </div>
         </section>
       </main>
-      <div className="side-footer">
         <MyFooter />
-      </div>
     </>
   );
 }

@@ -250,7 +250,7 @@ const Dashboard = () => {
               className="col-xl-5 icon-box card requests p-4 py-5 bg-opacity-50 "
             >
               <div className="icon">
-                <Icon icon="fluent:patient-32-filled" className="i" />
+                <Icon icon="mdi:patient" className="i" />
               </div>
               <h4 className="">Patients</h4>
               <p className="">

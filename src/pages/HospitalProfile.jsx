@@ -239,7 +239,7 @@ export default function HospitalProfile() {
                     labels: ["Patients", "Doctors"],
                     datasets: [
                       {
-                        label: "Number of Employes",
+                        label: "Number of Participants",
                         backgroundColor: ["#5096ad", "#075369"],
                         data: [Patientdate, Doctordat],
                         barPercentage: 5,
@@ -257,7 +257,7 @@ export default function HospitalProfile() {
               <div className="card mx-auto align-center">
                 <div className="container p-5">
                   <CChart
-                  className="mb-4"
+                    className="mb-4"
                     type="radar"
                     data={{
                       labels: DoctorMedical_specialty,

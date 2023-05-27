@@ -7,6 +7,7 @@ import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { useEffect, useState } from "react";
 import { CChart } from "@coreui/react-chartjs";
+import { Icon } from "@iconify/react";
 // import * as echarts from 'echarts';
 
 export default function Admin() {
@@ -167,69 +168,70 @@ export default function Admin() {
           tap4="Log Out"
         />
 
-        <section className="py-5 px-5 bg-info-light position-relative overflow-hidden">
-          <div className="container px-5 position-relative">
-            <div className=" mb-5 mx-auto text-center">
-              <h2 className="mb-5 px-5">Admin Dashboard</h2>
-            </div>
-            <div className="row container ">
+        <section id="counts" className="counts">
+          <div className=" mb-5 mx-auto text-center">
+            <h2 className="mb-5 pb-5 ">Admin Dashboard</h2>
+          </div>
+          <div className="container">
+            <div className="row justify-content-center">
               <Link
                 to="/registeredHospitals"
-                className=" container col-12 col-lg-4 mb-5 mb-lg-0"
+                className="col-lg-3 col-md-6 mt-5 mt-md-0"
               >
-                <div className="mw-md mx-auto py-4 px-4 bg-white rounded-4 text-center shadow-lg">
-                  <div
-                    className="d-flex mb-3 mx-auto align-items-center justify-content-center bg-info rounded-pill"
-                    style={{ width: "70px", height: " 70px" }}
-                  >
-                    <i className="bi bi-grid fs-2 text-gray">
-                      <FaHospitalAlt />
-                    </i>
+                <div className="count-box">
+                  <div className="icons">
+                    <Icon
+                      icon="fa-regular:hospital"
+                      color="white"
+                      width="24"
+                      height="24"
+                    />
                   </div>
-                  <h4 className="fs-2 card-title">{Hospitaldate.length}</h4>
-                  <h6 className="fs-6 text-muted">Hospitals</h6>
+                  <span>{Hospitaldate.length}</span>
+                  <p>Registerd Hospitals</p>
                 </div>
               </Link>
+
               <Link
                 to="/registeredDoctors"
-                className=" container col-12 col-lg-4 mb-5 mb-lg-0"
+                className="col-lg-3 col-md-6 mt-5 mt-lg-0"
               >
-                <div className="mw-md mx-auto py-4 px-4 bg-white rounded-4 text-center shadow-lg">
-                  <div
-                    className="d-flex mb-3 mx-auto align-items-center justify-content-center bg-info rounded-pill"
-                    style={{ width: "70px", height: " 70px" }}
-                  >
-                    <i className="bi bi-grid fs-2 text-gray">
-                      <FaStethoscope />
-                    </i>
+                <div className="count-box">
+                  <div className="icons">
+                    <Icon
+                      icon="healthicons:doctor-male"
+                      color="white"
+                      width="24"
+                      height="24"
+                    />
                   </div>
-                  <h4 className="fs-2 card-title">{Doctordate.length}</h4>
-                  <h6 className="fs-6 text-muted"> Doctors</h6>
+                  <span>{Doctordate.length}</span>
+                  <p>Registered Doctorss</p>
                 </div>
               </Link>
 
               <Link
                 to="/registeredPatients"
-                className=" container col-12 col-lg-4 mb-5 mb-lg-0"
+                className="col-lg-3 col-md-6 mt-5 mt-lg-0"
               >
-                <div className="mw-md mx-auto py-4 px-4 bg-white rounded-4 text-center shadow-lg">
-                  <div
-                    className="d-flex mb-3 mx-auto align-items-center justify-content-center bg-info rounded-pill"
-                    style={{ width: "70px", height: " 70px" }}
-                  >
-                    <i className="bi bi-grid fs-2 text-gray">
-                      <FaBed />
-                    </i>
+                <div className="count-box">
+                  <div className="icons">
+                    <Icon
+                      icon="mdi:patient"
+                      color="white"
+                      width="24"
+                      height="24"
+                    />
                   </div>
-                  <h4 className="fs-2 card-title">{Patientdate.length}</h4>
-                  <h6 className="fs-6 text-muted"> Patients</h6>
+                  <span>{Patientdate.length}</span>
+                  <p>Registered Patients</p>
                 </div>
               </Link>
             </div>
           </div>
         </section>
 
-        <section className=" py-2 px-5 bg-info-light position-relative overflow-hidden my-3 mx-5  ">
+        <section className=" py-2 px-5 bg-info-light position-relative overflow-hidden mx-5  ">
           <div className="row">
             <div className="forms col-xl-7">
               <div className="card py-5">

@@ -1,11 +1,151 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { React, useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import MyNav from "../components/MyNav";
 import MyFooter from "../components/MyFooter.jsx";
 import bg from "../assets/img/slider/bg.webp";
+import { FaBed, FaHospitalAlt, FaStethoscope } from "react-icons/fa";
+import { Link, useLocation } from "react-router-dom";
+import Web3 from "web3";
+import detectEthereumProvider from "@metamask/detect-provider";
+import { CChart } from "@coreui/react-chartjs";
 
 const Home = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const acount = searchParams.get("account");
+  const [Contract, setContract] = useState(null);
+
+  const [wEb3, setwEb3] = useState({
+    provider: null,
+    web3: null,
+  });
+
+  const providerChanged = (provider) => {
+    provider.on("chainChanged", (_) => window.location.reload());
+  };
+  const accountsChanged = (provider) => {
+    provider.on("accountsChanged", (_) => window.location.replace("/"));
+  };
+
+  //get WEB3
+  useEffect(() => {
+    const loadProvider = async () => {
+      const provider = await detectEthereumProvider();
+      if (provider) {
+        providerChanged(provider);
+        accountsChanged(provider);
+        setwEb3({
+          provider,
+          web3: new Web3(provider),
+        });
+      }
+    };
+    loadProvider();
+  }, []);
+
+  //get Contract
+  useEffect(() => {
+    const loadcontract = async () => {
+      const contractfile = await fetch("/contracts/MedRecChain.json");
+      const convert = await contractfile.json();
+      const networkid = await wEb3.web3.eth.net.getId();
+      const networkDate = convert.networks[networkid];
+      if (networkDate) {
+        const abi = convert.abi;
+        const address = convert.networks[networkid].address;
+        const contract = await new wEb3.web3.eth.Contract(abi, address);
+
+        setContract(contract);
+      } else {
+        window.alert("only ganache");
+        window.location.reload();
+        console.log(networkid);
+      }
+    };
+
+    loadcontract();
+  }, [wEb3]);
+
+  ///get Number of all Hospitals at system. (By Lenght)
+  const [Hospitaldate, setHospitaldate] = useState([]);
+  const [Hospitalname, setHospitalname] = useState([]);
+  const Hospitalnames = [];
+  const getallhospitals = async () => {
+    const date = await Contract.methods
+      .get_all_hospitals()
+      .call({ from: acount });
+    for (var i = 0; i < date.length; i++) {
+      Hospitalnames[i] = date[i].name;
+    }
+    setHospitalname(Hospitalnames);
+    setHospitaldate(date);
+  };
+  getallhospitals();
+
+  ///get Number of all Doctors at system.(By Lenght)
+
+  const [Doctordate, setDoctordate] = useState([]);
+  const [DocNUM_For_Hos, setDocNUM_For_Hos] = useState([]);
+  const DoctorNUM_For_Hos = [];
+  const getallDoctors = async () => {
+    const doc = await Contract.methods.get_all_Doctors().call({
+      from: acount,
+    });
+    setDoctordate(doc);
+    // for every hospital.
+    for (var a = 0; a < Hospitaldate.length; a++) {
+      var num = 0;
+      for (var i = 0; i < doc.length; i++) {
+        if (doc[i].hospital_addr == Hospitaldate[a].addr) {
+          num++;
+        }
+      }
+      DoctorNUM_For_Hos[a] = num;
+      setDocNUM_For_Hos(DoctorNUM_For_Hos);
+    }
+  };
+
+  getallDoctors();
+
+  ///get Number of all patients at system.
+
+  const [Recorddate, setRecorddate] = useState();
+  const getallrecord = async () => {
+    const date = await Contract.methods
+      .get_record_number()
+      .call({ from: acount });
+    setRecorddate(date);
+  };
+
+  getallrecord();
+
+  // get all patients numder
+  const [Patientdate, setPatientdate] = useState([]);
+  const [PatientNUM_For_Hos, setPatientNUM_For_Hos] = useState([]);
+  const Patient_NUM_For_Hos = [];
+  ///Date At TABLE for Patients.
+  const getallPatients = async () => {
+    const pat = await Contract.methods
+      .get_all_Patients()
+      .call({ from: acount });
+    setPatientdate(pat);
+    // for every hospital.
+    for (var a = 0; a < Hospitaldate.length; a++) {
+      var num = 0;
+      for (var i = 0; i < pat.length; i++) {
+        if (pat[i].hospital_addr == Hospitaldate[a].addr) {
+          num++;
+        }
+      }
+      Patient_NUM_For_Hos[a] = num;
+      setPatientNUM_For_Hos(Patient_NUM_For_Hos);
+    }
+  };
+
+  getallPatients();
+
+  ///////////////////
+
   return (
     <>
       <nav>
@@ -147,6 +287,66 @@ const Home = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="counts" className="counts">
+        <div className="container">
+          <div className="row justify-content-center">
+            <Link
+              to="/registeredHospitals"
+              className="col-lg-3 col-md-6 mt-5 mt-md-0"
+            >
+              <div className="count-box">
+                <div className="icons">
+                  <Icon
+                    icon="fa-regular:hospital"
+                    color="white"
+                    width="24"
+                    height="24"
+                  />
+                </div>
+                <span>{Hospitaldate.length}</span>
+                <p>Registerd Hospitals</p>
+              </div>
+            </Link>
+
+            <Link
+              to="/registeredDoctors"
+              className="col-lg-3 col-md-6 mt-5 mt-lg-0"
+            >
+              <div className="count-box">
+                <div className="icons">
+                  <Icon
+                    icon="healthicons:doctor-male"
+                    color="white"
+                    width="24"
+                    height="24"
+                  />
+                </div>
+                <span>{Doctordate.length}</span>
+                <p>Registered Doctorss</p>
+              </div>
+            </Link>
+
+            <Link
+              to="/registeredPatients"
+              className="col-lg-3 col-md-6 mt-5 mt-lg-0"
+            >
+              <div className="count-box">
+                <div className="icons">
+                  <Icon
+                    icon="mdi:patient"
+                    color="white"
+                    width="24"
+                    height="24"
+                  />
+                </div>
+                <span>{Patientdate.length}</span>
+                <p>Registered Patients</p>
+              </div>
+            </Link>
           </div>
         </div>
       </section>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import AdminSideBar from "../components/AdminSideBar";
 import MyFooter from "../components/MyFooter";
 import { useLocation } from "react-router-dom";
 import Web3 from "web3";
@@ -90,14 +89,7 @@ export default function RegisteredPatients(props) {
 
   return (
     <>
-      <main id="main" className="main">
-        <AdminSideBar
-          tap1=" Hospitals"
-          tap2="Doctors"
-          tap3="Home"
-          tap4="Log Out"
-        />
-
+      <main>
         <section className="section container p-4 mt-4">
           <div className="mt-4 mb-4">
             <div className="forms mx-3">
@@ -131,9 +123,6 @@ export default function RegisteredPatients(props) {
                           <th scope="col">Patient Name</th>
                           <th scope="col">Public Key</th>
                           <th scope="col">Hospital Address</th>
-                          <th scope="col">Phone</th>
-                          <th scope="col">Age</th>
-                          <th scope="col">Marital Status</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -143,9 +132,6 @@ export default function RegisteredPatients(props) {
                               <th scope="row">{date.name}</th>
                               <td>{date.PatientAddress}</td>
                               <td>{date.hospital_addr}</td>
-                              <td>{date.phone}</td>
-                              <td>{date.age}</td>
-                              <td>{date.marital_status}</td>
                             </tr>
                           );
                         })}
@@ -162,7 +148,7 @@ export default function RegisteredPatients(props) {
           </div>
         </section>
       </main>
-      <div className="side-footer">
+      <div>
         <MyFooter />
       </div>
     </>

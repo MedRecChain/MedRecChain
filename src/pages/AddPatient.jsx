@@ -387,6 +387,7 @@ export default function AddPatient() {
                         </thead>
                         <tbody>
                           {Patientdate.map((date) => {
+                            if(date.hospital_addr == acount){
                             return (
                               <tr>
                                 <th scope="row">{date.name}</th>
@@ -396,7 +397,7 @@ export default function AddPatient() {
                                 <td>{date.age}</td>
                                 <td>{date.marital_status}</td>
                               </tr>
-                            );
+                            );}
                           })}
                         </tbody>
                       </table>

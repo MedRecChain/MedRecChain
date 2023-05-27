@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import AdminSideBar from "../components/AdminSideBar";
 import MyFooter from "../components/MyFooter";
 import { useLocation } from "react-router-dom";
 import Web3 from "web3";
@@ -106,6 +105,36 @@ export default function RegisteredHospitals(props) {
   };
 
   getallPatients();
+  // -----------
+
+  const getHospitalDoctorsCount = async () => {
+    try {
+      const count = await Contract.methods
+        .get_all_Doctors()
+        .call({ from: acount });
+      setDoctordat(parseInt(count));
+      console.log(count);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getHospitalPatientsCount = async () => {
+    try {
+      const count = await Contract.methods
+        .get_all_Patients()
+        .call({ from: acount });
+      setPatientdate(parseInt(count));
+      console.log(count);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    getHospitalDoctorsCount();
+    getHospitalPatientsCount();
+  }, [Contract]);
 
   //////////////////////////////////////////////////
 
@@ -132,14 +161,7 @@ export default function RegisteredHospitals(props) {
 
   return (
     <>
-      <main id="main" className="main">
-        <AdminSideBar
-          tap1=" Hospitals"
-          tap2="Doctors"
-          tap3="Home"
-          tap4="Log Out"
-        />
-
+      <main>
         <section className="section container p-4 mt-4">
           <div className="mt-4 mb-4">
             <div className="forms mx-3">
@@ -174,8 +196,6 @@ export default function RegisteredHospitals(props) {
                           <th scope="col">Public Key</th>
                           <th scope="col">Address</th>
                           <th scope="col">Phone</th>
-                          <th scope="col">Doctors</th>
-                          <th scope="col">Patients</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -186,8 +206,6 @@ export default function RegisteredHospitals(props) {
                               <td>{date.addr}</td>
                               <td>{date.place}</td>
                               <td>{date.phone}</td>
-                              <td>{Doctordat}</td>
-                              <td>{Patientdate}</td>
                             </tr>
                           );
                         })}
@@ -204,9 +222,7 @@ export default function RegisteredHospitals(props) {
           </div>
         </section>
       </main>
-      <div className="side-footer">
-        <MyFooter />
-      </div>
+      <MyFooter />
     </>
   );
 }

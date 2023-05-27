@@ -7,6 +7,8 @@ import { useLocation } from "react-router-dom";
 import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { useEffect } from "react";
+import { BsClipboard2CheckFill, BsQrCode } from "react-icons/bs";
+import QrScanner from "qr-scanner";
 
 export default function AddDoctor() {
   const location = useLocation();
@@ -204,6 +206,30 @@ export default function AddDoctor() {
     );
     return selectedHospital ? selectedHospital.addr : "N/A";
   };
+
+  // for QR scanner
+  const [fileQr, setFileQr] = useState(null);
+  const [dataQr, setDateQr] = useState(null);
+  const fileRef = React.useRef();
+
+  const handleClickQR = () => {
+    fileRef.current.click();
+  };
+
+  const handleChangeQR = async (e) => {
+    const fileQr = e.target.files[0];
+    setFileQr(fileQr);
+    const result = await QrScanner.scanImage(fileQr);
+    setDateQr(result);
+  };
+
+  // copy pk to clipboard
+
+  const handleCopyClick = () => {
+    navigator.clipboard.writeText(dataQr.slice(-42));
+    setDateQr("Copied !");
+  };
+
   //////////////////////////
   return (
     <>
@@ -238,72 +264,101 @@ export default function AddDoctor() {
                             value={doctor.doctorName}
                             onChange={handleChange}
                           />
-                        </div>
-                        <div className="form-outline mb-2">
-                          <label className="" htmlFor="form3Example1cg">
-                            Doctor Public key
-                          </label>
-                          <input
-                            name="doctorPk"
-                            type="text"
-                            required="required"
-                            minlength="42"
-                            maxlength="42"
-                            id="form3Example1cg"
-                            className=" form-control form-control-lg"
-                            value={doctor.doctorPk}
-                            onChange={handleChange}
-                          />
-                        </div>
-                        <div className="form-outline mb-2">
-                          <label className="" htmlFor="form3Example1cg">
-                            Medical Specialty
-                          </label>
-                          <input
-                            name="medicalSpecialty"
-                            type="text"
-                            required="required"
-                            id="form3Example1cg"
-                            className=" form-control form-control-lg"
-                            value={doctor.medicalSpecialty}
-                            onChange={handleChange}
-                          />
-                        </div>
+                          <div className="form-outline mb-2">
+                            <label className="" htmlFor="form3Example1cg">
+                              Medical Specialty
+                            </label>
+                            <input
+                              name="medicalSpecialty"
+                              type="text"
+                              required="required"
+                              id="form3Example1cg"
+                              className=" form-control form-control-lg"
+                              value={doctor.medicalSpecialty}
+                              onChange={handleChange}
+                            />
+                          </div>
 
-                        <div className="form-outline mb-2">
-                          <label className="" htmlFor="form3Example1cg">
-                            Hospital Name
-                          </label>
-                          <select
-                            name="hospitalName"
-                            className="d-block w-100 opacity-50 form-control-lg"
-                            id="hospitalName"
-                            required="required"
-                            value={doctor.hospitalName}
-                            onChange={handleHospitalChange} // Update the handleChange function to handle hospital selection
-                          >
-                            <option value=""></option>
-                            {Hospitaldate.map((date) => {
-                              return (
-                                <option value={date.name}>{date.name}</option>
-                              );
-                            })}
-                          </select>
-                        </div>
+                          <div className="form-outline mb-2">
+                            <label className="" htmlFor="form3Example1cg">
+                              Hospital Name
+                            </label>
+                            <select
+                              name="hospitalName"
+                              className="d-block w-100 opacity-50 form-control-lg"
+                              id="hospitalName"
+                              required="required"
+                              value={doctor.hospitalName}
+                              onChange={handleHospitalChange} // Update the handleChange function to handle hospital selection
+                            >
+                              <option value=""></option>
+                              {Hospitaldate.map((date) => {
+                                return (
+                                  <option value={date.name}>{date.name}</option>
+                                );
+                              })}
+                            </select>
+                          </div>
 
-                        <div className="form-outline mb-2">
-                          <label className="" htmlFor="form3Example1cg">
-                            Hospital Address
-                          </label>
-                          <input
-                            type="text"
-                            name="hospitalAddress"
-                            className="d-block w-100 opacity-50 form-control-lg"
-                            id="hospitalAddress"
-                            required="required"
-                            value={getHospitalAddress(doctor.hospitalName)}
-                            onChange={handleChange}
-                          />
+                          <div className="form-outline mb-2">
+                            <label className="" htmlFor="form3Example1cg">
+                              Hospital Address
+                            </label>
+                            <input
+                              type="text"
+                              name="hospitalAddress"
+                              className="d-block w-100 opacity-50 form-control-lg"
+                              id="hospitalAddress"
+                              required="required"
+                              value={getHospitalAddress(doctor.hospitalName)}
+                              onChange={handleChange}
+                            />
+                          </div>
+                          <div className="row d-flex align-items-center">
+                            <div className="col-xl-9">
+                              <label className="" htmlFor="form3Example1cg">
+                                Doctor Public key
+                              </label>
+                              <input
+                                name="doctorPk"
+                                type="text"
+                                required="required"
+                                minlength="42"
+                                maxlength="42"
+                                id="form3Example1cg"
+                                className=" form-control form-control-lg"
+                                value={doctor.doctorPk}
+                                onChange={handleChange}
+                              />
+                            </div>
+                            <div className="col-xl-3">
+                              <label
+                                className="form-label"
+                                htmlFor="form3Example1cg"
+                              >
+                                Scan QR code
+                              </label>
+                              <div className="col-xl-8 d-flex justify-content-center">
+                                <button
+                                  type="button"
+                                  onClick={handleClickQR}
+                                  className=" "
+                                >
+                                  <i className="fs-3 px-3 bi bi-grid">
+                                    <BsQrCode />
+                                  </i>
+                                </button>
+
+                                <input
+                                  type="file"
+                                  ref={fileRef}
+                                  onChange={handleChangeQR}
+                                  accept=".png, .jpg , .jpeg"
+                                  className="d-none"
+                                />
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div className="col-xl-6">
@@ -313,7 +368,7 @@ export default function AddDoctor() {
                           </label>
                           <input
                             name="doctorPhone"
-                            type="text"
+                            type="tel"
                             required="required"
                             id="form3Example1cg"
                             className=" form-control form-control-lg"

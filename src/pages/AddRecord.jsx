@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import AddRecordSideBar from "../components/AddRecordSideBar";
 import recordData from "../assets/img/slider/record.png";
 import MyFooter from "../components/MyFooter";
 import { FaCamera } from "react-icons/fa";

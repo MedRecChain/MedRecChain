@@ -7,6 +7,7 @@ import {
   BsFillTrash3Fill,
   BsClipboard2CheckFill,
   BsQrCode,
+  BsSearch,
 } from "react-icons/bs";
 import { useLocation } from "react-router-dom";
 import Web3 from "web3";
@@ -234,6 +235,32 @@ export default function PatientPermission() {
     }
   };
 
+  //////////////////// Search Box //////////////////
+
+  const [searchValue, setSearchValue] = useState("");
+
+  const [Patientdate, setPatientdate] = useState([]);
+
+  ///Date At TABLE for Patients.
+  const getallPatients = async () => {
+    const date = await Contract.methods
+      .get_all_Patients()
+      .call({ from: acount });
+    setPatientdate(date);
+  };
+
+  useEffect(() => {
+    getallPatients();
+  }, [Contract]);
+
+  const filteredPatients = Requestdate.filter(
+    (date) =>
+      date.patient_name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      date.to_patients_addr.includes(searchValue)
+  );
+  ////////////////////////////////////////////////
+
+  /////////////////////////////////////
   return (
     <>
       <main id="main" className="main container perm">
@@ -368,7 +395,25 @@ export default function PatientPermission() {
             <div className="forms">
               <div className="card overflow-auto">
                 <div className="card-body">
-                  <h3 className="card-title">Requests For You</h3>
+                  <div className="row d-flex align-items-center">
+                    <div className="col-xl-4">
+                      <h3 className="card-title">Requests For You</h3>
+                    </div>
+                    <div className="col-xl-8">
+                      <div className="input-group w-50">
+                        <input
+                          type="text"
+                          placeholder="Search for patient by name or PK"
+                          value={searchValue}
+                          onChange={(e) => setSearchValue(e.target.value)}
+                          className="form-control"
+                        />
+                        <span className="input-group-text">
+                          <BsSearch />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                   <table className="table table-borderless datatable">
                     <thead>
                       <tr>
@@ -414,7 +459,16 @@ export default function PatientPermission() {
                             </tr>
                           );
                         }
-                      })}
+                      }).filter(
+                        (date) =>
+                          date !== undefined &&
+                          (date.props.children[0].props.children
+                            .toLowerCase()
+                            .includes(searchValue.toLowerCase()) ||
+                            date.props.children[1].props.children.includes(
+                              searchValue
+                            ))
+                      )}
                     </tbody>
                   </table>
                 </div>
