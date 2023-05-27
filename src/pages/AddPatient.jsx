@@ -147,6 +147,7 @@ export default function AddPatient() {
       <HospitalSideBar
         tap1="Hospital Profile"
         tap2="Add Patient"
+        tap4="See All Hospitals"
         tap3="Log Out"
       />
       <main id="main" className="main">
@@ -374,7 +375,7 @@ export default function AddPatient() {
                   <div className="card overflow-auto">
                     <div className="card-body">
                       <h1 className="card-title">Registered Patients</h1>
-                      <table className="table table-borderless datatable">
+                      <table className="table table-borderless datatable m-0">
                         <thead>
                           <tr>
                             <th scope="col">Patient Name</th>

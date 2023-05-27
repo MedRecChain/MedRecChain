@@ -8,6 +8,7 @@ import detectEthereumProvider from "@metamask/detect-provider";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { CChart } from "@coreui/react-chartjs";
+import { BsSearch } from "react-icons/bs";
 
 export default function HospitalProfile() {
   const location = useLocation();
@@ -75,6 +76,31 @@ export default function HospitalProfile() {
     };
     getAccount();
   });
+
+
+  const [searchValue, setSearchValue] = useState("");
+
+  const [Doctordate, setDoctordate] = useState([]);
+
+  ///Date At TABLE for Doctors.
+  const getalldoctors = async () => {
+    const date = await Contract.methods
+      .get_all_Doctors()
+      .call({ from: acount });
+    setDoctordate(date);
+  };
+
+  useEffect(() => {
+    getalldoctors();
+  }, [Contract]);
+
+  const filteredDoctors = Doctordate.filter(
+    (doctor) =>
+      doctor.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      doctor.docAddress.includes(searchValue)
+  );
+
+  /////
 
   const [Hospitaldate, setHospitaldate] = useState([]);
 
@@ -156,6 +182,7 @@ export default function HospitalProfile() {
         <HospitalSideBar
           tap1="Hospital Profile"
           tap2="Add Patient"
+          tap4="See All Hospitals"
           tap3="Log Out"
         />
         <section className="section forms container mt-4 p-5">
@@ -275,6 +302,80 @@ export default function HospitalProfile() {
                       ],
                     }}
                   />
+                </div>
+              </div>
+            </div>
+
+            <div className="col-xl-12">
+              <div className="card  align-center">
+                <div className="container ">
+                <div className="mt-4 mb-4">
+            <div className="forms ">
+              <div className="card overflow-auto">
+                <div className="card-body">
+                  <div className="row d-flex align-items-center">
+                    <div className="col-xl-4">
+                      <h1 className="card-title my-3">Registered Doctors</h1>
+                    </div>
+                    <div className="col-xl-8">
+                      <div className="d-flex">
+                        <div className="input-group w-50">
+                          <input
+                            type="text"
+                            placeholder="Search for doctor by name or PK"
+                            value={searchValue}
+                            onChange={(e) => setSearchValue(e.target.value)}
+                            className="form-control"
+                          />
+                          <span className="input-group-text">
+                            <BsSearch />
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                 
+                    <table className="table table-borderless datatable m-0">
+                      <thead>
+                        <tr>
+                          <th scope="col">Doctor Name</th>
+                          <th scope="col">Doctor PK</th>
+                          <th scope="col">Medical Specialty</th>
+                          <th scope="col">Phone</th>
+                          <th scope="col">Hospital PK </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Doctordate.map((doctor) => {
+                          if (doctor.hospital_addr == account)
+                         { return (
+                            <tr key={doctor.docAddress}>
+                              <th scope="row">{doctor.name}</th>
+                              <td>{doctor.docAddress}</td>
+                              <td>{doctor.Medical_specialty}</td>
+                              <td>{doctor.phone}</td>
+                              <td>{doctor.hospital_addr}</td>
+                            </tr>
+                          );}
+                        }).filter(
+                          (date) =>
+                            date !== undefined &&
+                            (date.props.children[0].props.children
+                              .toLowerCase()
+                              .includes(searchValue.toLowerCase()) ||
+                              date.props.children[1].props.children.includes(
+                                searchValue
+                              ))
+                        
+                       ) }
+                      </tbody>
+                    </table>
+                
+                </div>
+              </div>
+            </div>
+          </div>
+
                 </div>
               </div>
             </div>

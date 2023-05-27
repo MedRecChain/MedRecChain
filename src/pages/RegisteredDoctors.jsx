@@ -118,7 +118,7 @@ export default function RegisteredDoctors(props) {
                     </div>
                   </div>
                   {filteredDoctors.length > 0 ? (
-                    <table className="table table-borderless datatable">
+                    <table className="table table-borderless datatable m-0">
                       <thead>
                         <tr>
                           <th scope="col">Doctor Name</th>

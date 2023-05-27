@@ -82,6 +82,7 @@ export default function Admin() {
   const [Hospitaldate, setHospitaldate] = useState([]);
   const [Hospitalname, setHospitalname] = useState([]);
   const Hospitalnames = [];
+  
   const getallhospitals = async () => {
     const date = await Contract.methods
       .get_all_hospitals()

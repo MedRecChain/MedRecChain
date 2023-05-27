@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "../assets/img/logo/Symbol.png";
 import { Navbar } from "react-bootstrap";
-import { BsQuestionCircleFill } from "react-icons/bs";
+import { BsFillHospitalFill } from "react-icons/bs";
 import { FaBed, FaHospitalAlt, FaSignOutAlt } from "react-icons/fa";
 import { Link, NavLink } from "react-router-dom";
 
@@ -82,6 +82,14 @@ const [account, setAccount] = useState();
                 <FaBed />
               </i>
               <span>{props.tap2}</span>
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink className="nav-link" to={`/allhospitals?`}>
+              <i className="bi bi-grid">
+                <BsFillHospitalFill />
+              </i>
+              <span>{props.tap4}</span>
             </NavLink>
           </li>
 

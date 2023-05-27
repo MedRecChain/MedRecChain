@@ -30,6 +30,7 @@ import RegisteredPatients from "./pages/RegisteredPatients";
 import RegisteredDoctors from "./pages/RegisteredDoctors";
 import PreviewRecordForPatient from "./pages/PreviewRecordForPatient";
 import PreviewRecordForDoctor from "./pages/PreviewRecordForDoctor";
+import AllHospitals from "./pages/AllHospitals";
 
 const router = createBrowserRouter([
   {
@@ -59,7 +60,11 @@ const router = createBrowserRouter([
     element: <RegisteredDoctors />,
     errorElement: <ErrorPage />,
   },
-
+  {
+    path: "/allhospitals",
+    element: <AllHospitals />,
+    errorElement: <ErrorPage />,
+  },
   {
     path: "/registeredPatients",
     element: <RegisteredPatients />,

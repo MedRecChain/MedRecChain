@@ -400,7 +400,7 @@ export default function PatientPermission() {
                       <h3 className="card-title">Requests For You</h3>
                     </div>
                     <div className="col-xl-8">
-                      <div className="input-group w-50">
+                      <div className="input-group w-50 mb-3">
                         <input
                           type="text"
                           placeholder="Search for patient by name or PK"
@@ -414,7 +414,7 @@ export default function PatientPermission() {
                       </div>
                     </div>
                   </div>
-                  <table className="table table-borderless datatable">
+                  <table className="table table-borderless datatable m-0">
                     <thead>
                       <tr>
                         <th scope="col">Doctor Name</th>

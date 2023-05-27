@@ -11,7 +11,7 @@ contract MedRecChain is AccessControl {
     bytes32 public constant PATIENT_ROLE = keccak256("PATIENT_ROLE");
 
     // Admin refers to government, It hard coded by us.
-    address public Admin = 0xe7b5DEb3dA0e59Ea8F46d497995433629C67501f;
+    address public Admin = 0xC577E31A2A01564b662C57B115C86Af62f7E528A;
 
     // [_patient][_doctor] = bool
     mapping(address => mapping(address => bool)) isAuth;
@@ -199,7 +199,7 @@ contract MedRecChain is AccessControl {
     function get_all_hospitals()
         public
         view
-        onlyAdmin
+        
         returns (Hospital[] memory)
     {
         Hospital[] memory hos = new Hospital[](Hospitals_keys.length);
@@ -536,7 +536,7 @@ contract MedRecChain is AccessControl {
         return (isAuth[_patient][_doctor]);
     }
 
-    function DeleteRequest(address doc, address pat) public {
+    function DeleteRequest(address doc, address pat) public  {
         require(requests.length > 0, "No keys in array");
         for (uint i = 0; i < requests.length; i++) {
             if (
