@@ -4,13 +4,11 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract MedRecChain is AccessControl {
-
     //ROLES
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant HOSPITAL_ROLE = keccak256("HOSPITAL_ROLE");
     bytes32 public constant DOCTOR_ROLE = keccak256("DOCTOR_ROLE");
     bytes32 public constant PATIENT_ROLE = keccak256("PATIENT_ROLE");
-    bytes32 public constant ORG_ROLE = keccak256("ORG_ROLE");
 
     // Admin refers to government, It hard coded by us.
     address public Admin = 0x754e003A17B67E1C08dF2f84FC1a65e25073A62E;
@@ -28,6 +26,7 @@ contract MedRecChain is AccessControl {
 
     mapping(address => Hospital) Hospitals;
     address[] public Hospitals_keys;
+
     struct patient {
         uint256 id;
         string name;
@@ -75,21 +74,8 @@ contract MedRecChain is AccessControl {
         string notes;
     }
 
-    struct Organization {
-        uint256 id;
-        string name;
-        address addr;
-        string place;
-        uint256 phone;
-    }
-
-    mapping(address => Organization) Organizations;
-    address[] public Organizations_keys;
-
     // for Ids
     uint256 Hospital_index;
-    uint256 Organization_index;
-
     uint256 Doctor_index;
     uint256 Patient_index;
 
@@ -110,8 +96,6 @@ contract MedRecChain is AccessControl {
             return 3;
         } else if (hasRole(PATIENT_ROLE, msg.sender)) {
             return 4;
-        } else if (hasRole(ORG_ROLE, msg.sender)) {
-            return 5;
         } else {
             return 0;
         }
@@ -144,10 +128,7 @@ contract MedRecChain is AccessControl {
         );
         _;
     }
-    modifier onlyOrg() {
-        require(hasRole(ORG_ROLE, msg.sender), "This account is not Organization");
-        _;
-    }
+
     //////////////////////////////////////
 
     //Tasks done by Admin (defult exisit)
@@ -185,59 +166,6 @@ contract MedRecChain is AccessControl {
         return true;
     }
 
-    /////////////add org////////////////
-
-  function addOrg(
-        string memory _name,
-        address _address,
-        string memory _place,
-        uint256 _phone
-    ) public onlyAdmin returns (bool success) {
-        require(
-            !hasRole(ORG_ROLE, _address),
-            "This Organization is really exisit!! "
-        );
-        require(!hasRole(ADMIN_ROLE, _address), "This Account is Admin!! ");
-        require(!hasRole(DOCTOR_ROLE, _address), "This Account is Doctor!! ");
-        require(!hasRole(PATIENT_ROLE, _address), "This Account is Patient!! ");
-
-        _setupRole(ORG_ROLE, _address);
-        Organization_index = Organization_index + 1;
-        Organizations[_address] = Hospital(
-            Hospital_index,
-            _name,
-            _address,
-            _place,
-            _phone
-        );
-        Organizations_keys.push(_address);
-        return true;
-    }
-
-//////////remove  org 
-
-    function removeOrg(
-        address _address
-    ) public onlyAdmin returns (bool success) {
-        require(
-            hasRole(ORG_ROLE, _address),
-            "This hospital is not exisit"
-        );
-        _revokeRole(ORG_ROLE, _address);
-        delete Organizations[_address];
-        removeitem_hos(_address);
-        return true;
-    }
-//////////get all org 
-    function get_all_Orgs() public view returns (Organization[] memory) {
-        Organization[] memory hos = new Organization[](Organizations_keys.length);
-        for (uint256 i = 0; i < Organizations_keys.length; i++) {
-            org[i] = Organizations[Organizations_keys[i]];
-        }
-        return org;
-    }
-
-
     function removeitem_hos(address _hosAddress) public {
         require(Hospitals_keys.length > 0, "No keys in array");
         for (uint i = 0; i < Hospitals_keys.length; i++) {
@@ -268,7 +196,11 @@ contract MedRecChain is AccessControl {
         return true;
     }
 
-    function get_all_hospitals() public view returns (Hospital[] memory) {
+    function get_all_hospitals()
+        public
+        view
+        returns (Hospital[] memory)
+    {
         Hospital[] memory hos = new Hospital[](Hospitals_keys.length);
         for (uint256 i = 0; i < Hospitals_keys.length; i++) {
             hos[i] = Hospitals[Hospitals_keys[i]];
@@ -407,10 +339,6 @@ contract MedRecChain is AccessControl {
         require(
             !hasRole(HOSPITAL_ROLE, _PatientAddress),
             "This Account is Hospital!! "
-        );  
-        require(
-            !hasRole(ORG_ROLE, _PatientAddress),
-            "This Account is Organization!! "
         );
         _setupRole(PATIENT_ROLE, _PatientAddress);
         Patient_index = Patient_index + 1;
@@ -591,25 +519,23 @@ contract MedRecChain is AccessControl {
         return (patients[msg.sender].Records);
     }
 
-    function approveAccess(address _addr) public onlypatient {
-        require(hasRole(DOCTOR_ROLE, _addr), "this acount is not a doctor ");
-        require(hasRole(ORG_ROLE, _addr), "this acount is not a Org ");
-
+    function approveAccess(address _doctor) public onlypatient {
+        require(hasRole(DOCTOR_ROLE, _doctor), "this acount is not a doctor ");
         require(
-            (isAuth[msg.sender][_addr]) == false,
+            (isAuth[msg.sender][_doctor]) == false,
             "This Request alraedy been Approved!! "
         );
-        isAuth[msg.sender][_addr] = true;
+        isAuth[msg.sender][_doctor] = true;
     }
 
     function check_approve_Access(
-        address _addr,
+        address _doctor,
         address _patient
-    ) public view  returns (bool) {
-        return (isAuth[_patient][_addr]);
+    ) public view onlydoctors returns (bool) {
+        return (isAuth[_patient][_doctor]);
     }
 
-    function DeleteRequest(address doc, address pat) public {
+    function DeleteRequest(address doc, address pat) public  {
         require(requests.length > 0, "No keys in array");
         for (uint i = 0; i < requests.length; i++) {
             if (
@@ -628,18 +554,13 @@ contract MedRecChain is AccessControl {
         }
     }
 
-    function rejectAccess(address _addr) public onlypatient {
+    function rejectAccess(address _doctor) public onlypatient {
         require(
-            hasRole(DOCTOR_ROLE, _addr),
+            hasRole(DOCTOR_ROLE, _doctor),
             "Doctor does not have the doctor role"
-        );        
-        
-        require(
-            hasRole(ORG_ROLE, _addr),
-            "Org does not have the doctor role"
         );
         //   require((isAuth[msg.sender][_doctor]) == true, "This Request alraedy been Reject!! ");
-        isAuth[msg.sender][_addr] = false;
-        DeleteRequest(_addr, msg.sender);
+        isAuth[msg.sender][_doctor] = false;
+        DeleteRequest(_doctor, msg.sender);
     }
 }
