@@ -7,7 +7,6 @@ import { BsSearch } from "react-icons/bs";
 import { CChart } from "@coreui/react-chartjs";
 
 export default function AllHospitals() {
-
   const [Contract, setContract] = useState(null);
 
   const [wEb3, setwEb3] = useState({
@@ -61,7 +60,7 @@ export default function AllHospitals() {
     loadcontract();
   }, [wEb3]);
 
-//Get Account
+  //Get Account
   const [account, setAccount] = useState();
   useEffect(() => {
     const getAccount = async () => {
@@ -89,7 +88,6 @@ export default function AllHospitals() {
       Hospitalnames[i] = date[i].name;
     }
     setHospitalname(Hospitalnames);
-
   };
 
   useEffect(() => {
@@ -156,7 +154,6 @@ export default function AllHospitals() {
   getallPatients();
   // -----------
 
-
   //////////////////////////////////////////////////
   const options = {
     indexAxis: "y",
@@ -175,13 +172,13 @@ export default function AllHospitals() {
   return (
     <>
       <main id="main" className="main">
-      <HospitalSideBar
+        <HospitalSideBar
           tap1="Hospital Profile"
           tap2="Add Patient"
           tap4="See All Hospitals"
           tap3="Log Out"
         />
-        <section className="section container p-4 mt-4 forms ">
+                <section className="section container p-4 mt-4 forms ">
           <div className="mt-4 mb-4">
             <div className="forms mx-3">
               <div className="card ">
@@ -228,7 +225,6 @@ export default function AllHospitals() {
                             </tr>
                           );
                         })}
-                         
                       </tbody>
                     </table>
                   ) : (
@@ -241,46 +237,45 @@ export default function AllHospitals() {
             </div>
           </div>
         </section>
-
         <div className="forms col-xl-12">
-              <div className="card p-5">
-                <div className=" m-4 pb-5">
-        <CChart
-                    type="bar"
-                    options={options}
-                    data={{
-                      labels: Hospitalname,
-                      datasets: [
-                        {
-                          label: "Doctors",
-                          backgroundColor: "#7fe4ed",
-                          borderColor: "rgba(220, 220, 220, 1)",
-                          pointBackgroundColor: "rgba(220, 220, 220, 1)",
-                          pointBorderColor: "#fff",
-                          data: DocNUM_For_Hos,
-                          barPercentage: 5,
-                          barThickness: 50,
-                          maxBarThickness: 50,
-                          minBarLength: 2,
-                        },
-                        {
-                          label: "Patients",
-                          backgroundColor: "#c17bf6",
-                          borderColor: "rgba(151, 187, 205, 1)",
-                          pointBackgroundColor: "rgba(151, 187, 205, 1)",
-                          pointBorderColor: "#fff",
-                          data: PatientNUM_For_Hos,
-                          barPercentage: 5,
-                          barThickness: 50,
-                          maxBarThickness: 50,
-                          minBarLength: 2,
-                        },
-                      ],
-                    }}
-                  />
-       </div>
-       </div>
-       </div>
+          <div className="card p-5">
+            <div className=" m-4 pb-5">
+              <CChart
+                type="bar"
+                options={options}
+                data={{
+                  labels: Hospitalname,
+                  datasets: [
+                    {
+                      label: "Doctors",
+                      backgroundColor: "#7fe4ed",
+                      borderColor: "rgba(220, 220, 220, 1)",
+                      pointBackgroundColor: "rgba(220, 220, 220, 1)",
+                      pointBorderColor: "#fff",
+                      data: DocNUM_For_Hos,
+                      barPercentage: 5,
+                      barThickness: 50,
+                      maxBarThickness: 50,
+                      minBarLength: 2,
+                    },
+                    {
+                      label: "Patients",
+                      backgroundColor: "#c17bf6",
+                      borderColor: "rgba(151, 187, 205, 1)",
+                      pointBackgroundColor: "rgba(151, 187, 205, 1)",
+                      pointBorderColor: "#fff",
+                      data: PatientNUM_For_Hos,
+                      barPercentage: 5,
+                      barThickness: 50,
+                      maxBarThickness: 50,
+                      minBarLength: 2,
+                    },
+                  ],
+                }}
+              />
+            </div>
+          </div>
+        </div>
       </main>
       <MyFooter />
     </>

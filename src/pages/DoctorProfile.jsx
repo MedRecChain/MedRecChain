@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import profile from "../assets/img/slider/doc.png";
 import MyFooter from "../components/MyFooter";
 import DoctorSideBar from "../components/DoctorSideBar";
-
 import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import { CChart } from "@coreui/react-chartjs";
+import { Icon } from "@iconify/react";
+import { Link, useLocation } from "react-router-dom";
 
 export default function DoctorProfile() {
   const location = useLocation();
@@ -21,7 +21,7 @@ export default function DoctorProfile() {
   });
 
   const providerChanged = (provider) => {
-    provider.on("ChainChanged", (_) => window.location.reload());
+    provider.on("chainChanged", (_) => window.location.reload());
   };
   const accountsChanged = (provider) => {
     provider.on("accountsChanged", (_) => window.location.replace("/"));
@@ -66,6 +66,18 @@ export default function DoctorProfile() {
     loadcontract();
   }, [wEb3]);
 
+  //get acount
+  const [account, setAccount] = useState();
+  useEffect(() => {
+    const getAccount = async () => {
+      const accounts = await wEb3.web3.eth.getAccounts();
+      setAccount(accounts);
+    };
+    getAccount();
+  });
+
+
+
   ///get doctor account.
   const [Docdate, setDocdate] = useState([]);
   const getdoctorinfo = async () => {
@@ -79,6 +91,8 @@ export default function DoctorProfile() {
 
   //Get all Request from doctor
   const [Requestdate, setRequestdate] = useState([]);
+  const [Patientdate, setPatientdate] = useState([]);
+
   const [aprove, setaprove] = useState(0);
   const [pending, setpending] = useState(0);
   var a = 0;
@@ -110,6 +124,18 @@ export default function DoctorProfile() {
 
   getallRequestdates();
 
+  ///Date At TABLE for Patients.
+  const getallPatients = async () => {
+    const date = await Contract.methods
+      .get_all_Patients()
+      .call({ from: acount });
+    setPatientdate(date);
+  };
+
+
+  getallPatients();
+
+
   ////////////////////////
 
   return (
@@ -120,6 +146,50 @@ export default function DoctorProfile() {
           tap2="Make Request"
           tap3="Log Out"
         />
+        <section id="counts" className="counts">
+          <div className=" mb-5 mx-auto text-center">
+            <h2 className="mb-5 pb-5 ">Doctors Dashboard</h2>
+          </div>
+          <div className="container">
+            <div className="row justify-content-center">
+              <Link
+                to="/RegisteredPatients"
+                className="col-lg-3 col-md-6 mt-5 mt-md-0"
+              >
+                <div className="count-box">
+                  <div className="icons">
+                    <Icon
+                      icon="mdi:patient"
+                      color="white"
+                      width="24"
+                      height="24"
+                    />
+                  </div>
+                  <span>{Patientdate.length}</span>
+                  <p>Registerd Patients</p>
+                </div>
+              </Link>
+
+              <Link
+                to="/allRequestes"
+                className="col-lg-3 col-md-6 mt-5 mt-lg-0"
+              >
+                <div className="count-box">
+                  <div className="icons">
+                    <Icon
+                      icon="healthicons:medical-records"
+                      color="white"
+                      width="24"
+                      height="24"
+                    />
+                  </div>
+                  <span>{Requestdate.length}</span>
+                  <p>All Requests</p>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </section>
 
         <section className="section container p-4 mt-4">
           <div className="row d-flex align-items-stretch">

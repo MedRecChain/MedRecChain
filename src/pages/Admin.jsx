@@ -2,12 +2,13 @@ import React from "react";
 import AdminSideBar from "../components/AdminSideBar";
 import MyFooter from "../components/MyFooter";
 import { FaBed, FaHospitalAlt, FaStethoscope } from "react-icons/fa";
-import { Link, useLocation } from "react-router-dom";
 import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { useEffect, useState } from "react";
 import { CChart } from "@coreui/react-chartjs";
 import { Icon } from "@iconify/react";
+import { Link, useLocation } from "react-router-dom";
+
 // import * as echarts from 'echarts';
 
 export default function Admin() {

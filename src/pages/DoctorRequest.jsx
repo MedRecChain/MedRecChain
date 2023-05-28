@@ -373,7 +373,7 @@ export default function PatientPermission() {
 
           <div className="row"> 
 
-          <div className="col-xl-6">
+          <div className="col-xl-12">
             <div className="forms">
               <div className="card overflow-auto">
                 <div className="card-body">
@@ -475,65 +475,6 @@ export default function PatientPermission() {
                     </tbody>
                   </table>
                   
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-xl-6">
-            <div className="forms">
-              <div className="card overflow-auto">
-                <div className="card-body">
-                  <div className="row d-flex align-items-center">
-                    <div className="col-xl-4">
-                      <h3 className="card-title">
-                        All Patients
-                      </h3>
-                    </div>
-                    <div className="col-xl-8">
-                      <div className="input-group w-75 mb-2">
-                        <input
-                          type="text"
-                          placeholder="Search for patient by name or PK"
-                          value={searchValueforpat}
-                          onChange={(e) => setsearchValueforpat(e.target.value)}
-                          className="form-control"
-                        />
-                        <span className="input-group-text">
-                          <BsSearch />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-               
-                
-                  {filteredPatients.length > 0 ? (
-                    <table className="table table-borderless datatable m-0">
-                      <thead>
-                        <tr>
-                          <th scope="col">Patient Name</th>
-                          <th scope="col">Public Key</th>
-                          <th scope="col">Phone</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredPatients.map((date) => {
-                          return (
-                            <tr key={date.PatientAddress}>
-                              <th scope="row">{date.name}</th>
-                              <td>{date.PatientAddress}</td>
-                              <td>{date.phone}</td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  ) : (
-                    <p className="text-center text-danger fs-5">
-                      There isn't match result..!
-                    </p>
-                  )}
-                 
                 </div>
               </div>
             </div>

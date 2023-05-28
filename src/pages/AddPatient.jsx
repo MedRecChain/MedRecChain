@@ -370,42 +370,7 @@ export default function AddPatient() {
                   </div>
                 </div>
               </div>
-              <div className="mt-4 mb-4">
-                <div className="forms">
-                  <div className="card overflow-auto">
-                    <div className="card-body">
-                      <h1 className="card-title">Registered Patients</h1>
-                      <table className="table table-borderless datatable m-0">
-                        <thead>
-                          <tr>
-                            <th scope="col">Patient Name</th>
-                            <th scope="col">Public Key</th>
-                            <th scope="col">Hospital Address</th>
-                            <th scope="col">Phone</th>
-                            <th scope="col">Age</th>
-                            <th scope="col">Marital Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {Patientdate.map((date) => {
-                            if(date.hospital_addr == acount){
-                            return (
-                              <tr>
-                                <th scope="row">{date.name}</th>
-                                <td>{date.PatientAddress}</td>
-                                <td>{date.hospital_addr}</td>
-                                <td>{date.phone}</td>
-                                <td>{date.age}</td>
-                                <td>{date.marital_status}</td>
-                              </tr>
-                            );}
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
             </div>
           </section>
         </div>

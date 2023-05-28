@@ -5,11 +5,10 @@ import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { BsSearch } from "react-icons/bs";
 
-export default function RegisteredHospitals(props) {
+export default function ShowAllPatientForHospital(props) {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const acount = searchParams.get("account");
-  console.log(acount);
   const [Contract, setContract] = useState(null);
 
   const [wEb3, setwEb3] = useState({
@@ -40,7 +39,7 @@ export default function RegisteredHospitals(props) {
     loadProvider();
   }, []);
 
-  ///// get Contract
+  //get Contract
   useEffect(() => {
     const loadcontract = async () => {
       const contractfile = await fetch("/contracts/MedRecChain.json");
@@ -62,100 +61,38 @@ export default function RegisteredHospitals(props) {
 
     loadcontract();
   }, [wEb3]);
-  ///////////////////////////////////
 
-  //Get doctor number at this hospital
-  // const [Doctordat, setDoctordat] = useState(0);
-  // const getallDoctors = async () => {
-  //   var total = 0;
-  //   try {
-  //     const date = await Contract.methods
-  //       .get_all_Doctors()
-  //       .call({ from: acount });
-  //     for (var i = 0; i < date.length; i++) {
-  //       if (date[i] && date[i].hospital_addr == acount[0]) {
-  //         total = total + 1;
-  //       }
-  //     }
-  //     setDoctordat(total);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-  // getallDoctors();
+  //get acount
+  const [account, setAccount] = useState();
+  useEffect(() => {
+    const getAccount = async () => {
+      const accounts = await wEb3.web3.eth.getAccounts();
+      setAccount(accounts);
+    };
+    getAccount();
+  });
 
-  // Get patient number at this hospital
-
-  // const getallPatients = async () => {
-  //   var Tot = 0;
-  //   try {
-  //     const date = await Contract.methods
-  //       .get_all_Patients()
-  //       .call({ from: acount });
-  //     for (var a = 0; a < date.length; a++) {
-  //       if (date[a] && date[a].hospital_addr === acount[0]) {
-  //         Tot = Tot + 1;
-  //       }
-  //       setPatientdate(Tot);
-  //     }
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  // getallPatients();
-  // // -----------
-
-  // const getHospitalDoctorsCount = async () => {
-  //   try {
-  //     const count = await Contract.methods
-  //       .get_all_Doctors()
-  //       .call({ from: acount });
-  //     setDoctordat(parseInt(count));
-  //     console.log(count);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  // const getHospitalPatientsCount = async () => {
-  //   try {
-  //     const count = await Contract.methods
-  //       .get_all_Patients()
-  //       .call({ from: acount });
-  //     setPatientdate(parseInt(count));
-  //     console.log(count);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getHospitalDoctorsCount();
-  //   getHospitalPatientsCount();
-  // }, [Contract]);
-
-  ///////////////////////SearchBox///////////////////////////
-
+  //////////////////// Search Box //////////////////
   const [searchValue, setSearchValue] = useState("");
-  const [Hospitaldate, setHospitaldate] = useState([]);
 
-  ///Date At TABLE for Hospitals.
-  const getallHospitals = async () => {
+  const [Patientdate, setPatientdate] = useState([]);
+
+  ///Date At TABLE for Patients.
+  const getallPatients = async () => {
     const date = await Contract.methods
-      .get_all_hospitals()
+      .get_all_Patients()
       .call({ from: acount });
-    setHospitaldate(date);
+    setPatientdate(date);
   };
 
   useEffect(() => {
-    getallHospitals();
+    getallPatients();
   }, [Contract]);
 
-  const filteredHospitals = Hospitaldate.filter(
+  const filteredPatients = Patientdate.filter(
     (date) =>
       date.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-      date.addr.includes(searchValue)
+      date.PatientAddress.includes(searchValue)
   );
   ////////////////////////////////////////////////
 
@@ -164,19 +101,19 @@ export default function RegisteredHospitals(props) {
       <main>
         <section className="section container p-4 mt-4">
           <div className="mt-4 mb-4">
-            <div className="forms mx-3">
+            <div className="forms">
               <div className="card overflow-auto">
                 <div className="card-body">
                   <div className="row d-flex align-items-center">
                     <div className="col-xl-4">
-                      <h1 className="card-title my-3">Registered Hospitals</h1>
+                      <h1 className="card-title my-3">Registered Patient</h1>
                     </div>
                     <div className="col-xl-8">
                       <div className="d-flex">
                         <div className="input-group w-50">
                           <input
                             type="text"
-                            placeholder="Search for hospital by name or PK"
+                            placeholder="Search for doctor by name or PK"
                             value={searchValue}
                             onChange={(e) => setSearchValue(e.target.value)}
                             className="form-control"
@@ -188,41 +125,52 @@ export default function RegisteredHospitals(props) {
                       </div>
                     </div>
                   </div>
-                  {filteredHospitals.length > 0 ? (
-                    <table className="table table-borderless datatable m-0">
-                      <thead>
-                        <tr>
-                          <th scope="col">Hospital Name</th>
-                          <th scope="col">Public Key</th>
-                          <th scope="col">Address</th>
-                          <th scope="col">Phone</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredHospitals.map((date) => {
+                  <table className="table table-borderless datatable m-0">
+                    <thead>
+                      <tr>
+                        <th scope="col">Patient Name</th>
+                        <th scope="col">Public Key</th>
+                        <th scope="col">Hospital Address</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Age</th>
+                        <th scope="col">Marital Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Patientdate.map((date) => {
+                        if (date.hospital_addr == account) {
                           return (
                             <tr>
                               <th scope="row">{date.name}</th>
-                              <td>{date.addr}</td>
-                              <td>{date.place}</td>
+                              <td>{date.PatientAddress}</td>
+                              <td>{date.hospital_addr}</td>
                               <td>{date.phone}</td>
+                              <td>{date.age}</td>
+                              <td>{date.marital_status}</td>
                             </tr>
                           );
-                        })}
-                      </tbody>
-                    </table>
-                  ) : (
-                    <p className="text-center text-danger fs-5">
-                      There isn't match result..!
-                    </p>
-                  )}
+                        }
+                      }).filter(
+                        (date) =>
+                          date !== undefined &&
+                          (date.props.children[0].props.children
+                            .toLowerCase()
+                            .includes(searchValue.toLowerCase()) ||
+                            date.props.children[1].props.children.includes(
+                              searchValue
+                            ))
+                      )}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
           </div>
         </section>
       </main>
-      <MyFooter />
+      <div>
+        <MyFooter />
+      </div>
     </>
   );
 }

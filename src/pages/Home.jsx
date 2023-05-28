@@ -3,11 +3,9 @@ import { Icon } from "@iconify/react";
 import MyNav from "../components/MyNav";
 import MyFooter from "../components/MyFooter.jsx";
 import bg from "../assets/img/slider/bg.webp";
-import { FaBed, FaHospitalAlt, FaStethoscope } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
-import { CChart } from "@coreui/react-chartjs";
 
 const Home = () => {
   const location = useLocation();
@@ -65,87 +63,42 @@ const Home = () => {
 
     loadcontract();
   }, [wEb3]);
-
-  ///get Number of all Hospitals at system. (By Lenght)
+////////////////////////////////////////////////////////////
+  ///get Number of all Hospitals at system.
   const [Hospitaldate, setHospitaldate] = useState([]);
-  const [Hospitalname, setHospitalname] = useState([]);
-  const Hospitalnames = [];
   const getallhospitals = async () => {
     const date = await Contract.methods
       .get_all_hospitals()
       .call({ from: acount });
-    for (var i = 0; i < date.length; i++) {
-      Hospitalnames[i] = date[i].name;
-    }
-    setHospitalname(Hospitalnames);
+    
     setHospitaldate(date);
   };
   getallhospitals();
 
-  ///get Number of all Doctors at system.(By Lenght)
 
+///get Number of all Doctors at system.(By Lenght)
   const [Doctordate, setDoctordate] = useState([]);
-  const [DocNUM_For_Hos, setDocNUM_For_Hos] = useState([]);
-  const DoctorNUM_For_Hos = [];
   const getallDoctors = async () => {
     const doc = await Contract.methods.get_all_Doctors().call({
       from: acount,
     });
     setDoctordate(doc);
-    // for every hospital.
-    for (var a = 0; a < Hospitaldate.length; a++) {
-      var num = 0;
-      for (var i = 0; i < doc.length; i++) {
-        if (doc[i].hospital_addr == Hospitaldate[a].addr) {
-          num++;
-        }
-      }
-      DoctorNUM_For_Hos[a] = num;
-      setDocNUM_For_Hos(DoctorNUM_For_Hos);
-    }
+  
   };
-
   getallDoctors();
 
-  ///get Number of all patients at system.
-
-  const [Recorddate, setRecorddate] = useState();
-  const getallrecord = async () => {
-    const date = await Contract.methods
-      .get_record_number()
-      .call({ from: acount });
-    setRecorddate(date);
-  };
-
-  getallrecord();
-
-  // get all patients numder
+///get Number of all Patient at system.(By Lenght)
   const [Patientdate, setPatientdate] = useState([]);
-  const [PatientNUM_For_Hos, setPatientNUM_For_Hos] = useState([]);
-  const Patient_NUM_For_Hos = [];
-  ///Date At TABLE for Patients.
   const getallPatients = async () => {
     const pat = await Contract.methods
       .get_all_Patients()
       .call({ from: acount });
     setPatientdate(pat);
-    // for every hospital.
-    for (var a = 0; a < Hospitaldate.length; a++) {
-      var num = 0;
-      for (var i = 0; i < pat.length; i++) {
-        if (pat[i].hospital_addr == Hospitaldate[a].addr) {
-          num++;
-        }
-      }
-      Patient_NUM_For_Hos[a] = num;
-      setPatientNUM_For_Hos(Patient_NUM_For_Hos);
-    }
+  
   };
-
   getallPatients();
 
-  ///////////////////
-
+////////////////////////////////////////////////////////////
   return (
     <>
       <nav>
@@ -295,7 +248,6 @@ const Home = () => {
         <div className="container">
           <div className="row justify-content-center">
             <Link
-              to="/registeredHospitals"
               className="col-lg-3 col-md-6 mt-5 mt-md-0"
             >
               <div className="count-box">
@@ -313,7 +265,6 @@ const Home = () => {
             </Link>
 
             <Link
-              to="/registeredDoctors"
               className="col-lg-3 col-md-6 mt-5 mt-lg-0"
             >
               <div className="count-box">
@@ -331,7 +282,6 @@ const Home = () => {
             </Link>
 
             <Link
-              to="/registeredPatients"
               className="col-lg-3 col-md-6 mt-5 mt-lg-0"
             >
               <div className="count-box">

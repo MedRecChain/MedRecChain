@@ -31,7 +31,9 @@ import RegisteredDoctors from "./pages/RegisteredDoctors";
 import PreviewRecordForPatient from "./pages/PreviewRecordForPatient";
 import PreviewRecordForDoctor from "./pages/PreviewRecordForDoctor";
 import AllHospitals from "./pages/AllHospitals";
-
+import ShowAllDocrorsForHospital from "./pages/ShowAllDocrorsForHospital"
+import ShowAllPatientForHospital from "./pages/ShowAllPatientForHospital"
+import AllRequestes from "./pages/AllRequestes"
 const router = createBrowserRouter([
   {
     path: "/",
@@ -157,6 +159,21 @@ const router = createBrowserRouter([
     element: <HospitalProfile />,
     errorElement: <ErrorPage />,
   },
+  {
+    path: "/showAllDocrorsForHospital",
+    element: <ShowAllDocrorsForHospital />,
+    errorElement: <ErrorPage />,
+  },
+  {
+  path: "/showAllPatientForHospital",
+  element: <ShowAllPatientForHospital />,
+  errorElement: <ErrorPage />,
+},
+{
+  path: "/allRequestes",
+  element: <AllRequestes />,
+  errorElement: <ErrorPage />,
+},
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
