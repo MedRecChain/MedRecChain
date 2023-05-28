@@ -153,7 +153,7 @@ export default function DoctorProfile() {
           <div className="container">
             <div className="row justify-content-center">
               <Link
-                to="/RegisteredPatients"
+                to ={`/RegisteredPatients?account=${acount}`}
                 className="col-lg-3 col-md-6 mt-5 mt-md-0"
               >
                 <div className="count-box">
@@ -171,7 +171,7 @@ export default function DoctorProfile() {
               </Link>
 
               <Link
-                to="/allRequestes"
+                to={`/allRequestes?account=${acount}`}
                 className="col-lg-3 col-md-6 mt-5 mt-lg-0"
               >
                 <div className="count-box">

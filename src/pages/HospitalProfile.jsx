@@ -202,7 +202,8 @@ getallHospitaldata();
           <div className="container">
             <div className="row justify-content-center">
               <Link
-                to="/registeredHospitals"
+                to={`/registeredHospitals?account=${acount}`}
+
                 className="col-lg-3 col-md-6 mt-5 mt-md-0"
               >
                 <div className="count-box">
@@ -220,7 +221,7 @@ getallHospitaldata();
               </Link>
 
               <Link
-                to="/showAllDocrorsForHospital"
+                to={`/showAllDocrorsForHospital?account=${acount}`}
                 className="col-lg-3 col-md-6 mt-5 mt-lg-0"
               >
                 <div className="count-box">
@@ -238,7 +239,7 @@ getallHospitaldata();
               </Link>
 
               <Link
-                to="/showAllPatientForHospital"
+                to={`/showAllPatientForHospital?account=${acount}`}
                 className="col-lg-3 col-md-6 mt-5 mt-lg-0"
               >
                 <div className="count-box">

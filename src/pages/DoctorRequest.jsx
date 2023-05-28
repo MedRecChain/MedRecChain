@@ -371,7 +371,7 @@ export default function PatientPermission() {
             </div>
           </div>
 
-          <div className="row"> 
+          {/* <div className="row"> 
 
           <div className="col-xl-12">
             <div className="forms">
@@ -481,7 +481,7 @@ export default function PatientPermission() {
           </div>
 
           </div>
-          
+           */}
         </section>
       </main>
       <div className="side-footer">
