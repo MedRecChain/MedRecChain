@@ -1,46 +1,31 @@
-import React, { useState, useRef } from "react";
-import { Button } from "react-bootstrap";
-import MyFooter from "../components/MyFooter";
-import DoctorSideBar from "../components/DoctorSideBar";
-import { Link } from "react-router-dom";
-import {
-  BsCheckCircleFill,
-  BsFillTrash3Fill,
-  BsClipboard2CheckFill,
-  BsQrCode,
-  BsEyeFill,
-  BsSearch,
-} from "react-icons/bs";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { BsEyeFill, BsSearch } from "react-icons/bs";
 import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
-import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
-export default function AllRequestes() {
+import MyFooter from "../components/MyFooter";
+
+export default function AllRequests() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const acount = searchParams.get("account");
+  const [account, setAccount] = useState(null);
   const [Contract, setContract] = useState(null);
-
   const [wEb3, setwEb3] = useState({
     provider: null,
     web3: null,
   });
+  const [Requestdate, setRequestdate] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+  const [approvalStatus, setApprovalStatus] = useState({});
+  const [isApproved, setIsApproved] = useState(false);
 
-  const providerChanged = (provider) => {
-    provider.on("chainChanged", (_) => window.location.reload());
-  };
-  const accountsChanged = (provider) => {
-    provider.on("accountsChanged", (_) => window.location.replace("/"));
-  };
-
-  //get WEB3
   useEffect(() => {
     const loadProvider = async () => {
       const provider = await detectEthereumProvider();
       if (provider) {
-        providerChanged(provider);
-        accountsChanged(provider);
+        provider.on("chainChanged", (_) => window.location.reload());
+        provider.on("accountsChanged", (_) => window.location.replace("/"));
         setwEb3({
           provider,
           web3: new Web3(provider),
@@ -50,130 +35,120 @@ export default function AllRequestes() {
     loadProvider();
   }, []);
 
-  //get Contract
   useEffect(() => {
-    const loadcontract = async () => {
-      const contractfile = await fetch("/contracts/MedRecChain.json");
-      const convert = await contractfile.json();
-      const networkid = await wEb3.web3.eth.net.getId();
-      const networkDate = convert.networks[networkid];
-      if (networkDate) {
+    const loadContract = async () => {
+      const contractFile = await fetch("/contracts/MedRecChain.json");
+      const convert = await contractFile.json();
+      const networkId = await wEb3.web3.eth.net.getId();
+      const networkData = convert.networks[networkId];
+      if (networkData) {
         const abi = convert.abi;
-        const address = convert.networks[networkid].address;
-        const contract = await new wEb3.web3.eth.Contract(abi, address);
-
+        const address = convert.networks[networkId].address;
+        const contract = new wEb3.web3.eth.Contract(abi, address);
         setContract(contract);
       } else {
-        window.alert("only ganache");
+        window.alert("Only Ganache network is supported.");
         window.location.reload();
-        console.log(networkid);
       }
     };
-
-    loadcontract();
+    loadContract();
   }, [wEb3]);
 
-  //get acount
-  const [account, setAccount] = useState();
-
-  const getAccount = async () => {
-    const accounts = await wEb3.web3.eth.getAccounts();
-    setAccount(accounts);
-  };
   useEffect(() => {
-    getAccount();
-  }, [wEb3]);
-  //////////////////////////////////
-  const [Requestdate, setRequestdate] = useState([]);
-
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
-  //Get all Request from doctor
-
-  const getallRequestdates = async () => {
-    const date = await Contract.methods
-      .get_all_requests()
-      .call({ from: acount });
-    setRequestdate(date);
-  };
-
-  getallRequestdates();
-
-  // store the status of request.
-
-  const handleClick = async (doc, pat) => {
-    const date = await Contract.methods.check_approve_Access(doc, pat).call({
-      from: acount,
-    });
-    setIsButtonDisabled(date);
-
-    if (date == false) {
-      window.alert("Request not Approval!!");
-    } else {
-      window.location.replace(
-        `/PatientRecordsForDoctor?Doctor=${acount}&Patient=${pat}`
-      );
+    const getAccount = async () => {
+      const accounts = await wEb3.web3.eth.getAccounts();
+      setAccount(accounts[0]);
+    };
+    if (wEb3.web3) {
+      getAccount();
     }
+  }, [wEb3]);
+
+  useEffect(() => {
+    const getAllRequestDates = async () => {
+      if (!Contract || !account) return;
+      const dates = await Contract.methods
+        .get_all_requests()
+        .call({ from: account });
+      setRequestdate(dates);
+    };
+    getAllRequestDates();
+  }, [Contract, account]);
+
+  useEffect(() => {
+    const fetchApprovalStatus = async () => {
+      if (!Contract || !account || Requestdate.length === 0) return;
+      const status = {};
+      for (const date of Requestdate) {
+        const isApproved = await checkApprove(
+          date.from_doctor_addr,
+          date.to_patients_addr
+        );
+        status[date.id] = isApproved;
+      }
+      setApprovalStatus(status);
+    };
+    fetchApprovalStatus();
+  }, [Contract, account, Requestdate]);
+  const handleClick = async (doc, pat) => {
+    if (!Contract || !account) return;
+
+    const isApproved = await Contract.methods
+      .check_approve_Access(doc, pat)
+      .call({ from: account });
+
+    if (!isApproved) {
+      window.alert("Request not approved!");
+      setIsApproved(false);
+      return;
+    }
+
+    window.location.replace(
+      `/PatientRecordsForDoctor?Doctor=${account}&Patient=${pat}`
+    );
   };
 
-  // make blocktimestamp more readable.
-  function convertTimestamp(timestamp) {
+  const convertTimestamp = (timestamp) => {
     const date = new Date(timestamp * 1000);
     return date.toLocaleString();
-  }
-  const [checkk, setcheck] = useState(false);
+  };
 
-  const check_approve = async (doc, pat) => {
+  const checkApprove = async (doc, pat) => {
+    if (!Contract || !account) return false;
     const check = await Contract.methods
       .check_approve_Access(doc, pat)
-      .call({ from: acount });
-
-    // return check;
-    setcheck(check);
+      .call({ from: account });
+    return check;
   };
 
   const buttonStyle = {
-    backgroundColor: "transparent",
-    color: "green",
+    background:"transparent",
     fontSize: "16px",
     border: "none",
-    padding: "0px 25px ",
+    padding: "0px 25px",
   };
-  const buttonreject = {
-    backgroundColor: "transparent",
-    color: "red",
-    fontSize: "16px",
-    border: "none",
-    padding: "0px 25px ",
-  };
-
-  //////////////////// Search Box //////////////////
-
-  const [searchValue, setSearchValue] = useState("");
-
-  ////////////////////////////////////////////////
 
   return (
     <>
-      <main >
-        <section className=" container section dashboard">
-          <div className="mt-5 mb-4 container">
+      <main>
+        <section className="container section dashboard">
+          <div className="mt-4 mb-4 container">
             <div className="row">
               <div className="col-xl-12">
                 <div className="forms">
                   <div className="card overflow-auto">
                     <div className="card-body">
                       <div className="row d-flex align-items-center">
-                        <div className="col-xl-5">
+                        <div className="col-xl-4">
                           <h3 className="card-title">
-                            Requests That You have Made
+                            Requests That You Have Made
                           </h3>
                         </div>
                         <div className="col-xl-7">
-                          <div className="input-group w-50">
+                          <div className="input-group w-100">
                             <input
                               type="text"
-                              placeholder="Search for patient "
+                              placeholder="Search for patient by name or PK"
                               value={searchValue}
                               onChange={(e) => setSearchValue(e.target.value)}
                               className="form-control"
@@ -185,84 +160,74 @@ export default function AllRequestes() {
                         </div>
                       </div>
 
-                      <table className="table table-borderless datatable m-0 mt-5">
+                      <table className="table table-borderless datatable m-0">
                         <thead>
                           <tr>
                             <th scope="col">Patient Name</th>
                             <th scope="col">Patient Public Key</th>
-
                             <th scope="col">Date</th>
                             <th scope="col">See Records</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {Requestdate.map((date) => {
-                            if (
-                              date.from_doctor_addr == account &&
-                              check_approve(
-                                date.from_doctor_addr,
-                                date.to_patients_addr
-                              )
-                            ) {
+                          {Requestdate.filter(
+                            (date) => date.from_doctor_addr === account
+                          )
+                            .filter(
+                              (date) =>
+                                date.patient_name
+                                  .toLowerCase()
+                                  .includes(searchValue.toLowerCase()) ||
+                                date.to_patients_addr.includes(searchValue)
+                            )
+                            .map((date) => {
+                              const isApproved = approvalStatus[date.id];
+
                               return (
                                 <tr key={date.id}>
                                   <td scope="row">{date.patient_name}</td>
                                   <td scope="row">{date.to_patients_addr}</td>
-
                                   <td>{convertTimestamp(date.date)}</td>
-
                                   <td>
-                                    <button
-                                      disabled={isButtonDisabled}
-                                      onClick={() =>
-                                        handleClick(
-                                          acount,
-                                          date.to_patients_addr
-                                        )
-                                      }
-                                      style={buttonStyle}
-                                    >
-                                      <BsEyeFill />
-                                    </button>
+                                    {isApproved ? (
+                                      <button
+                                        disabled={!isApproved}
+                                        onClick={() =>
+                                          handleClick(
+                                            account,
+                                            date.to_patients_addr
+                                          )
+                                        }
+                                        style={{
+                                          ...buttonStyle,
+                                          color: "green",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        <BsEyeFill />
+                                      </button>
+                                    ) : (
+                                      <button
+                                        disabled={isApproved}
+                                        onClick={() =>
+                                          handleClick(
+                                            account,
+                                            date.to_patients_addr
+                                          )
+                                        }
+                                        style={{
+                                          ...buttonStyle,
+                                          color: "Red",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        <BsEyeFill />
+                                      </button>
+                                    )}
                                   </td>
                                 </tr>
                               );
-                            } else if (date.from_doctor_addr == account) {
-                              return (
-                                <tr key={date.id}>
-                                  <td scope="row">{date.patient_name}</td>
-                                  <td scope="row">{date.to_patients_addr}</td>
-                                  <td>{date.from_doctor_addr}</td>
-
-                                  <td>{convertTimestamp(date.date)}</td>
-
-                                  <td>
-                                    <button
-                                      disabled={isButtonDisabled}
-                                      onClick={() =>
-                                        handleClick(
-                                          acount,
-                                          date.to_patients_addr
-                                        )
-                                      }
-                                      style={buttonreject}
-                                    >
-                                      <BsEyeFill />
-                                    </button>
-                                  </td>
-                                </tr>
-                              );
-                            }
-                          }).filter(
-                            (date) =>
-                              date !== undefined &&
-                              (date.props.children[0].props.children
-                                .toLowerCase()
-                                .includes(searchValue.toLowerCase()) ||
-                                date.props.children[1].props.children.includes(
-                                  searchValue
-                                ))
-                          )}
+                            })}
                         </tbody>
                       </table>
                     </div>
@@ -273,7 +238,9 @@ export default function AllRequestes() {
           </div>
         </section>
       </main>
+      <div className="side-footer">
         <MyFooter />
+      </div>
     </>
   );
 }

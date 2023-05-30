@@ -1,36 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import MyFooter from "../components/MyFooter";
-import { useLocation } from "react-router-dom";
 import Web3 from "web3";
+import HospitalSideBar from "../components/HospitalSideBar";
 import detectEthereumProvider from "@metamask/detect-provider";
 import { BsSearch } from "react-icons/bs";
 
 export default function RegisteredHospitals(props) {
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const acount = searchParams.get("account");
-  console.log(acount);
   const [Contract, setContract] = useState(null);
-
   const [wEb3, setwEb3] = useState({
     provider: null,
     web3: null,
   });
+  const [account, setAccount] = useState(null);
+  const [hospitals, setHospitals] = useState([]);
+  const [hospitalNames, setHospitalNames] = useState([]);
+  const [doctors, setDoctors] = useState([]);
+  const [doctorNumbers, setDoctorNumbers] = useState([]);
+  const [patients, setPatients] = useState([]);
+  const [patientNumbers, setPatientNumbers] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
 
-  const providerChanged = (provider) => {
-    provider.on("chainChanged", (_) => window.location.reload());
-  };
-  const accountsChanged = (provider) => {
-    provider.on("accountsChanged", (_) => window.location.replace("/"));
-  };
 
-  //get WEB3
   useEffect(() => {
     const loadProvider = async () => {
       const provider = await detectEthereumProvider();
       if (provider) {
-        providerChanged(provider);
-        accountsChanged(provider);
+        provider.on("chainChanged", (_) => window.location.reload());
+        provider.on("accountsChanged", (_) => window.location.replace("/"));
         setwEb3({
           provider,
           web3: new Web3(provider),
@@ -40,132 +36,103 @@ export default function RegisteredHospitals(props) {
     loadProvider();
   }, []);
 
-  ///// get Contract
   useEffect(() => {
-    const loadcontract = async () => {
-      const contractfile = await fetch("/contracts/MedRecChain.json");
-      const convert = await contractfile.json();
-      const networkid = await wEb3.web3.eth.net.getId();
-      const networkDate = convert.networks[networkid];
-      if (networkDate) {
+    const loadContract = async () => {
+      const contractFile = await fetch("/contracts/MedRecChain.json");
+      const convert = await contractFile.json();
+      const networkId = await wEb3.web3.eth.net.getId();
+      const networkData = convert.networks[networkId];
+      if (networkData) {
         const abi = convert.abi;
-        const address = convert.networks[networkid].address;
-        const contract = await new wEb3.web3.eth.Contract(abi, address);
-
+        const address = networkData.address;
+        const contract = new wEb3.web3.eth.Contract(abi, address);
         setContract(contract);
       } else {
-        window.alert("only ganache");
+        window.alert("Only Ganache network is supported.");
         window.location.reload();
-        console.log(networkid);
+        console.log(networkId);
       }
     };
 
-    loadcontract();
+    if (wEb3.web3) {
+      loadContract();
+    }
   }, [wEb3]);
-  ///////////////////////////////////
-
-  //Get doctor number at this hospital
-  // const [Doctordat, setDoctordat] = useState(0);
-  // const getallDoctors = async () => {
-  //   var total = 0;
-  //   try {
-  //     const date = await Contract.methods
-  //       .get_all_Doctors()
-  //       .call({ from: acount });
-  //     for (var i = 0; i < date.length; i++) {
-  //       if (date[i] && date[i].hospital_addr == acount[0]) {
-  //         total = total + 1;
-  //       }
-  //     }
-  //     setDoctordat(total);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-  // getallDoctors();
-
-  // Get patient number at this hospital
-
-  // const getallPatients = async () => {
-  //   var Tot = 0;
-  //   try {
-  //     const date = await Contract.methods
-  //       .get_all_Patients()
-  //       .call({ from: acount });
-  //     for (var a = 0; a < date.length; a++) {
-  //       if (date[a] && date[a].hospital_addr === acount[0]) {
-  //         Tot = Tot + 1;
-  //       }
-  //       setPatientdate(Tot);
-  //     }
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  // getallPatients();
-  // // -----------
-
-  // const getHospitalDoctorsCount = async () => {
-  //   try {
-  //     const count = await Contract.methods
-  //       .get_all_Doctors()
-  //       .call({ from: acount });
-  //     setDoctordat(parseInt(count));
-  //     console.log(count);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  // const getHospitalPatientsCount = async () => {
-  //   try {
-  //     const count = await Contract.methods
-  //       .get_all_Patients()
-  //       .call({ from: acount });
-  //     setPatientdate(parseInt(count));
-  //     console.log(count);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getHospitalDoctorsCount();
-  //   getHospitalPatientsCount();
-  // }, [Contract]);
-
-  ///////////////////////SearchBox///////////////////////////
-
-  const [searchValue, setSearchValue] = useState("");
-  const [Hospitaldate, setHospitaldate] = useState([]);
-
-  ///Date At TABLE for Hospitals.
-  const getallHospitals = async () => {
-    const date = await Contract.methods
-      .get_all_hospitals()
-      .call({ from: acount });
-    setHospitaldate(date);
-  };
 
   useEffect(() => {
-    getallHospitals();
-  }, [Contract]);
+    const getAccount = async () => {
+      if (window.ethereum) {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        setAccount(accounts[0]);
+      }
+    };
 
-  const filteredHospitals = Hospitaldate.filter(
-    (date) =>
-      date.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-      date.addr.includes(searchValue)
+    if (!account) {
+      getAccount();
+    }
+  }, [account]);
+
+  const getHospitals = useCallback(async () => {
+    if (!account || !Contract) return;
+    const hospitalData = await Contract.methods
+      .get_all_hospitals()
+      .call({ from: account });
+    setHospitals(hospitalData);
+    const names = hospitalData.map((h) => h.name);
+    setHospitalNames(names);
+  }, [account, Contract]);
+
+  useEffect(() => {
+    getHospitals();
+  }, [getHospitals]);
+
+  const getDoctors = useCallback(async () => {
+    if (!account || !Contract) return;
+    const doctorData = await Contract.methods
+      .get_all_Doctors()
+      .call({ from: account });
+    setDoctors(doctorData);
+    const numbers = hospitals.map((h) => {
+      return doctorData.filter((d) => d.hospital_addr === h.addr).length;
+    });
+    setDoctorNumbers(numbers);
+  }, [account, Contract, hospitals]);
+
+  useEffect(() => {
+    getDoctors();
+  }, [getDoctors]);
+
+  const getPatients = useCallback(async () => {
+    if (!account || !Contract) return;
+    const patientData = await Contract.methods
+      .get_all_Patients()
+      .call({ from: account });
+    setPatients(patientData);
+    const numbers = hospitals.map((h) => {
+      return patientData.filter((p) => p.hospital_addr === h.addr).length;
+    });
+    setPatientNumbers(numbers);
+  }, [account, Contract, hospitals]);
+
+  useEffect(() => {
+    getPatients();
+  }, [getPatients]);
+
+  const filteredHospitals = hospitals.filter(
+    (hosp) =>
+      hosp.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      hosp.addr.includes(searchValue)
   );
-  ////////////////////////////////////////////////
 
   return (
     <>
-      <main>
-        <section className="section container p-4 mt-4">
+      <main >
+        <section className="section container p-4 mt-4 forms ">
           <div className="mt-4 mb-4">
             <div className="forms mx-3">
-              <div className="card overflow-auto">
+              <div className="card">
                 <div className="card-body">
                   <div className="row d-flex align-items-center">
                     <div className="col-xl-4">
@@ -176,7 +143,7 @@ export default function RegisteredHospitals(props) {
                         <div className="input-group w-50">
                           <input
                             type="text"
-                            placeholder="Search for hospital "
+                            placeholder="Search for hospital by name or PK"
                             value={searchValue}
                             onChange={(e) => setSearchValue(e.target.value)}
                             className="form-control"
@@ -196,24 +163,30 @@ export default function RegisteredHospitals(props) {
                           <th scope="col">Public Key</th>
                           <th scope="col">Address</th>
                           <th scope="col">Phone</th>
+                          <th scope="col">Number of Doctors</th>
+                          <th scope="col">Number of Patients</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredHospitals.map((date) => {
-                          return (
-                            <tr>
-                              <th scope="row">{date.name}</th>
-                              <td>{date.addr}</td>
-                              <td>{date.place}</td>
-                              <td>{date.phone}</td>
-                            </tr>
-                          );
-                        })}
+                        {filteredHospitals.map((hosp) => (
+                          <tr key={hosp.addr}>
+                            <th scope="row">{hosp.name}</th>
+                            <td>{hosp.addr}</td>
+                            <td>{hosp.place}</td>
+                            <td>{hosp.phone}</td>
+                            <td>
+                              {doctorNumbers[hospitalNames.indexOf(hosp.name)] || 0}
+                            </td>
+                            <td>
+                              {patientNumbers[hospitalNames.indexOf(hosp.name)] || 0}
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   ) : (
                     <p className="text-center text-danger fs-5">
-                      There isn't match result..!
+                      There is no matching result.
                     </p>
                   )}
                 </div>
