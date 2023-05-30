@@ -1,8 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.css";
-// import 'coreui/coreui/dist/css/coreui.min.css'
 
 import "../src/assets/css/style.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -30,10 +28,9 @@ import RegisteredPatients from "./pages/RegisteredPatients";
 import RegisteredDoctors from "./pages/RegisteredDoctors";
 import PreviewRecordForPatient from "./pages/PreviewRecordForPatient";
 import PreviewRecordForDoctor from "./pages/PreviewRecordForDoctor";
-import AllHospitals from "./pages/AllHospitals";
-import ShowAllDocrorsForHospital from "./pages/ShowAllDocrorsForHospital"
-import ShowAllPatientForHospital from "./pages/ShowAllPatientForHospital"
-import AllRequestes from "./pages/AllRequestes"
+import ShowAllDocrorsForHospital from "./pages/ShowAllDocrorsForHospital";
+import ShowAllPatientForHospital from "./pages/ShowAllPatientForHospital";
+import AllRequestes from "./pages/AllRequestes";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -62,11 +59,7 @@ const router = createBrowserRouter([
     element: <RegisteredDoctors />,
     errorElement: <ErrorPage />,
   },
-  {
-    path: "/allhospitals",
-    element: <AllHospitals />,
-    errorElement: <ErrorPage />,
-  },
+
   {
     path: "/registeredPatients",
     element: <RegisteredPatients />,
@@ -165,15 +158,15 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-  path: "/showAllPatientForHospital",
-  element: <ShowAllPatientForHospital />,
-  errorElement: <ErrorPage />,
-},
-{
-  path: "/allRequestes",
-  element: <AllRequestes />,
-  errorElement: <ErrorPage />,
-},
+    path: "/showAllPatientForHospital",
+    element: <ShowAllPatientForHospital />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/allRequestes",
+    element: <AllRequestes />,
+    errorElement: <ErrorPage />,
+  },
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -186,4 +179,3 @@ root.render(
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

@@ -77,8 +77,6 @@ export default function HospitalProfile() {
     getAccount();
   });
 
-
-
   const [Hospitaldate, setHospitaldate] = useState([]);
   const [Patientdate, setPatientdate] = useState(0);
   const [DoctorMedical_specialty, setDoctorMedical_specialty] = useState([]);
@@ -107,8 +105,6 @@ export default function HospitalProfile() {
   );
 
   /////////////////////////////
-
-
 
   // Get doctor number at this hospital
   const getallDoctors = async () => {
@@ -172,17 +168,17 @@ export default function HospitalProfile() {
 
   getallhospitals();
 
-///get number of all  hospital profile.
-const [Hospitaldata, setHospitaldata] = useState([]);
-const getallHospitaldata = async () => {
-  const date = await Contract.methods
-    .get_all_hospitals()
-    .call({ from: acount });
+  ///get number of all  hospital profile.
+  const [Hospitaldata, setHospitaldata] = useState([]);
+  const getallHospitaldata = async () => {
+    const date = await Contract.methods
+      .get_all_hospitals()
+      .call({ from: acount });
 
     setHospitaldata(date);
-};
+  };
 
-getallHospitaldata();
+  getallHospitaldata();
   /////////////////////////////////
 
   return (
@@ -191,19 +187,21 @@ getallHospitaldata();
         <HospitalSideBar
           tap1="Hospital Profile"
           tap2="Add Patient"
-          tap4="See All Hospitals"
           tap3="Log Out"
         />
-        
+
         <section id="counts" className="counts">
           <div className=" mb-5 mx-auto text-center">
-            <h2 className="mb-5 pb-5 ">Hospital Dashboard</h2>
+            <span className="mx-auto text-center">
+              <h2 className="mb-5 p-2 border-2 border-info border-bottom ">
+                Hospital Dashboard
+              </h2>
+            </span>
           </div>
           <div className="container">
             <div className="row justify-content-center">
               <Link
                 to={`/registeredHospitals?account=${acount}`}
-
                 className="col-lg-3 col-md-6 mt-5 mt-md-0"
               >
                 <div className="count-box">
@@ -234,7 +232,7 @@ getallHospitaldata();
                     />
                   </div>
                   <span>{Doctordat}</span>
-                  <p>Registered Doctorss</p>
+                  <p>Registered Doctors</p>
                 </div>
               </Link>
 
@@ -259,7 +257,7 @@ getallHospitaldata();
           </div>
         </section>
 
-        <section className="section forms container mt-4 p-5">
+        <section className="section forms container px-5">
           <div className="card w-100 mx-auto align-center h-100">
             <div className="container  p-4">
               <div className=" p-1">
@@ -271,25 +269,12 @@ getallHospitaldata();
                   className="rounded-circle border border-3 mx-auto d-block p-2"
                 />
               </div>
-              <div className="mx-auto p-3 align-center">
-                <h3 className="card-title text-center mb-5">
-                  Hospital Information
+              <div className="mx-auto p-2 align-center">
+                <h3 className="card-title text-center mb-4">
+                {Hospitaldate.name}
                 </h3>
 
                 <div className="card-body  text-muted opacity-75 ">
-                  <div className="form-outline row mb-2">
-                    <div className="col-xl-3">
-                      <label
-                        className="text-dark fs-5"
-                        htmlFor="form3Example1cg "
-                      >
-                        Hospital Name:
-                      </label>
-                    </div>
-                    <div className="col-xl-9">{Hospitaldate.name}</div>
-                    <hr />
-                  </div>
-
                   <div className="form-outline row mb-2">
                     <div className="col-xl-3">
                       <label
@@ -379,8 +364,6 @@ getallHospitaldata();
                 </div>
               </div>
             </div>
-    
-
           </div>
         </section>
       </main>

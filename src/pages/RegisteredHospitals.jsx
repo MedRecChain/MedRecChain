@@ -176,7 +176,7 @@ export default function RegisteredHospitals(props) {
                         <div className="input-group w-50">
                           <input
                             type="text"
-                            placeholder="Search for hospital by name or PK"
+                            placeholder="Search for hospital "
                             value={searchValue}
                             onChange={(e) => setSearchValue(e.target.value)}
                             className="form-control"

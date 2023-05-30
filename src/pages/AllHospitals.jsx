@@ -102,7 +102,7 @@ export default function AllHospitals() {
 
   ///////////////////
 
-  //Get numder of doctors
+  //Get number of doctors
   const [Doctordate, setDoctordate] = useState([]);
   const [DocNUM_For_Hos, setDocNUM_For_Hos] = useState([]);
   const DoctorNUM_For_Hos = [];
@@ -178,7 +178,7 @@ export default function AllHospitals() {
           tap4="See All Hospitals"
           tap3="Log Out"
         />
-                <section className="section container p-4 mt-4 forms ">
+        <section className="section container p-4 mt-4 forms ">
           <div className="mt-4 mb-4">
             <div className="forms mx-3">
               <div className="card ">
@@ -192,7 +192,7 @@ export default function AllHospitals() {
                         <div className="input-group w-50">
                           <input
                             type="text"
-                            placeholder="Search for hospital by name or PK"
+                            placeholder="Search for hospital "
                             value={searchValue}
                             onChange={(e) => setSearchValue(e.target.value)}
                             className="form-control"
@@ -237,7 +237,7 @@ export default function AllHospitals() {
             </div>
           </div>
         </section>
-        <div className="forms col-xl-12">
+        <div className="forms px-5 ">
           <div className="card p-5">
             <div className=" m-4 pb-5">
               <CChart

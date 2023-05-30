@@ -84,6 +84,12 @@ export default function PatientRecords() {
 
   getallRecorddates();
 
+  
+  function convertTimestamp(timestamp) {
+    const date = new Date(timestamp * 1000);
+    return date.toLocaleString();
+  }
+
   /////////////////////
 
   const color = {
@@ -166,7 +172,7 @@ export default function PatientRecords() {
           </nav>
         </div>
         <section className="section record dashboard">
-          <div className="mt-4 mb-4 container">
+          <div className="px-5 py-4 container">
             <div className="row container">
               {filteredCategoryItems.length === 0 ? (
                 <h5 className=" text-center small py-3">
@@ -195,7 +201,7 @@ export default function PatientRecords() {
                             <div className="pb-5">
                               <div className="card-date text-secondary position-relative text-opacity-50 bottom-0 end-0  ">
                                 <span className="position-absolute pe-3 end-0">
-                                  {date.Created_at}
+                                {convertTimestamp(date.created_at)}
                                 </span>
                               </div>
                             </div>

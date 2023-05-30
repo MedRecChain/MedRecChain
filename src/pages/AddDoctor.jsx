@@ -264,6 +264,70 @@ export default function AddDoctor() {
                             value={doctor.doctorName}
                             onChange={handleChange}
                           />
+                          <div className="row d-flex align-items-center">
+                            <div className="col-xl-9">
+                              <label className="" htmlFor="form3Example1cg">
+                                Doctor Public key
+                              </label>
+                              <input
+                                name="doctorPk"
+                                type="text"
+                                required="required"
+                                minlength="42"
+                                maxlength="42"
+                                id="form3Example1cg"
+                                className=" form-control form-control-lg"
+                                value={doctor.doctorPk}
+                                onChange={handleChange}
+                              />
+                            </div>
+                            <div className="col-xl-3">
+                              <label
+                                className="form-label"
+                                htmlFor="form3Example1cg"
+                              >
+                                Scan QR code
+                              </label>
+                              <div className="col-xl-8 d-flex justify-content-center">
+                                <button
+                                  type="button"
+                                  onClick={handleClickQR}
+                                  className=" "
+                                >
+                                  <i className="fs-3 px-3 bi bi-grid">
+                                    <BsQrCode />
+                                  </i>
+                                </button>
+
+                                <input
+                                  type="file"
+                                  ref={fileRef}
+                                  onChange={handleChangeQR}
+                                  accept=".png, .jpg , .jpeg"
+                                  className="d-none"
+                                />
+                              </div>
+                            </div>
+                                <div className=" mt-1 d-flex justify-content-center align-items-center">
+                                  {dataQr && (
+                                    <div className=" mt-1 d-flex justify-content-end align-items-center">
+                                      <p className="text-success d-flex justify-content-start">
+                                        {dataQr.slice(-42)}
+                                      </p>
+                                      <span
+                                        className="fs-3 mx-3"
+                                        onClick={handleCopyClick}
+                                        onChange={handleChangeQR}
+                                        style={{ cursor: "pointer" }}
+                                      >
+                                        <i className="bi bi-grid">
+                                          <BsClipboard2CheckFill />
+                                        </i>
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                          </div>
                           <div className="form-outline mb-2">
                             <label className="" htmlFor="form3Example1cg">
                               Medical Specialty
@@ -313,51 +377,6 @@ export default function AddDoctor() {
                               value={getHospitalAddress(doctor.hospitalName)}
                               onChange={handleChange}
                             />
-                          </div>
-                          <div className="row d-flex align-items-center">
-                            <div className="col-xl-9">
-                              <label className="" htmlFor="form3Example1cg">
-                                Doctor Public key
-                              </label>
-                              <input
-                                name="doctorPk"
-                                type="text"
-                                required="required"
-                                minlength="42"
-                                maxlength="42"
-                                id="form3Example1cg"
-                                className=" form-control form-control-lg"
-                                value={doctor.doctorPk}
-                                onChange={handleChange}
-                              />
-                            </div>
-                            <div className="col-xl-3">
-                              <label
-                                className="form-label"
-                                htmlFor="form3Example1cg"
-                              >
-                                Scan QR code
-                              </label>
-                              <div className="col-xl-8 d-flex justify-content-center">
-                                <button
-                                  type="button"
-                                  onClick={handleClickQR}
-                                  className=" "
-                                >
-                                  <i className="fs-3 px-3 bi bi-grid">
-                                    <BsQrCode />
-                                  </i>
-                                </button>
-
-                                <input
-                                  type="file"
-                                  ref={fileRef}
-                                  onChange={handleChangeQR}
-                                  accept=".png, .jpg , .jpeg"
-                                  className="d-none"
-                                />
-                              </div>
-                            </div>
                           </div>
                         </div>
                       </div>
@@ -422,7 +441,7 @@ export default function AddDoctor() {
                         <Button
                           disabled={isLoading}
                           type="submit"
-                          className="btn-info p-2 pe-5 ps-5 mt-3 mx-auto d-block "
+                          className="btn-info p-2 pe-5 ps-5 mt-4 mx-auto d-block "
                         >
                           Add
                         </Button>

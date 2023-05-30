@@ -19,7 +19,11 @@ const MyNav = () => {
               <img
                 src={logo}
                 alt="Logo"
-                style={{ height: "50px", marginRight: "10px", marginBottom: "7px" }}
+                style={{
+                  height: "50px",
+                  marginRight: "10px",
+                  marginBottom: "7px",
+                }}
               />
               <span className="text-dark">MedRecChain</span>
             </Link>
@@ -30,22 +34,22 @@ const MyNav = () => {
               <ul id="nav" className="me-5 navbar-nav ml-auto  ">
                 <li className="nav-item active me-5 ">
                   <NavLink className="page-scroll" to="/">
-                    Home
+                    <span>Home</span>
                   </NavLink>
                 </li>
                 <li className="nav-item me-5">
                   <NavLink className="page-scroll" to="/about">
-                    About
+                    <span>About</span>
                   </NavLink>
                 </li>
                 <li className="nav-item me-5">
                   <NavLink className="page-scroll" to="/contact">
-                    Contact Us
+                    <span>Contact Us</span>
                   </NavLink>
                 </li>
                 <li className="nav-item me-5">
                   <NavLink className="page-scroll" to="/dashboard">
-                    Dashboard
+                    <span>Dashboard</span>
                   </NavLink>
                 </li>
               </ul>

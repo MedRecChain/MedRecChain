@@ -89,11 +89,6 @@ export default function ShowAllPatientForHospital(props) {
     getallPatients();
   }, [Contract]);
 
-  const filteredPatients = Patientdate.filter(
-    (date) =>
-      date.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-      date.PatientAddress.includes(searchValue)
-  );
   ////////////////////////////////////////////////
 
   return (
@@ -113,7 +108,7 @@ export default function ShowAllPatientForHospital(props) {
                         <div className="input-group w-50">
                           <input
                             type="text"
-                            placeholder="Search for doctor by name or PK"
+                            placeholder="Search for doctor "
                             value={searchValue}
                             onChange={(e) => setSearchValue(e.target.value)}
                             className="form-control"
@@ -144,6 +139,7 @@ export default function ShowAllPatientForHospital(props) {
                               <th scope="row">{date.name}</th>
                               <td>{date.PatientAddress}</td>
                               <td>{date.hospital_addr}</td>
+                              {/* <td className="d-none">{date.nationalAddress}</td> */}
                               <td>{date.phone}</td>
                               <td>{date.age}</td>
                               <td>{date.marital_status}</td>
@@ -157,6 +153,9 @@ export default function ShowAllPatientForHospital(props) {
                             .toLowerCase()
                             .includes(searchValue.toLowerCase()) ||
                             date.props.children[1].props.children.includes(
+                              searchValue
+                            ) ||
+                            date.props.children[2].props.children.includes(
                               searchValue
                             ))
                       )}

@@ -84,14 +84,6 @@ const [account, setAccount] = useState();
               <span>{props.tap2}</span>
             </NavLink>
           </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to={`/allhospitals?`}>
-              <i className="bi bi-grid">
-                <BsFillHospitalFill />
-              </i>
-              <span>{props.tap4}</span>
-            </NavLink>
-          </li>
 
           <li className="nav-item mt-4">
             <NavLink className="nav-link" to="/">

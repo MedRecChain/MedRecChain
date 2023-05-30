@@ -173,13 +173,12 @@ export default function AddPatient() {
       <HospitalSideBar
         tap1="Hospital Profile"
         tap2="Add Patient"
-        tap4="See All Hospitals"
         tap3="Log Out"
       />
       <main id="main" className="main">
         <div className="container">
           <section className="section dashboard">
-            <div className="mt-4 mb-4 container">
+            <div className="p-5 container">
               <div className="forms">
                 <div className="card requests">
                   <div className="card-body">
@@ -204,24 +203,27 @@ export default function AddPatient() {
                                     onChange={handleChange}
                                   />
                                 </div>
-                                <div className="form-outline mb-2  ">
-                                  <label
-                                    className=""
-                                    htmlFor="patientPublicKey"
-                                  >
-                                    Public Key
-                                  </label>
-                                  <input
-                                    name="patientPublicKey"
-                                    type="text"
-                                    id="patientPublicKey"
-                                    required="required"
-                                    minlength="42"
-                                    maxlength="42"
-                                    className=" form-control form-control-lg"
-                                    value={patient.patientPublicKey}
-                                    onChange={handleChange}
-                                  />
+
+                                <div className="row d-flex align-items-center">
+                                  <div className="col-xl-9">
+                                    <label
+                                      className=""
+                                      htmlFor="form3Example1cg"
+                                    >
+                                      Patient Public key
+                                    </label>
+                                    <input
+                                      name="patientPublicKey"
+                                      type="text"
+                                      id="patientPublicKey"
+                                      required="required"
+                                      minlength="42"
+                                      maxlength="42"
+                                      className=" form-control form-control-lg"
+                                      value={patient.patientPublicKey}
+                                      onChange={handleChange}
+                                    />
+                                  </div>
                                   <div className="col-xl-3">
                                     <label
                                       className="form-label"
@@ -229,7 +231,7 @@ export default function AddPatient() {
                                     >
                                       Scan QR code
                                     </label>
-                                    <div className="col-xl-6 d-flex justify-content-center">
+                                    <div className="col-xl-8 d-flex justify-content-center">
                                       <button
                                         type="button"
                                         onClick={handleClickQR}
@@ -249,30 +251,30 @@ export default function AddPatient() {
                                       />
                                     </div>
                                   </div>
-                                </div>
-                                <div className=" mt-1 d-flex justify-content-center align-items-center">
-                                  {dataQr && (
-                                    <div className=" mt-1 d-flex justify-content-end align-items-center">
-                                      <p className="text-success d-flex justify-content-start">
-                                        {dataQr.slice(-42)}
-                                      </p>
-                                      <span
-                                        className="fs-3 mx-3"
-                                        onClick={handleCopyClick}
-                                        onChange={handleChangeQR}
-                                        style={{ cursor: "pointer" }}
-                                      >
-                                        <i className="bi bi-grid">
-                                          <BsClipboard2CheckFill />
-                                        </i>
-                                      </span>
-                                    </div>
-                                  )}
+                                  <div className=" mt-1 d-flex justify-content-center align-items-center">
+                                    {dataQr && (
+                                      <div className=" mt-1 d-flex justify-content-end align-items-center">
+                                        <p className="text-success d-flex justify-content-start">
+                                          {dataQr.slice(-42)}
+                                        </p>
+                                        <span
+                                          className="fs-3 mx-3"
+                                          onClick={handleCopyClick}
+                                          onChange={handleChangeQR}
+                                          style={{ cursor: "pointer" }}
+                                        >
+                                          <i className="bi bi-grid">
+                                            <BsClipboard2CheckFill />
+                                          </i>
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
 
                                 <div className="form-outline mb-2 ">
                                   <label htmlFor="nationalAddress">
-                                    National Address
+                                    Address
                                   </label>
                                   <input
                                     name="nationalAddress"

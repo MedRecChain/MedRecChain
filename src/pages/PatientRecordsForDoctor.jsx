@@ -140,17 +140,6 @@ export default function PatientRecordsForDoctor() {
       <DoctorSideBar tap1="Doctor Profile" tap2="Make Request" tap3="Log Out" />
 
       <main id="main" className="main">
-        <div className="mt-4  d-flex justify-content-end me-5">
-          <div style={{ maxWidth: "400px" }}>
-            <Link
-              to={`/addRecord?Doctor=${acount}&Patient=${Patient}`}
-              className=" btn fw-bold rounded-4 mx-5 card text-center shadow my-2 py-3 text-muted bg-info"
-            >
-              + Add New Record
-            </Link>
-          </div>
-        </div>
-
         <div className="forms mt-4 px-5 container ">
           <div className="card">
             <div className="container p-4">
@@ -253,10 +242,19 @@ export default function PatientRecordsForDoctor() {
             </div>
           </div>
         </div>
-        <br />
-        <br />
+
+        <div className="mb-0  d-flex justify-content-end me-5">
+          <div style={{ maxWidth: "400px" }}>
+            <Link
+              to={`/addRecord?Doctor=${acount}&Patient=${Patient}`}
+              className=" btn fw-bold rounded-4 border-none mx-5 card text-center shadow my-2 py-3 bg-info"
+            >
+              + Add New Record
+            </Link>
+          </div>
+        </div>
         <div className="container">
-          <nav className="mb-5  ">
+          <nav className="mb-5 mt-0">
             <Nav
               className="fw-semibold  text-info justify-content-center"
               variant="pills"

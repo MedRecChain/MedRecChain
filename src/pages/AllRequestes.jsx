@@ -157,23 +157,23 @@ export default function AllRequestes() {
     <>
       <main >
         <section className=" container section dashboard">
-          <div className="mt-4 mb-4 container">
+          <div className="mt-5 mb-4 container">
             <div className="row">
               <div className="col-xl-12">
                 <div className="forms">
                   <div className="card overflow-auto">
                     <div className="card-body">
                       <div className="row d-flex align-items-center">
-                        <div className="col-xl-4">
+                        <div className="col-xl-5">
                           <h3 className="card-title">
                             Requests That You have Made
                           </h3>
                         </div>
                         <div className="col-xl-7">
-                          <div className="input-group w-100">
+                          <div className="input-group w-50">
                             <input
                               type="text"
-                              placeholder="Search for patient by name or PK"
+                              placeholder="Search for patient "
                               value={searchValue}
                               onChange={(e) => setSearchValue(e.target.value)}
                               className="form-control"
@@ -185,7 +185,7 @@ export default function AllRequestes() {
                         </div>
                       </div>
 
-                      <table className="table table-borderless datatable m-0">
+                      <table className="table table-borderless datatable m-0 mt-5">
                         <thead>
                           <tr>
                             <th scope="col">Patient Name</th>
@@ -273,9 +273,7 @@ export default function AllRequestes() {
           </div>
         </section>
       </main>
-      <div className="side-footer">
         <MyFooter />
-      </div>
     </>
   );
 }

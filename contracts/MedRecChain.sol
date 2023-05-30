@@ -11,7 +11,7 @@ contract MedRecChain is AccessControl {
     bytes32 public constant PATIENT_ROLE = keccak256("PATIENT_ROLE");
 
     // Admin refers to government, It hard coded by us.
-    address public Admin = 0x754e003A17B67E1C08dF2f84FC1a65e25073A62E;
+    address public Admin = 0xe7b5DEb3dA0e59Ea8F46d497995433629C67501f;
 
     // [_patient][_doctor] = bool
     mapping(address => mapping(address => bool)) isAuth;

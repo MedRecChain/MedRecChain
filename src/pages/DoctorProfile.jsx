@@ -147,8 +147,12 @@ export default function DoctorProfile() {
           tap3="Log Out"
         />
         <section id="counts" className="counts">
-          <div className=" mb-5 mx-auto text-center">
-            <h2 className="mb-5 pb-5 ">Doctors Dashboard</h2>
+        <div className=" mb-5 mx-auto text-center">
+            <span className="mx-auto text-center">
+              <h2 className="mb-5 p-2 border-2 border-info border-bottom ">
+                Doctor Dashboard
+              </h2>
+            </span>
           </div>
           <div className="container">
             <div className="row justify-content-center">
@@ -177,7 +181,7 @@ export default function DoctorProfile() {
                 <div className="count-box">
                   <div className="icons">
                     <Icon
-                      icon="healthicons:medical-records"
+                      icon="carbon:request-quote"
                       color="white"
                       width="24"
                       height="24"
@@ -191,7 +195,7 @@ export default function DoctorProfile() {
           </div>
         </section>
 
-        <section className="section container p-4 mt-4">
+        <section className="section container px-5">
           <div className="row d-flex align-items-stretch">
             <div className="forms col-xl-7">
               <div className="card container p-5">

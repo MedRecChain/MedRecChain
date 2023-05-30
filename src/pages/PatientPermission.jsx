@@ -271,9 +271,8 @@ export default function PatientPermission() {
           tap4="Log Out"
         />
 
-        <div className="container"></div>
-        <section className="section dashboard">
-          <div className="mt-4 mb-4 container">
+        <section className="section dashboard mx-auto ms-5 me-0 pe-0 py-5 ">
+          <div className="container">
             <div className="forms">
               <div className="card requests">
                 <div className="card-body mx-5 px-5 ">
@@ -403,7 +402,7 @@ export default function PatientPermission() {
                       <div className="input-group w-50 mb-3">
                         <input
                           type="text"
-                          placeholder="Search for patient by name or PK"
+                          placeholder="Search for patient "
                           value={searchValue}
                           onChange={(e) => setSearchValue(e.target.value)}
                           className="form-control"
@@ -414,7 +413,7 @@ export default function PatientPermission() {
                       </div>
                     </div>
                   </div>
-                  <table className="table table-borderless datatable m-0">
+                  <table className="table table-borderless datatable mx-0">
                     <thead>
                       <tr>
                         <th scope="col">Doctor Name</th>

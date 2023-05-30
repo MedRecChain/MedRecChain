@@ -277,7 +277,7 @@ const Home = () => {
                   />
                 </div>
                 <span>{Doctordate.length}</span>
-                <p>Registered Doctorss</p>
+                <p>Registered Doctors</p>
               </div>
             </Link>
 

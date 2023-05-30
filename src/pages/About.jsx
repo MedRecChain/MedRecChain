@@ -20,10 +20,9 @@ const About = () => {
                     <img
                       src={aboutImg}
                       alt="aboutImg"
-                      className="col-xl-6 rounded-start"
-                      height=""
+                      className="col-xl-6"
                     />
-                    <div className="col-xl-5 p-5 pt-5">
+                    <div className="col-xl-5 p-4 pt-5">
                       <h1 className=" my-4">How can we help you?</h1>
                       <p className="">
                         We seek to put the patients in control of their medical

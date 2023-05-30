@@ -257,7 +257,7 @@ export default function AddRecord() {
                         <div className="fs-6 text-muted ms-4 mt-3 container">
                           <div className="forms ">
                             <label className="" htmlFor="doctorPublicKey">
-                              Add Record Data
+                              Upload Record Data
                             </label>
 
                             <div

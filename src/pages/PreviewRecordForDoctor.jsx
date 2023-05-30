@@ -210,17 +210,19 @@ export default function PreviewRecordForDoctor() {
                     <div className="col-xl-6">
                       <div className="section dashboard">
                         <div className="fs-6 text-muted ms-4 mt-3 container">
-                          <div className="forms ">
+                          <div className="forms pe-5 ">
                             <label className="" htmlFor="doctorPublicKey">
                               Record Data
                             </label>
 
-                            <div className=" card" id=" file">
+                            <div className="card " id="file">
                               <embed
                                 src={`http://127.0.0.1:9090/ipfs/${cid}?filename=${cid}`}
                                 style={{
-                                  height: "350px",
+                                  minHeight: "450px",
                                   width: "100%",
+                                  borderRadius: "5px",
+                                  
                                 }}
                               />
                             </div>

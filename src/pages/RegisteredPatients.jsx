@@ -83,7 +83,8 @@ export default function RegisteredPatients(props) {
   const filteredPatients = Patientdate.filter(
     (date) =>
       date.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-      date.PatientAddress.includes(searchValue)
+      date.PatientAddress.includes(searchValue)  ||
+      date.National_id.includes(searchValue)
   );
   ////////////////////////////////////////////////
 

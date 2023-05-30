@@ -254,7 +254,7 @@ export default function PatientPermission() {
       <DoctorSideBar tap1="Doctor Profile" tap2="Make Request" tap3="Log Out" />
 
       <main id="main" className="main">
-        <section className=" container section dashboard">
+        <section className=" container section p-5 dashboard">
 
           <div className="mt-4 mb-4 container">
             <div className="forms">
@@ -387,7 +387,7 @@ export default function PatientPermission() {
                       <div className="input-group w-100">
                         <input
                           type="text"
-                          placeholder="Search for patient by name or PK"
+                          placeholder="Search for patient "
                           value={searchValue}
                           onChange={(e) => setSearchValue(e.target.value)}
                           className="form-control"
