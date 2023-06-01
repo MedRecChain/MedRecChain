@@ -1,7 +1,22 @@
-#  بسم الله 
-# !! Please make ```git pull ``` first before you make change in source code then make ```git push```
- > To solve this issue we can make a new branch :)
+## About The Project
 
+## Dependencies
+
+## The Problem
+
+## The Solution
+
+## How Does It Work
+
+## How To Use
+
+## Getting Started
+
+### To deploy the Smart Contract
+
+### To run react development server
+
+----------------------
 ## *To Run IPFS locally*
 ## Install 
  ```js

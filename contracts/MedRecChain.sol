@@ -11,7 +11,18 @@ contract MedRecChain is AccessControl {
     bytes32 public constant PATIENT_ROLE = keccak256("PATIENT_ROLE");
 
     // Admin refers to government, It hard coded by us.
-    address public Admin = 0xe7b5DEb3dA0e59Ea8F46d497995433629C67501f;
+    address public Admin = 0xe374D964318B4A333dB68C776674C6788092660A;
+
+    // event
+    event AccessGranted(
+        address indexed Doctor_Address,
+        address indexed Patient_Address
+    ); //by patient
+    event AccessRejected(
+        address indexed Doctor_Address,
+        address indexed Patient_Address
+    ); //by patient
+    event RequestAccess(address indexed requester, address indexed patient); //by doctor or (patient)
 
     // [_patient][_doctor] = bool
     mapping(address => mapping(address => bool)) isAuth;
@@ -196,11 +207,7 @@ contract MedRecChain is AccessControl {
         return true;
     }
 
-    function get_all_hospitals()
-        public
-        view
-        returns (Hospital[] memory)
-    {
+    function get_all_hospitals() public view returns (Hospital[] memory) {
         Hospital[] memory hos = new Hospital[](Hospitals_keys.length);
         for (uint256 i = 0; i < Hospitals_keys.length; i++) {
             hos[i] = Hospitals[Hospitals_keys[i]];
@@ -433,6 +440,8 @@ contract MedRecChain is AccessControl {
                 doc.name
             )
         );
+        emit RequestAccess(msg.sender, _patient);
+
         return true;
     }
 
@@ -526,6 +535,7 @@ contract MedRecChain is AccessControl {
             "This Request alraedy been Approved!! "
         );
         isAuth[msg.sender][_doctor] = true;
+        emit AccessGranted(_doctor, msg.sender);
     }
 
     function check_approve_Access(
@@ -535,7 +545,7 @@ contract MedRecChain is AccessControl {
         return (isAuth[_patient][_doctor]);
     }
 
-    function DeleteRequest(address doc, address pat) public  {
+    function DeleteRequest(address doc, address pat) public {
         require(requests.length > 0, "No keys in array");
         for (uint i = 0; i < requests.length; i++) {
             if (
@@ -562,5 +572,6 @@ contract MedRecChain is AccessControl {
         //   require((isAuth[msg.sender][_doctor]) == true, "This Request alraedy been Reject!! ");
         isAuth[msg.sender][_doctor] = false;
         DeleteRequest(_doctor, msg.sender);
+        emit AccessRejected(_doctor, msg.sender);
     }
 }
