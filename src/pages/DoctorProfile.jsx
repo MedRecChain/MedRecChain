@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import profile from "../assets/img/slider/doc.png";
 import MyFooter from "../components/MyFooter";
 import DoctorSideBar from "../components/DoctorSideBar";
 import Web3 from "web3";
 import detectEthereumProvider from "@metamask/detect-provider";
-import { useEffect } from "react";
 import { CChart } from "@coreui/react-chartjs";
 import { Icon } from "@iconify/react";
 import { Link, useLocation } from "react-router-dom";
@@ -14,21 +13,28 @@ export default function DoctorProfile() {
   const searchParams = new URLSearchParams(location.search);
   const acount = searchParams.get("account");
   const [Contract, setContract] = useState(null);
-
   const [wEb3, setwEb3] = useState({
     provider: null,
     web3: null,
   });
 
-  const providerChanged = (provider) => {
-    provider.on("chainChanged", (_) => window.location.reload());
-  };
-  const accountsChanged = (provider) => {
-    provider.on("accountsChanged", (_) => window.location.replace("/"));
-  };
+  const [account, setAccount] = useState();
 
-  //get WEB3
+  const [Docdate, setDocdate] = useState([]);
+  const [Requestdate, setRequestdate] = useState([]);
+  const [Patientdate, setPatientdate] = useState([]);
+  const [aprove, setaprove] = useState(0);
+  const [pending, setpending] = useState(0);
+
   useEffect(() => {
+    const providerChanged = (provider) => {
+      provider.on("chainChanged", (_) => window.location.reload());
+    };
+
+    const accountsChanged = (provider) => {
+      provider.on("accountsChanged", (_) => window.location.replace("/"));
+    };
+
     const loadProvider = async () => {
       const provider = await detectEthereumProvider();
       if (provider) {
@@ -40,12 +46,12 @@ export default function DoctorProfile() {
         });
       }
     };
+
     loadProvider();
   }, []);
 
-  //get Contract
   useEffect(() => {
-    const loadcontract = async () => {
+    const loadContract = async () => {
       const contractfile = await fetch("/contracts/MedRecChain.json");
       const convert = await contractfile.json();
       const networkid = await wEb3.web3.eth.net.getId();
@@ -63,80 +69,84 @@ export default function DoctorProfile() {
       }
     };
 
-    loadcontract();
+    loadContract();
   }, [wEb3]);
 
-  //get acount
-  const [account, setAccount] = useState();
   useEffect(() => {
     const getAccount = async () => {
       const accounts = await wEb3.web3.eth.getAccounts();
       setAccount(accounts);
     };
+
     getAccount();
-  });
+  }, [wEb3]);
 
+  useEffect(() => {
+    const getDoctorInfo = async () => {
+      const date = await Contract.methods
+        .get_doctor_by_address(acount)
+        .call({ from: acount });
+      setDocdate(date);
+    };
 
+    if (Contract) {
+      getDoctorInfo();
+    }
+  }, [Contract, acount]);
 
-  ///get doctor account.
-  const [Docdate, setDocdate] = useState([]);
-  const getdoctorinfo = async () => {
-    const date = await Contract.methods
-      .get_doctor_by_address(acount)
-      .call({ from: acount });
-    setDocdate(date);
-  };
-
-  getdoctorinfo();
-
-  //Get all Request from doctor
-  const [Requestdate, setRequestdate] = useState([]);
-  const [Patientdate, setPatientdate] = useState([]);
-
-  const [aprove, setaprove] = useState(0);
-  const [pending, setpending] = useState(0);
-  var a = 0;
-  var p = 0;
+  // Get all Request from doctor
 
   const getallRequestdates = async () => {
     const date = await Contract.methods
       .get_all_requests()
       .call({ from: acount });
-    setRequestdate(date);
-    for (var i = 0; i < date.length; i++) {
+
+    const filteredRequests = date.filter(
+      (req) =>
+        req.from_doctor_addr.toLowerCase() === acount.toLowerCase() ||
+        req.to_patients_addr.toLowerCase() === acount.toLowerCase()
+    );
+
+    setRequestdate(filteredRequests);
+
+    let a = 0;
+    let p = 0;
+
+    for (let i = 0; i < filteredRequests.length; i++) {
       const check = await Contract.methods
         .check_approve_Access(
-          date[i].from_doctor_addr,
-          date[i].to_patients_addr
+          filteredRequests[i].from_doctor_addr,
+          filteredRequests[i].to_patients_addr
         )
-        .call({
-          from: acount,
-        });
+        .call({ from: acount });
+
       if (check) {
-        a = a + 1;
+        a++;
       } else {
-        p = p + 1;
+        p++;
       }
     }
+
     setaprove(a);
     setpending(p);
   };
 
-  getallRequestdates();
+  useEffect(() => {
+    getallRequestdates();
+  }, [Contract, acount]);
 
-  ///Date At TABLE for Patients.
-  const getallPatients = async () => {
-    const date = await Contract.methods
-      .get_all_Patients()
-      .call({ from: acount });
-    setPatientdate(date);
-  };
+  useEffect(() => {
+    const getAllPatients = async () => {
+      const date = await Contract.methods
+        .get_all_Patients()
+        .call({ from: acount });
+      setPatientdate(date);
+    };
 
-
-  getallPatients();
-
-
-  ////////////////////////
+    if (Contract) {
+      getAllPatients();
+    }
+  }, [Contract, acount]);
 
   return (
     <>
@@ -147,7 +157,7 @@ export default function DoctorProfile() {
           tap3="Log Out"
         />
         <section id="counts" className="counts">
-        <div className=" mb-5 mx-auto text-center">
+          <div className=" mb-5 mx-auto text-center">
             <span className="mx-auto text-center">
               <h2 className="mb-5 p-2 border-2 border-info border-bottom ">
                 Doctor Dashboard
@@ -157,7 +167,7 @@ export default function DoctorProfile() {
           <div className="container">
             <div className="row justify-content-center">
               <Link
-                to ={`/RegisteredPatients?account=${acount}`}
+                to={`/RegisteredPatients?account=${acount}`}
                 className="col-lg-3 col-md-6 mt-5 mt-md-0"
               >
                 <div className="count-box">
@@ -170,7 +180,7 @@ export default function DoctorProfile() {
                     />
                   </div>
                   <span>{Patientdate.length}</span>
-                  <p>Registerd Patients</p>
+                  <p>Registered Patients</p>
                 </div>
               </Link>
 
@@ -325,13 +335,12 @@ export default function DoctorProfile() {
                     data={{
                       labels: [
                         "All Requests",
-                        "Approved Request",
-                        "Pennding Request",
+                        "Approved Requests",
+                        "Pending Requests",
                       ],
                       datasets: [
                         {
                           data: [Requestdate.length, aprove, pending],
-
                           backgroundColor: ["#FF6384", "#4BC0C0", "#FFCE56"],
                         },
                       ],
@@ -348,7 +357,7 @@ export default function DoctorProfile() {
       <div className="side-footer">
         <MyFooter />
       </div>
-      <script src="assets/js/main.js"></script>
+      <script src="assets/js/coreui.bundle.min.js"></script>
     </>
   );
 }
