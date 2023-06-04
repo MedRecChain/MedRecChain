@@ -122,7 +122,7 @@ export default function AllRequests() {
   };
 
   const buttonStyle = {
-    background:"transparent",
+    background: "transparent",
     fontSize: "16px",
     border: "none",
     padding: "0px 25px",
@@ -138,14 +138,14 @@ export default function AllRequests() {
                 <div className="forms">
                   <div className="card overflow-auto">
                     <div className="card-body">
-                      <div className="row d-flex align-items-center">
+                      <div className="row d-flex align-items-center mb-4">
                         <div className="col-xl-4">
                           <h3 className="card-title">
                             Requests That You Have Made
                           </h3>
                         </div>
-                        <div className="col-xl-7">
-                          <div className="input-group w-100">
+                        <div className="col-xl-8">
+                          <div className="input-group w-50">
                             <input
                               type="text"
                               placeholder="Search for patient by name or PK"
@@ -238,9 +238,7 @@ export default function AllRequests() {
           </div>
         </section>
       </main>
-      <div className="side-footer">
-        <MyFooter />
-      </div>
+      <MyFooter />
     </>
   );
 }
