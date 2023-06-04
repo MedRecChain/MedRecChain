@@ -90,6 +90,7 @@ export default function AllRequests() {
     };
     fetchApprovalStatus();
   }, [Contract, account, Requestdate]);
+
   const handleClick = async (doc, pat) => {
     if (!Contract || !account) return;
 
@@ -128,6 +129,9 @@ export default function AllRequests() {
     padding: "0px 25px",
   };
 
+  // Sort the Requestdate array in descending order based on the date
+  const sortedRequestdate = [...Requestdate].sort((a, b) => b.date - a.date);
+
   return (
     <>
       <main>
@@ -150,7 +154,9 @@ export default function AllRequests() {
                               type="text"
                               placeholder="Search for patient by name or PK"
                               value={searchValue}
-                              onChange={(e) => setSearchValue(e.target.value)}
+                              onChange={(e) =>
+                                setSearchValue(e.target.value)
+                              }
                               className="form-control"
                             />
                             <span className="input-group-text">
@@ -170,9 +176,10 @@ export default function AllRequests() {
                           </tr>
                         </thead>
                         <tbody>
-                          {Requestdate.filter(
-                            (date) => date.from_doctor_addr === account
-                          )
+                          {sortedRequestdate
+                            .filter(
+                              (date) => date.from_doctor_addr === account
+                            )
                             .filter(
                               (date) =>
                                 date.patient_name
