@@ -1,4 +1,5 @@
 # [Helpful link to make new branch ](https://www.varonis.com/blog/git-branching) to avoid making git force
+------------>
 ## About The Project
 
 ## Dependencies
@@ -16,7 +17,7 @@
 ### To deploy the Smart Contract
 
 ### To run react development server
-
+--------------------------->
 ----------------------
 ## *To Run IPFS locally*
 ## Install 
