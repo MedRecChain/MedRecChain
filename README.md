@@ -1,13 +1,6 @@
 ## About The Project
 
 MedRecChain is a decentralized solution for Electronic Medical Records sharing systems (EMR). It utilizes the Ethereum network and IPFS technology to provide a secure and transparent platform for managing and sharing medical records.
-## Dependencies
-
-To run MedRecChain, you need the following dependencies:
-
-- Ethereum client or provider (e.g., Ganache, Infura)
-- IPFS node or gateway
-- React development environment
 
 ### Requirements
 
@@ -24,14 +17,6 @@ To run MedRecChain, you need the following dependencies:
 - [Truffle](https://trufflesuite.com/)
 - [React.js](https://reactjs.org/)
 - [Bootstrap](https://getbootstrap.com)
-
-## The Problem
-
-Traditional Electronic Medical Records systems face various challenges, including lack of interoperability, centralized storage, data security and privacy concerns, and limited patient access to their own medical records. These issues hinder efficient and secure sharing of medical information among healthcare providers.
-
-## The Solution
-
-MedRecChain addresses these challenges by leveraging the power of blockchain and IPFS. It provides a decentralized and secure platform where medical records can be stored, accessed, and shared by authorized parties. The use of blockchain ensures data integrity, transparency, and immutability, while IPFS enables efficient and distributed storage of large medical files.
 
 ## How Does It Work
 
