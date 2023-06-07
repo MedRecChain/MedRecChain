@@ -18,12 +18,12 @@ MedRecChain is a decentralized solution for Electronic Medical Records sharing s
 - [React.js](https://reactjs.org/)
 - [Bootstrap](https://getbootstrap.com)
 
-## How Does It Work
+<!-- ## How Does It Work
 
 - A healthcare provider can register using a crypto wallet like Metamask.
 - The healthcare provider can register a patient by using the public address of the patient’s wallet, usually provided during an appointment.
 - The health provider can search for a patients, and upload a new record for the patient.
-- The patient can also view his or her records, after connected with a wallet which address is registered by the health provider.
+- The patient can also view his or her records, after connected with a wallet which address is registered by the health provider. -->
 
 ## How To Use
 
