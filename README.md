@@ -78,3 +78,4 @@ jsipfs daemon
 We welcome contributions to MedRecChain. If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
 
 ### [Helpful link to make new branch ](https://www.varonis.com/blog/git-branching)
+### [How to Use Git and GitHub in a Team like a Pro](https://www.freecodecamp.org/news/how-to-use-git-and-github-in-a-team-like-a-pro/)
