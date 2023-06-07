@@ -1,5 +1,12 @@
 ## About The Project
+
 MedRecChain is a decentralized solution for Electronic Medical Records sharing systems (EMR). It utilizes the Ethereum network and IPFS technology to provide a secure and transparent platform for managing and sharing medical records.
+
+Why Choose MedRecChain:
+
+- The entire system of MedRecChain is based on blockchain technology. Hence it is practically un hackable
+- There is no actual person behind the organization. It is a smart contract, making it transparent to the public
+- All the media is stored on InterPlanetary File System (IPFS) network. Making it completely safe and private.
 
 ## Dependencies
 
@@ -9,6 +16,14 @@ To run MedRecChain, you need the following dependencies:
 - IPFS node or gateway
 - React development environment
 
+### Built With
+
+- [Ethereum](https://ethereum.org/en/)
+- [Solidity](https://soliditylang.org/)
+- [Truffle](https://trufflesuite.com/)
+- [React.js](https://reactjs.org/)
+- [Bootstrap](https://getbootstrap.com)
+
 ## The Problem
 
 Traditional Electronic Medical Records systems face various challenges, including lack of interoperability, centralized storage, data security and privacy concerns, and limited patient access to their own medical records. These issues hinder efficient and secure sharing of medical information among healthcare providers.
@@ -16,6 +31,13 @@ Traditional Electronic Medical Records systems face various challenges, includin
 ## The Solution
 
 MedRecChain addresses these challenges by leveraging the power of blockchain and IPFS. It provides a decentralized and secure platform where medical records can be stored, accessed, and shared by authorized parties. The use of blockchain ensures data integrity, transparency, and immutability, while IPFS enables efficient and distributed storage of large medical files.
+
+## How Does It Work
+
+- A healthcare provider can register using a crypto wallet like Metamask.
+- The healthcare provider can register a patient by using the public address of the patient’s wallet, usually provided during an appointment.
+- The health provider can search for a patients, and upload a new record for the patient.
+- The patient can also view his or her records, after connected with a wallet which address is registered by the health provider.
 
 ## How To Use
 
@@ -69,5 +91,4 @@ jsipfs daemon
 
 We welcome contributions to MedRecChain. If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
 
-
-### [Helpful link to make new branch ](https://www.varonis.com/blog/git-branching) 
+### [Helpful link to make new branch ](https://www.varonis.com/blog/git-branching)
