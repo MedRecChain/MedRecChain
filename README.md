@@ -1,13 +1,6 @@
 ## About The Project
 
 MedRecChain is a decentralized solution for Electronic Medical Records sharing systems (EMR). It utilizes the Ethereum network and IPFS technology to provide a secure and transparent platform for managing and sharing medical records.
-
-Why Choose MedRecChain:
-
-- The entire system of MedRecChain is based on blockchain technology. Hence it is practically un hackable
-- There is no actual person behind the organization. It is a smart contract, making it transparent to the public
-- All the media is stored on InterPlanetary File System (IPFS) network. Making it completely safe and private.
-
 ## Dependencies
 
 To run MedRecChain, you need the following dependencies:
