@@ -201,7 +201,7 @@ export default function PatientRecords() {
                             <div className="pb-5">
                               <div className="card-date text-secondary position-relative text-opacity-50 bottom-0 end-0  ">
                                 <span className="position-absolute pe-3 end-0">
-                                {convertTimestamp(date.created_at)}
+                                {date.Created_at}
                                 </span>
                               </div>
                             </div>
