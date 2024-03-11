@@ -2,6 +2,11 @@
 
 MedRecChain is a decentralized solution for Electronic Medical Records sharing systems (EMR). It utilizes the Ethereum network and IPFS technology to provide a secure and transparent platform for managing and sharing medical records.
 
+### Live Demo
+
+- [Truffle](https://med-rec-chain.vercel.app/)
+
+
 ### Requirements
 
 - [NodeJS](https://nodejs.org/en) >= 10.16 and [npm](https://www.npmjs.com/) >= 5.6 installed.
