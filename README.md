@@ -4,7 +4,7 @@ MedRecChain is a decentralized solution for Electronic Medical Records sharing s
 
 ### Live Demo
 
-- [Truffle](https://med-rec-chain.vercel.app/)
+- [MedRecChain](https://med-rec-chain.vercel.app/)
 
 
 ### Requirements
