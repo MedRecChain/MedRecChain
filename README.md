@@ -84,3 +84,7 @@ We welcome contributions to MedRecChain. If you find any issues or have suggesti
 
 ### [Helpful link to make new branch ](https://www.varonis.com/blog/git-branching)
 ### [How to Use Git and GitHub in a Team like a Pro](https://www.freecodecamp.org/news/how-to-use-git-and-github-in-a-team-like-a-pro/)
+---
+## License
+
+This project is licensed under the [MIT License](https://github.com/MedRecChain/MedRecChain/blob/main/LICENSE).
